@@ -2,7 +2,8 @@ use std::process::{Command, Output};
 use std::str::from_utf8;
 
 pub(crate) fn execute_cmd(cmds: Vec<String>) -> Output {
-    let final_cmd = std::iter::once("/C").chain(cmds.into_iter());
+    let cmd_str:Vec<&str> = cmds.iter().map(|s| s.as_str()).collect();
+    let final_cmd = std::iter::once("/C").chain(cmd_str);
     let output = Command::new("cmd")
         .args(final_cmd)
         .output()
@@ -21,7 +22,7 @@ mod tests {
 
     #[test]
     fn test_execute_cmd() {
-        let output = execute_cmd(vec!["echo", "hello"]);
+        let output = execute_cmd(vec![String::from("echo"), String::from("hello")]);
         assert_eq!(parse_output(output.stdout), "hello\r\n");
     }
 }

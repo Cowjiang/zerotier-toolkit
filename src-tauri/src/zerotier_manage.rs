@@ -1,11 +1,17 @@
 use std::any::Any;
 use std::string::ToString;
+use lazy_static::lazy_static;
 
 use crate::windows_service_manage::WindowsServiceManage;
 
-static ZERO_TIER_SERVICE_NAME: String = String::from("ZeroTierOneService");
-static ZERO_TIER_SERVICE_MANAGE: WindowsServiceManage = WindowsServiceManage::new(ZERO_TIER_SERVICE_NAME.to_string());
-
+lazy_static! {
+    static ref ZERO_TIER_SERVICE_NAME: String = {
+        String::from("ZeroTierOneService")
+    };
+    static ref ZERO_TIER_SERVICE_MANAGE: WindowsServiceManage = {
+      WindowsServiceManage::new(ZERO_TIER_SERVICE_NAME.to_string())
+    };
+}
 
 #[tauri::command]
 pub(crate) fn get_zerotier_services() -> String {
