@@ -1,7 +1,23 @@
+.logo {
+  height: 7em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: 0.75s;
+}
+
 .logo.vite:hover {
   filter: drop-shadow(0 0 2em #747bff);
 }
 
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafb);
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #24c8db);
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
 }
