@@ -9,6 +9,10 @@
     "preview": "vite preview",
     "tauri": "tauri"
   },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "^pnpm@8.10.0",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
