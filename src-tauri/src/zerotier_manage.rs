@@ -46,25 +46,14 @@ pub(crate) fn get_zerotier_state() -> String {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Once;
-
     use log::info;
     use log::LevelFilter::Debug;
 
     use crate::logger::init_logger_with_level;
-    use crate::zerotier_manage::{get_zerotier_services, get_zerotier_start_type, get_zerotier_state};
-
-    static INIT: Once = Once::new();
-
-    pub fn initialize() {
-        INIT.call_once(|| {
-            init_logger_with_level(Debug);
-        });
-    }
-
+    use crate::zerotier_manage::*;
 
     fn setup() {
-        initialize()
+        init_logger_with_level(Debug)
     }
 
     #[test]
@@ -83,5 +72,21 @@ mod tests {
     fn test_get_zerotier_start_type() {
         setup();
         info!("test_get_zerotier_start_type:{:?}", get_zerotier_start_type())
+    }
+
+    #[test]
+    fn test_start_zerotier() {
+        setup();
+        info!("test_start_zerotier:{:?}", start_zerotier());
+        let state = get_zerotier_state();
+        assert_eq!(state, "Running")
+    }
+
+    #[test]
+    fn test_stop_zerotier() {
+        setup();
+        info!("test_start_zerotier:{:?}", stop_zerotier());
+        let state = get_zerotier_state();
+        assert_eq!(state, "Stopped")
     }
 }
