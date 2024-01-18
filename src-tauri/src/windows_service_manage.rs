@@ -1,4 +1,4 @@
-use log::error;
+use log::{debug, error};
 
 use crate::command::{execute_cmd, parse_output};
 
@@ -108,14 +108,17 @@ impl WindowsServiceManage {
     }
 
     pub(crate) fn get_state(&self) -> State {
-        let output = execute_cmd(vec![
+        let commands = vec![
             String::from("sc"),
             String::from("query"),
             self.service_name.clone(),
             String::from("|"),
             String::from("findstr"),
-            String::from("\"START_TYPE\""),
-        ]);
+            String::from("STATE"),
+        ];
+        debug!("执行命令{:?}",commands.join(" "));
+        let output = execute_cmd(commands);
+
         let status = output.status;
         if !status.success() {
             return State::Unknown;
@@ -155,7 +158,7 @@ mod tests {
     static ref INSTANCE: WindowsServiceManage ={
             WindowsServiceManage::new(String::from("ToDesk_Service"))
         };
-}
+    }
     #[test]
     fn test_get_start_type() {
         print!("{:?}", INSTANCE.get_start_type())
