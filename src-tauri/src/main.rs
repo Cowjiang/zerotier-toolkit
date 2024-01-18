@@ -20,8 +20,11 @@ fn start_tauri() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_zerotier_services,
-            get_zerotier_start_type
-
+            get_zerotier_start_type,
+            set_zerotier_start_type,
+            start_zerotier,
+            stop_zerotier,
+            get_zerotier_state
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

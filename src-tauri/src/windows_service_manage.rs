@@ -6,7 +6,7 @@ pub(crate) struct WindowsServiceManage {
     service_name: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum StartType {
     AutoStart,
     DemandStart,
@@ -14,6 +14,7 @@ pub enum StartType {
     Unknown,
 }
 
+#[derive(Debug)]
 pub enum State {
     Stopped,
     Running,
@@ -33,7 +34,7 @@ impl WindowsServiceManage {
             self.service_name.clone(),
         ]);
         let status = output.status;
-        if (!status.success()) {
+        if !status.success() {
             return "".to_string();
         }
         return parse_output(output.stdout);
@@ -49,7 +50,7 @@ impl WindowsServiceManage {
             String::from("START_TYPE"),
         ]);
         let status = output.status;
-        if (!status.success()) {
+        if !status.success() {
             return StartType::Unknown;
         }
         let result = parse_output(output.stdout);
@@ -116,24 +117,24 @@ impl WindowsServiceManage {
             String::from("\"START_TYPE\""),
         ]);
         let status = output.status;
-        if (!status.success()) {
+        if !status.success() {
             return State::Unknown;
         }
         let result = parse_output(output.stdout);
         return self.transform_state(result);
     }
     fn transform_state(&self, string: String) -> State {
-        if (string.contains("STOP")) {
+        if string.contains("STOP") {
             return State::Stopped;
-        } else if (string.contains("RUN")) {
+        } else if string.contains("RUN") {
             return State::Running;
         }
         return State::Unknown;
     }
     fn transform_start_type(&self, string: String) -> StartType {
-        if (string.contains("AUTO")) {
+        if string.contains("AUTO") {
             return StartType::AutoStart;
-        } else if (string.contains("DEMAND")) {
+        } else if string.contains("DEMAND") {
             return StartType::DemandStart;
         } else if string.contains("DISABLED") {
             return StartType::Disabled;
@@ -146,6 +147,8 @@ impl WindowsServiceManage {
 #[cfg(test)]
 mod tests {
     use lazy_static::lazy_static;
+
+    use crate::windows_service_manage::StartType::AutoStart;
     use crate::windows_service_manage::WindowsServiceManage;
 
     lazy_static! {
@@ -154,7 +157,13 @@ mod tests {
         };
 }
     #[test]
-    fn test_transform_start_type() {
+    fn test_get_start_type() {
         print!("{:?}", INSTANCE.get_start_type())
+    }
+
+    #[test]
+    fn test_transform_start_type() {
+        let start_type = INSTANCE.transform_start_type(String::from("AUTO_START"));
+        assert_eq!(start_type, AutoStart)
     }
 }

@@ -1,5 +1,6 @@
-use std::any::Any;
+
 use std::string::ToString;
+
 use lazy_static::lazy_static;
 
 use crate::windows_service_manage::WindowsServiceManage;
@@ -18,12 +19,29 @@ pub(crate) fn get_zerotier_services() -> String {
     return ZERO_TIER_SERVICE_MANAGE.get_service_info();
 }
 
-/**
- * Returns AUTO_START DEMAND_START DISABLED UNKNOWN
- */
 #[tauri::command]
 pub(crate) fn get_zerotier_start_type() -> String {
     return format!("{:?}", ZERO_TIER_SERVICE_MANAGE.get_start_type());
+}
+
+#[tauri::command]
+pub(crate) fn set_zerotier_start_type(start_type: String) {
+    ZERO_TIER_SERVICE_MANAGE.set_start_type(start_type);
+}
+
+#[tauri::command]
+pub(crate) fn start_zerotier()  {
+    ZERO_TIER_SERVICE_MANAGE.start();
+}
+
+#[tauri::command]
+pub(crate) fn stop_zerotier()  {
+    ZERO_TIER_SERVICE_MANAGE.stop();
+}
+
+#[tauri::command]
+pub(crate) fn get_zerotier_state() -> String {
+  return  format!("{:?}", ZERO_TIER_SERVICE_MANAGE.get_state());
 }
 
 
