@@ -46,40 +46,42 @@ pub(crate) fn get_zerotier_state() -> String {
 
 #[cfg(test)]
 mod tests {
-    use lazy_static::lazy_static;
+    use std::sync::Once;
+
     use log::info;
     use log::LevelFilter::Debug;
 
     use crate::logger::init_logger_with_level;
     use crate::zerotier_manage::{get_zerotier_services, get_zerotier_start_type, get_zerotier_state};
 
-    lazy_static! {
-        static ref SETUP: String = {
-            // 执行设置操作
+    static INIT: Once = Once::new();
+
+    pub fn initialize() {
+        INIT.call_once(|| {
             init_logger_with_level(Debug);
-            String::from("Setup completed")
-        };
+        });
     }
 
-    fn steup() {
-        println!("Setup status:{}", *SETUP)
+
+    fn setup() {
+        initialize()
     }
 
     #[test]
     fn test_get_zerotier_services() {
-        steup();
-        info!("result:{:?}", get_zerotier_services())
+        setup();
+        info!("test_get_zerotier_services:{:?}", get_zerotier_services())
     }
 
     #[test]
     fn test_get_zerotier_state() {
-        steup();
-        info!("result:{:?}", get_zerotier_state())
+        setup();
+        info!("test_get_zerotier_state:{:?}", get_zerotier_state())
     }
 
     #[test]
     fn test_get_zerotier_start_type() {
-        steup();
-        info!("result:{:?}", get_zerotier_start_type())
+        setup();
+        info!("test_get_zerotier_start_type:{:?}", get_zerotier_start_type())
     }
 }
