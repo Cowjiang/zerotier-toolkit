@@ -14,7 +14,7 @@ import './App.css';
 import { HistoryIcon } from './components/Icon.tsx';
 import LogCard, { LogRecord } from './components/LogCard.tsx';
 import { ServiceStatus } from './typings/enum.ts';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 
 function App() {
   const [isLoading, setLoading] = useState(false);

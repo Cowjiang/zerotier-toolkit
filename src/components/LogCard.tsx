@@ -1,5 +1,5 @@
 import { Code, ScrollShadow } from '@nextui-org/react';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import formatTimestamp from '../utils/formatDate.ts';
 
 export type LogRecord = { timestamp: number; content: string; }
