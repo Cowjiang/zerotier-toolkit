@@ -1,20 +1,97 @@
-import { useState } from 'react';
-import { Button, Input } from '@nextui-org/react';
+import { useEffect, useState } from 'react';
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Snippet,
+  useDisclosure
+} from '@nextui-org/react';
 import { invoke } from '@tauri-apps/api/tauri';
 import './App.css';
+import { HistoryIcon } from './components/Icon.tsx';
+import LogCard, { LogRecord } from './components/LogCard.tsx';
+import { ServiceStatus } from './typings/enum.ts';
+import * as classNames from 'classnames';
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState('');
-  const [ setName] = useState('');
+  const [isLoading, setLoading] = useState(false);
+  const {isOpen: isModalOpen, onOpen: onModalOpen, onOpenChange: onModalOpenChange} = useDisclosure();
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke('get_zerotier_services'));
+  const [logRecord, setLogRecord] = useState<LogRecord[]>([]);
+
+  const [serviceStatus, setServiceStatus] = useState<ServiceStatus>();
+  const getServiceStatus = async () => {
+    try {
+      const status = await invoke('get_zerotier_state');
+      setServiceStatus(status as ServiceStatus);
+    } catch (e) {
+
+    }
   }
+  useEffect(() => {
+    const healthcheck = setInterval(getServiceStatus, 2000);
+    return () => clearInterval(healthcheck);
+  }, []);
+
+  useEffect(() => {
+    serviceStatus && setLogRecord(prevLogRecord => [
+      {timestamp: Date.now(), content: `Service status: ${serviceStatus}`},
+      ...prevLogRecord
+    ]);
+    isLoading && setLoading(!isLoading);
+  }, [serviceStatus]);
+
+  const startService = async () => {
+    setLoading(true);
+    try {
+      await invoke('start_zerotier');
+      setLogRecord(prevLogRecord => [
+        {timestamp: Date.now(), content: `Starting service`},
+        ...prevLogRecord
+      ]);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const stopService = async () => {
+    setLoading(true);
+    try {
+      await invoke('stop_zerotier');
+      setLogRecord(prevLogRecord => [
+        {timestamp: Date.now(), content: `Stopping service`},
+        ...prevLogRecord
+      ]);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const serviceButton = (
+    <Button
+      className={classNames([
+        'w-40 bg-gradient-to-tr text-white shadow-lg',
+        serviceStatus === ServiceStatus.RUNNING ? 'bg-none bg-red-800' : 'from-pink-500 to-yellow-500',
+        !serviceStatus ? 'bg-none bg-default-100 text-neutral-400 shadow-none cursor-not-allowed' : ''
+      ])}
+      size="lg"
+      disabled={!serviceStatus}
+      isLoading={isLoading}
+      onClick={serviceStatus === ServiceStatus.RUNNING ? stopService : startService}
+    >
+      {isLoading ? '' : serviceStatus === ServiceStatus.RUNNING ? 'Stop Service' : 'Start Service'}
+    </Button>
+  )
 
   return (
     <div className="w-full mt-28 flex flex-col justify-center items-center">
-      <h1 className="text-4xl font-extrabold">Welcome</h1>
+      <h1
+        className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#f02fc2] to-[#6094ea]">
+        ZeroTier Toolkit
+      </h1>
 
       <div className="w-full mt-4 flex justify-center">
         <a href="https://vitejs.dev" target="_blank">
@@ -28,32 +105,47 @@ function App() {
         </a>
       </div>
 
-      <p className="mt-4 font-bold">Build with Tauri, Vite, React, Next UI and Tailwind CSS</p>
+      <p className="mt-4 font-bold text-gray-700">Build with Tauri, Vite, React, Next UI and Tailwind CSS</p>
 
-      <form
-        className="w-1/2 mt-4 flex"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <Input
-          className="mr-2"
-          label="Enter a name..."
-          size="sm"
-          radius="lg"
-          onChange={(e) => setName(e.currentTarget.value)}
-        />
+      <div className="w-full mt-5 flex justify-center items-center">
+        {serviceButton}
         <Button
-          color="primary"
+          className="ml-2 bg-default-100 hover:bg-default-200 text-neutral-600"
           size="lg"
-          type="submit"
+          isIconOnly
+          onClick={onModalOpen}
         >
-          Greet
+          <HistoryIcon />
         </Button>
-      </form>
+      </div>
 
-      <p className="mt-4 text-gray-600">{greetMsg}</p>
+      <Modal
+        isOpen={isModalOpen}
+        backdrop="blur"
+        onOpenChange={onModalOpenChange}
+      >
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Logs
+              </ModalHeader>
+              <ModalBody>
+                <LogCard records={logRecord} />
+              </ModalBody>
+              <ModalFooter>
+                <Snippet
+                  className="text-medium gap-0"
+                  codeString={JSON.stringify(logRecord)}
+                  hideSymbol
+                  color="primary"
+                  variant="solid"
+                />
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
