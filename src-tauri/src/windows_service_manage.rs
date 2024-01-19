@@ -1,12 +1,17 @@
-use log::{debug, error};
+use std::io::Error;
+use std::io::ErrorKind::Other;
+use std::process::{ExitStatus, Output};
 
-use crate::command::{execute_cmd, parse_output};
+use log::debug;
+use serde::Serialize;
+
+use crate::command::{execute_cmd, execute_cmd_as_root, parse_output};
 
 pub(crate) struct WindowsServiceManage {
     service_name: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub enum StartType {
     AutoStart,
     DemandStart,
@@ -14,12 +19,13 @@ pub enum StartType {
     Unknown,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub enum State {
     Stopped,
     Running,
     Unknown,
 }
+
 
 impl WindowsServiceManage {
     pub(crate) fn new(service_name: String) -> WindowsServiceManage {
@@ -27,20 +33,15 @@ impl WindowsServiceManage {
             service_name
         }
     }
-    pub(crate) fn get_service_info(&self) -> String {
+    pub(crate) fn get_service_info(&self) -> Result<String, Error> {
         let output = execute_cmd(vec![
             String::from("sc"),
             String::from("query"),
             self.service_name.clone(),
         ]);
-        let status = output.status;
-        if !status.success() {
-            return "".to_string();
-        }
-        return parse_output(output.stdout);
+        return Self::deal_with_cmd_result(output);
     }
-
-    pub(crate) fn get_start_type(&self) -> StartType {
+    pub(crate) fn get_start_type(&self) -> Result<StartType, Error> {
         let output = execute_cmd(vec![
             String::from("sc"),
             String::from("qc"),
@@ -49,15 +50,16 @@ impl WindowsServiceManage {
             String::from("findstr"),
             String::from("START_TYPE"),
         ]);
-        let status = output.status;
-        if !status.success() {
-            return StartType::Unknown;
-        }
-        let result = parse_output(output.stdout);
-
-        return self.transform_start_type(result);
+        return match Self::deal_with_cmd_result(output) {
+            Ok(start_type) => {
+                return Ok(Self::transform_start_type(self, start_type));
+            }
+            Err(error) => {
+                Err(Error::new(Other, "执行命令异常".to_string() + &*error.to_string()))
+            }
+        };
     }
-    pub(crate) fn set_start_type(&self, start_type: String) {
+    pub(crate) fn set_start_type(&self, start_type: String) -> Result<(), Error> {
         let mut start_type_cmd: String = String::from("");
         match start_type.as_str() {
             "AutoStart" => {
@@ -71,43 +73,35 @@ impl WindowsServiceManage {
             }
             _ => {}
         }
-        let output = execute_cmd(vec![
+        let output = execute_cmd_as_root(vec![
             String::from("sc"),
             String::from("config"),
             self.service_name.clone(),
             String::from("start="),
             start_type_cmd,
         ]);
-        let status = output.status;
-        if !status.success() {
-            error!("修改失败:{:?}",parse_output(output.stderr));
-        }
+        return Self::deal_cmd_root_result(output);
     }
 
-    pub(crate) fn start(&self) {
-        let output = execute_cmd(vec![
+
+    pub(crate) fn start(&self) -> Result<(), Error> {
+        let output = execute_cmd_as_root(vec![
             String::from("net"),
             String::from("start"),
             self.service_name.clone(),
         ]);
-        let status = output.status;
-        if !status.success() {
-            error!("启动失败:{:?}",parse_output(output.stderr));
-        }
+        return Self::deal_cmd_root_result(output);
     }
 
-    pub(crate) fn stop(&self) {
-        let output = execute_cmd(vec![
+    pub(crate) fn stop(&self) -> Result<(), Error> {
+        let output = execute_cmd_as_root(vec![
             String::from("net"),
             String::from("stop"),
             self.service_name.clone()]);
-        let status = output.status;
-        if !status.success() {
-            error!("停止失败:{:?}",parse_output(output.stderr));
-        }
+        return Self::deal_cmd_root_result(output);
     }
 
-    pub(crate) fn get_state(&self) -> State {
+    pub(crate) fn get_state(&self) -> Result<State, Error> {
         let commands = vec![
             String::from("sc"),
             String::from("query"),
@@ -118,15 +112,16 @@ impl WindowsServiceManage {
         ];
         debug!("执行命令{:?}",commands.join(" "));
         let output = execute_cmd(commands);
-
-        let status = output.status;
-        if !status.success() {
-            return State::Unknown;
-        }
-        let result = parse_output(output.stdout);
-        return self.transform_state(result);
+        return match Self::deal_with_cmd_result(output) {
+            Ok(start_type) => {
+                return Ok(Self::transform_state(start_type));
+            }
+            Err(error) => {
+                Err(Error::new(Other, "执行命令异常".to_string() + &*error.to_string()))
+            }
+        };
     }
-    fn transform_state(&self, string: String) -> State {
+    fn transform_state(string: String) -> State {
         if string.contains("STOP") {
             return State::Stopped;
         } else if string.contains("RUN") {
@@ -143,6 +138,33 @@ impl WindowsServiceManage {
             return StartType::Disabled;
         }
         return StartType::Unknown;
+    }
+    fn deal_with_cmd_result(output: Result<Output, Error>) -> Result<String, Error> {
+        return match output {
+            Ok(value) => {
+                let status = value.status;
+                if !status.success() {
+                    return Err(Error::new(Other, "执行命令异常"));
+                }
+                Ok(parse_output(value.stdout))
+            }
+            Err(error) => {
+                Err(Error::new(Other, "执行命令异常".to_string() + &*error.to_string()))
+            }
+        };
+    }
+    fn deal_cmd_root_result(output: Result<ExitStatus, Error>) -> Result<(), Error> {
+        return match output {
+            Ok(value) => {
+                if !value.success() {
+                    return Err(Error::new(Other, "执行命令异常"));
+                }
+                Ok(())
+            }
+            Err(error) => {
+                Err(Error::new(Other, "执行命令异常".to_string() + &*error.to_string()))
+            }
+        };
     }
 }
 

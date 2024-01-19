@@ -20,6 +20,7 @@ log = "0.4"
 env_logger = "0.9"
 lazy_static = { version = "1.4.0", features = [] }
 chrono = "0.4.31"
+runas = "0.2"
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!

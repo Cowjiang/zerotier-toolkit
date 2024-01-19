@@ -8,6 +8,7 @@ mod zerotier_manage;
 mod logger;
 mod windows_service_manage;
 mod command;
+mod r;
 
 
 fn main() {
