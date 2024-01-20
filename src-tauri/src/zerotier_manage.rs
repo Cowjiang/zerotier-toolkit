@@ -6,86 +6,58 @@ use crate::r::{fail_message_json, success_json};
 use crate::windows_service_manage::WindowsServiceManage;
 
 lazy_static! {
-    static ref ZEROTIER_SERVICE_NAME: String = {
-        String::from("ZeroTierOneService")
-    };
-    static ref ZEROTIER_SERVICE_MANAGE: WindowsServiceManage = {
-      WindowsServiceManage::new(ZEROTIER_SERVICE_NAME.to_string())
-    };
+    static ref ZEROTIER_SERVICE_NAME: String = String::from("ZeroTierOneService");
+    static ref ZEROTIER_SERVICE_MANAGE: WindowsServiceManage =
+        WindowsServiceManage::new(ZEROTIER_SERVICE_NAME.to_string());
 }
 
 #[tauri::command]
 pub(crate) fn get_zerotier_services() -> String {
     return match ZEROTIER_SERVICE_MANAGE.get_service_info() {
-        Ok(value) => {
-            success_json(value)
-        }
-        Err(err) => {
-            fail_message_json(err.to_string())
-        }
+        Ok(value) => success_json(value),
+        Err(err) => fail_message_json(err.to_string()),
     };
 }
 
 #[tauri::command]
 pub(crate) fn get_zerotier_start_type() -> String {
     return match ZEROTIER_SERVICE_MANAGE.get_start_type() {
-        Ok(value) => {
-            success_json(value)
-        }
-        Err(err) => {
-            fail_message_json(err.to_string())
-        }
+        Ok(value) => success_json(value),
+        Err(err) => fail_message_json(err.to_string()),
     };
 }
 
 #[tauri::command]
 pub(crate) fn set_zerotier_start_type(start_type: String) -> String {
     return match ZEROTIER_SERVICE_MANAGE.set_start_type(start_type) {
-        Ok(value) => {
-            success_json(value)
-        }
-        Err(err) => {
-            fail_message_json(err.to_string())
-        }
+        Ok(value) => success_json(value),
+        Err(err) => fail_message_json(err.to_string()),
     };
 }
 
 #[tauri::command]
 pub(crate) fn start_zerotier() -> String {
     return match ZEROTIER_SERVICE_MANAGE.start() {
-        Ok(value) => {
-            success_json(value)
-        }
-        Err(err) => {
-            fail_message_json(err.to_string())
-        }
+        Ok(value) => success_json(value),
+        Err(err) => fail_message_json(err.to_string()),
     };
 }
 
 #[tauri::command]
 pub(crate) fn stop_zerotier() -> String {
     return match ZEROTIER_SERVICE_MANAGE.stop() {
-        Ok(value) => {
-            success_json(value)
-        }
-        Err(err) => {
-            fail_message_json(err.to_string())
-        }
+        Ok(value) => success_json(value),
+        Err(err) => fail_message_json(err.to_string()),
     };
 }
 
 #[tauri::command]
 pub(crate) fn get_zerotier_state() -> String {
     return match ZEROTIER_SERVICE_MANAGE.get_state() {
-        Ok(value) => {
-            success_json(format!("{:?}", value))
-        }
-        Err(err) => {
-            fail_message_json(err.to_string())
-        }
+        Ok(value) => success_json(format!("{:?}", value)),
+        Err(err) => fail_message_json(err.to_string()),
     };
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -114,7 +86,10 @@ mod tests {
     #[test]
     fn test_get_zerotier_start_type() {
         setup();
-        info!("test_get_zerotier_start_type:{:?}", get_zerotier_start_type())
+        info!(
+            "test_get_zerotier_start_type:{:?}",
+            get_zerotier_start_type()
+        )
     }
 
     #[test]
