@@ -27,7 +27,12 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "windows": {
+        "nsis": {
+          "installMode": "perMachine"
+        }
+      }
     },
     "security": {
       "csp": null
@@ -38,7 +43,7 @@
         "resizable": true,
         "title": "ZeroTier Toolkit - Build By Tauri",
         "width": 800,
-        "height": 600
+        "height": 500
       }
     ]
   }
