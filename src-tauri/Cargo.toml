@@ -21,7 +21,7 @@ env_logger = "0.11.0"
 lazy_static = { version = "1.4.0", features = [] }
 chrono = "0.4.31"
 http = "1.0.0"
-winapi = { version = "0.3.9", features = ["winsvc"] }
+winapi = { version = "0.3.9", features = ["winsvc", "winbase"] }
 runas = "1.0.0"
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

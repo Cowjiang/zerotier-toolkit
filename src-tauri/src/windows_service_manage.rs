@@ -1,21 +1,23 @@
 use std::ffi::CString;
 use std::io::Error;
 use std::io::ErrorKind::Other;
-use std::process::{ExitStatus, Output};
+use std::process::Output;
 use std::ptr;
 
-use log::debug;
+use log::{debug, error, warn};
 use serde::Serialize;
 use winapi::shared::minwindef::{BOOL, DWORD};
-use winapi::um::winnt::GENERIC_READ;
+use winapi::um::errhandlingapi::GetLastError;
+use winapi::um::winbase::FormatMessageW;
+use winapi::um::winnt::{PVOID, SERVICE_AUTO_START, SERVICE_DEMAND_START, SERVICE_DISABLED};
 use winapi::um::winsvc::{
-    CloseServiceHandle, ControlService, NotifyServiceStatusChangeA, OpenSCManagerA, OpenServiceA,
-    StartServiceA, SC_HANDLE__, SC_MANAGER_ALL_ACCESS, SERVICE_CONTROL_STOP, SERVICE_NOTIFYA,
-    SERVICE_NOTIFY_STATUS_CHANGE, SERVICE_START, SERVICE_STATUS, SERVICE_STATUS_HANDLE__,
-    SERVICE_STOP,
+    ChangeServiceConfigA, CloseServiceHandle, ControlService, NotifyServiceStatusChangeA,
+    OpenSCManagerA, OpenServiceA, StartServiceA, PSERVICE_NOTIFYA, SC_HANDLE__,
+    SC_MANAGER_ALL_ACCESS, SERVICE_ALL_ACCESS, SERVICE_CHANGE_CONFIG, SERVICE_CONTROL_STOP,
+    SERVICE_NO_CHANGE, SERVICE_START, SERVICE_STATUS, SERVICE_STOP,
 };
 
-use crate::command::{execute_cmd, execute_cmd_as_root, parse_output};
+use crate::command::{execute_cmd, parse_output};
 
 pub(crate) struct WindowsServiceManage {
     service_name: String,
@@ -43,6 +45,13 @@ impl WindowsServiceManage {
             service_name,
             state: StartType::Unknown,
         };
+        let register_result = instance.register_state_listener();
+        match register_result {
+            Ok(_ignored) => {}
+            Err(error) => {
+                error!("启动监听失败:{}", error)
+            }
+        }
         instance
     }
     pub(crate) fn get_service_info(&self) -> Result<String, Error> {
@@ -72,28 +81,47 @@ impl WindowsServiceManage {
             )),
         };
     }
-    pub(crate) fn set_start_type(&self, start_type: String) -> Result<(), Error> {
-        let mut start_type_cmd: String = String::from("");
-        match start_type.as_str() {
-            "AutoStart" => {
-                start_type_cmd = String::from("auto");
-            }
-            "DemandStart" => {
-                start_type_cmd = String::from("demand");
-            }
-            "Disabled" => {
-                start_type_cmd = String::from("disabled");
-            }
-            _ => {}
+    pub(crate) fn set_start_type(&self, start_type: StartType) -> Result<(), Error> {
+        let service_result = self.get_service_winapi(SERVICE_CHANGE_CONFIG);
+        if service_result.is_err() {
+            return Err(service_result.err().unwrap());
         }
-        let output = execute_cmd_as_root(vec![
-            String::from("sc"),
-            String::from("config"),
-            self.service_name.clone(),
-            String::from("start="),
-            start_type_cmd,
-        ]);
-        return Self::deal_cmd_root_result(output);
+        let (sc_manager, service) = service_result.ok().unwrap();
+        let win_start_type = match start_type {
+            StartType::AutoStart => SERVICE_AUTO_START,
+            StartType::DemandStart => SERVICE_DEMAND_START,
+            StartType::Disabled => SERVICE_DISABLED,
+            StartType::Unknown => SERVICE_DEMAND_START,
+        };
+
+        // 更改服务配置
+        let result = unsafe {
+            ChangeServiceConfigA(
+                service,
+                SERVICE_NO_CHANGE,
+                win_start_type,
+                SERVICE_NO_CHANGE,
+                ptr::null(),
+                ptr::null(),
+                ptr::null_mut(),
+                ptr::null(),
+                ptr::null(),
+                ptr::null(),
+                ptr::null(),
+            )
+        };
+        unsafe {
+            CloseServiceHandle(service);
+            CloseServiceHandle(sc_manager)
+        };
+        debug!("执行修改完成,结果:{}", result);
+        if result < 1 {
+            return Err(Error::new(
+                Other,
+                format!("修改失败:{:?}", Self::get_last_error()),
+            ));
+        }
+        Ok(())
     }
 
     pub(crate) fn start(&self) -> Result<(), Error> {
@@ -109,7 +137,10 @@ impl WindowsServiceManage {
         };
         debug!("执行启动完成,结果:{}", result);
         if result < 1 {
-            return Err(Error::new(Other, "启动失败"));
+            return Err(Error::new(
+                Other,
+                format!("启动失败{:?}", Self::get_last_error()),
+            ));
         }
         Ok(())
     }
@@ -130,7 +161,10 @@ impl WindowsServiceManage {
         };
         debug!("执行关闭完成,结果:{}", result);
         if result < 1 {
-            return Err(Error::new(Other, "关闭失败"));
+            return Err(Error::new(
+                Other,
+                format!("关闭失败{:?}", Self::get_last_error()),
+            ));
         }
         Ok(())
     }
@@ -189,20 +223,7 @@ impl WindowsServiceManage {
             )),
         };
     }
-    fn deal_cmd_root_result(output: Result<ExitStatus, Error>) -> Result<(), Error> {
-        return match output {
-            Ok(value) => {
-                if !value.success() {
-                    return Err(Error::new(Other, "执行命令异常"));
-                }
-                Ok(())
-            }
-            Err(error) => Err(Error::new(
-                Other,
-                "执行命令异常".to_string() + &*error.to_string(),
-            )),
-        };
-    }
+
     fn get_service_winapi(
         &self,
         dw_desired_access: DWORD,
@@ -216,9 +237,61 @@ impl WindowsServiceManage {
         let service = unsafe { OpenServiceA(sc_manager, service_name.as_ptr(), dw_desired_access) };
         if service.is_null() {
             unsafe { CloseServiceHandle(sc_manager) };
-            return Err(Error::new(Other, "无法启动服务管理器"));
+            return Err(Error::new(
+                Other,
+                format!("无法启动服务管理器{:?}", Self::get_last_error()),
+            ));
         }
         return Ok((sc_manager, service));
+    }
+    fn get_last_error() -> String {
+        // 获取错误码
+        let error_code = unsafe { GetLastError() };
+
+        // 将错误码转换为错误信息
+        let mut wide_buffer: Vec<u16> = Vec::with_capacity(256);
+        let formatted_message_size = unsafe {
+            FormatMessageW(
+                winapi::um::winbase::FORMAT_MESSAGE_FROM_SYSTEM,
+                ptr::null_mut(),
+                error_code,
+                0,
+                wide_buffer.as_mut_ptr(),
+                wide_buffer.capacity() as u32,
+                ptr::null_mut(),
+            )
+        };
+        let mut error_message = String::from("");
+        if formatted_message_size > 0 {
+            unsafe { wide_buffer.set_len(formatted_message_size as usize) };
+            error_message = String::from_utf16_lossy(&wide_buffer);
+        }
+        error_message
+    }
+    fn register_state_listener(&self) -> Result<(), Error> {
+        let service_result = self.get_service_winapi(SERVICE_ALL_ACCESS);
+        if service_result.is_err() {
+            return Err(service_result.err().unwrap());
+        }
+        let (sc_manager, service) = service_result.ok().unwrap();
+        let service_notify: PSERVICE_NOTIFYA = unsafe { std::mem::zeroed() };
+        (unsafe { *service_notify }).pfnNotifyCallback = Some(callback);
+        extern "system" fn callback(p_parameter: PVOID) {
+            debug!("接受到状态变化:{:?}", p_parameter)
+        }
+        let result = unsafe { NotifyServiceStatusChangeA(service, 0, service_notify) };
+        unsafe {
+            CloseServiceHandle(service);
+            CloseServiceHandle(sc_manager)
+        };
+        debug!("启动服务状态监听,结果:{}", result);
+        if result < 1 {
+            return Err(Error::new(
+                Other,
+                format!("启动失败{:?}", Self::get_last_error()),
+            ));
+        }
+        Ok(())
     }
 }
 
