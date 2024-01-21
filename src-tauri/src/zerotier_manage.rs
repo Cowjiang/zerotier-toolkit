@@ -1,4 +1,5 @@
 use std::string::ToString;
+use std::thread;
 
 use lazy_static::lazy_static;
 
@@ -133,8 +134,6 @@ mod tests {
             "test_get_zerotier_start_type:{:?}",
             get_zerotier_start_type()
         );
-        loop {
-            
-        }
+        loop {}
     }
 }

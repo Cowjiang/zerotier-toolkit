@@ -2,26 +2,36 @@ use std::ffi::CString;
 use std::io::Error;
 use std::io::ErrorKind::Other;
 use std::process::Output;
-use std::ptr;
+use std::ptr::{self};
+use std::sync::{Arc, Mutex};
+use std::thread;
 
-use log::{debug, error, warn};
+use log::{debug, error};
 use serde::Serialize;
-use winapi::shared::minwindef::{BOOL, DWORD};
+use winapi::shared::minwindef::{BOOL, DWORD, FALSE, TRUE};
+use winapi::shared::winerror::ERROR_SUCCESS;
 use winapi::um::errhandlingapi::GetLastError;
-use winapi::um::winbase::FormatMessageW;
+use winapi::um::oaidl::MEMBERID;
+use winapi::um::synchapi::{CreateEventA, WaitForSingleObjectEx};
+use winapi::um::winbase::{FormatMessageW, WAIT_FAILED};
 use winapi::um::winnt::{PVOID, SERVICE_AUTO_START, SERVICE_DEMAND_START, SERVICE_DISABLED};
 use winapi::um::winsvc::{
     ChangeServiceConfigA, CloseServiceHandle, ControlService, NotifyServiceStatusChangeA,
-    OpenSCManagerA, OpenServiceA, StartServiceA, PSERVICE_NOTIFYA, SC_HANDLE__,
-    SC_MANAGER_ALL_ACCESS, SERVICE_ALL_ACCESS, SERVICE_CHANGE_CONFIG, SERVICE_CONTROL_STOP,
-    SERVICE_NO_CHANGE, SERVICE_START, SERVICE_STATUS, SERVICE_STOP,
+    OpenSCManagerA, OpenServiceA, StartServiceA, SC_HANDLE__, SC_MANAGER_ALL_ACCESS,
+    SERVICE_ALL_ACCESS, SERVICE_CHANGE_CONFIG, SERVICE_CONTROL_STOP, SERVICE_NOTIFY_2A,
+    SERVICE_NOTIFY_RUNNING, SERVICE_NOTIFY_START_PENDING, SERVICE_NOTIFY_STATUS_CHANGE,
+    SERVICE_NOTIFY_STOPPED, SERVICE_NOTIFY_STOP_PENDING, SERVICE_NO_CHANGE, SERVICE_RUNNING,
+    SERVICE_START, SERVICE_START_PENDING, SERVICE_STATUS, SERVICE_STOP, SERVICE_STOPPED,
+    SERVICE_STOP_PENDING,
 };
 
 use crate::command::{execute_cmd, parse_output};
 
 pub(crate) struct WindowsServiceManage {
     service_name: String,
-    state: StartType,
+    state: State,
+    stop_listent_state: bool,
+    write_lock: Mutex<i8>,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -32,8 +42,10 @@ pub enum StartType {
     Unknown,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, PartialEq, Serialize)]
 pub enum State {
+    StartPending,
+    StopPending,
     Stopped,
     Running,
     Unknown,
@@ -41,17 +53,13 @@ pub enum State {
 
 impl WindowsServiceManage {
     pub(crate) fn new(service_name: String) -> WindowsServiceManage {
-        let instance = WindowsServiceManage {
+        let instance = Self {
             service_name,
-            state: StartType::Unknown,
+            state: State::Unknown,
+            stop_listent_state: false,
+            write_lock: Mutex::new(0),
         };
-        let register_result = instance.register_state_listener();
-        match register_result {
-            Ok(_ignored) => {}
-            Err(error) => {
-                error!("启动监听失败:{}", error)
-            }
-        }
+
         instance
     }
     pub(crate) fn get_service_info(&self) -> Result<String, Error> {
@@ -110,15 +118,15 @@ impl WindowsServiceManage {
                 ptr::null(),
             )
         };
-        unsafe {
-            CloseServiceHandle(service);
-            CloseServiceHandle(sc_manager)
-        };
         debug!("执行修改完成,结果:{}", result);
-        if result < 1 {
+        unsafe {
+            CloseServiceHandle(sc_manager);
+            CloseServiceHandle(service);
+        }
+        if result == 0 {
             return Err(Error::new(
                 Other,
-                format!("修改失败:{:?}", Self::get_last_error()),
+                format!("修改失败:{:?}", self.get_last_error()),
             ));
         }
         Ok(())
@@ -131,15 +139,16 @@ impl WindowsServiceManage {
         }
         let (sc_manager, service) = service_result.ok().unwrap();
         let result = unsafe { StartServiceA(service, 0, ptr::null_mut()) };
-        unsafe {
-            CloseServiceHandle(service);
-            CloseServiceHandle(sc_manager)
-        };
+
         debug!("执行启动完成,结果:{}", result);
-        if result < 1 {
+        unsafe {
+            CloseServiceHandle(sc_manager);
+            CloseServiceHandle(service);
+        }
+        if result == 0 {
             return Err(Error::new(
                 Other,
-                format!("启动失败{:?}", Self::get_last_error()),
+                format!("启动失败{:?}", self.get_last_error()),
             ));
         }
         Ok(())
@@ -155,21 +164,25 @@ impl WindowsServiceManage {
         let mut service_status: SERVICE_STATUS = unsafe { std::mem::zeroed() };
         let result: BOOL =
             unsafe { ControlService(service, SERVICE_CONTROL_STOP, &mut service_status) };
-        unsafe {
-            CloseServiceHandle(service);
-            CloseServiceHandle(sc_manager)
-        };
+
         debug!("执行关闭完成,结果:{}", result);
-        if result < 1 {
+        unsafe {
+            CloseServiceHandle(sc_manager);
+            CloseServiceHandle(service);
+        }
+        if result == 0 {
             return Err(Error::new(
                 Other,
-                format!("关闭失败{:?}", Self::get_last_error()),
+                format!("关闭失败{:?}", self.get_last_error()),
             ));
         }
         Ok(())
     }
 
-    pub(crate) fn get_state(&self) -> Result<State, Error> {
+    pub(crate) fn get_state(&self) -> Result<*const State, Error> {
+        if self.state != State::Unknown {
+            return Ok(&self.state);
+        }
         let commands = vec![
             String::from("sc"),
             String::from("query"),
@@ -190,13 +203,13 @@ impl WindowsServiceManage {
             )),
         };
     }
-    fn transform_state(string: String) -> State {
+    fn transform_state(string: String) -> *const State {
         if string.contains("STOP") {
-            return State::Stopped;
+            return &State::Stopped;
         } else if string.contains("RUN") {
-            return State::Running;
+            return &State::Running;
         }
-        return State::Unknown;
+        return &State::Unknown;
     }
     fn transform_start_type(&self, string: String) -> StartType {
         if string.contains("AUTO") {
@@ -208,6 +221,7 @@ impl WindowsServiceManage {
         }
         return StartType::Unknown;
     }
+
     fn deal_with_cmd_result(output: Result<Output, Error>) -> Result<String, Error> {
         return match output {
             Ok(value) => {
@@ -239,12 +253,12 @@ impl WindowsServiceManage {
             unsafe { CloseServiceHandle(sc_manager) };
             return Err(Error::new(
                 Other,
-                format!("无法启动服务管理器{:?}", Self::get_last_error()),
+                format!("无法启动服务管理器{:?}", self.get_last_error()),
             ));
         }
         return Ok((sc_manager, service));
     }
-    fn get_last_error() -> String {
+    fn get_last_error(&self) -> String {
         // 获取错误码
         let error_code = unsafe { GetLastError() };
 
@@ -268,35 +282,76 @@ impl WindowsServiceManage {
         }
         error_message
     }
-    fn register_state_listener(&self) -> Result<(), Error> {
+    fn update_state(&mut self, state: State) {
+        self.state = state
+    }
+    /**
+     * 已经可以工作了，但是不懂如何让他异步更新self.state
+     */
+    pub(crate) async fn register_state_listener(&mut self) {
         let service_result = self.get_service_winapi(SERVICE_ALL_ACCESS);
         if service_result.is_err() {
-            return Err(service_result.err().unwrap());
+            error!("启动异步监听失败{}", self.get_last_error());
         }
         let (sc_manager, service) = service_result.ok().unwrap();
-        let service_notify: PSERVICE_NOTIFYA = unsafe { std::mem::zeroed() };
-        (unsafe { *service_notify }).pfnNotifyCallback = Some(callback);
-        extern "system" fn callback(p_parameter: PVOID) {
-            debug!("接受到状态变化:{:?}", p_parameter)
+        let event_handler = unsafe { CreateEventA(ptr::null_mut(), TRUE, FALSE, ptr::null()) };
+        let mut service_notify: SERVICE_NOTIFY_2A = unsafe { std::mem::zeroed() };
+        service_notify.pfnNotifyCallback = Some(callback);
+        service_notify.dwVersion = SERVICE_NOTIFY_STATUS_CHANGE;
+        service_notify.pContext = event_handler;
+        // 将字符串转换为字节数组
+        let mut my_bytes = self.service_name.clone().into_bytes();
+        let raw_ptr: *mut i8 = my_bytes.as_mut_ptr() as *mut i8;
+        service_notify.pszServiceNames = raw_ptr;
+        loop {
+            let result = unsafe {
+                NotifyServiceStatusChangeA(
+                    service,
+                    SERVICE_NOTIFY_RUNNING
+                        | SERVICE_NOTIFY_START_PENDING
+                        | SERVICE_NOTIFY_STOP_PENDING
+                        | SERVICE_NOTIFY_STOPPED,
+                    &mut service_notify,
+                )
+            };
+
+            debug!("启动服务状态监听,结果:{}", result);
+            if result != ERROR_SUCCESS {
+                error!("启动监听失败{:?}", self.get_last_error());
+                return;
+            }
+            let wait_result = unsafe { WaitForSingleObjectEx(event_handler, 99999999, TRUE) };
+
+            if wait_result == WAIT_FAILED {
+                return error!("等待通知失败{:?}", self.get_last_error());
+            }
+            debug!(
+                "收到通知,状态为:{:?}",
+                service_notify.ServiceStatus.dwCurrentState
+            );
+            self.update_state(match service_notify.ServiceStatus.dwCurrentState {
+                SERVICE_RUNNING => State::Running,
+                SERVICE_START_PENDING => State::StartPending,
+                SERVICE_STOP_PENDING => State::StopPending,
+                SERVICE_STOPPED => State::Stopped,
+                _ => State::Unknown,
+            });
+            if self.stop_listent_state {
+                break;
+            }
         }
-        let result = unsafe { NotifyServiceStatusChangeA(service, 0, service_notify) };
         unsafe {
+            CloseServiceHandle(sc_manager);
             CloseServiceHandle(service);
-            CloseServiceHandle(sc_manager)
-        };
-        debug!("启动服务状态监听,结果:{}", result);
-        if result < 1 {
-            return Err(Error::new(
-                Other,
-                format!("启动失败{:?}", Self::get_last_error()),
-            ));
         }
-        Ok(())
     }
 }
 
+extern "system" fn callback(_p_parameter: PVOID) {}
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
+
     use lazy_static::lazy_static;
 
     use crate::windows_service_manage::StartType::AutoStart;
@@ -306,6 +361,7 @@ mod tests {
         static ref INSTANCE: WindowsServiceManage =
             WindowsServiceManage::new(String::from("ToDesk_Service"));
     }
+
     #[test]
     fn test_get_start_type() {
         print!("{:?}", INSTANCE.get_start_type())
