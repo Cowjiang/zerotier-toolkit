@@ -2,7 +2,7 @@ use std::io;
 use std::os::windows::process::CommandExt;
 use std::process::{Command, Output};
 
-use winapi::um::winbase::{CREATE_NO_WINDOW};
+use winapi::um::winbase::CREATE_NO_WINDOW;
 
 use crate::r::{self};
 

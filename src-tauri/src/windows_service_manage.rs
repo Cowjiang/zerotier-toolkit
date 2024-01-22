@@ -30,7 +30,8 @@ pub(crate) struct WindowsServiceManage {
     service_name: String,
     state: Arc<Mutex<State>>,
     stop_listent_state: Arc<Mutex<bool>>,
-    // write_lock: Mutex<i8>,
+    // TODO control 
+    write_lock: Mutex<i8>,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
