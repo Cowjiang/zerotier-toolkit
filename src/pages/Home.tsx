@@ -17,7 +17,7 @@ function Home() {
 
   const handleServiceBtnClick = async () => {
     setLoading(true)
-    await (serviceState === ServiceStatus.RUNNING ? startService() : stopService())
+    await (serviceState === ServiceStatus.RUNNING ? stopService() : startService())
     setLoading(false)
   }
 
