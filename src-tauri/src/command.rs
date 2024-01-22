@@ -1,12 +1,19 @@
 use std::io;
+use std::os::windows::process::CommandExt;
 use std::process::{Command, Output};
 
-use crate::r::{self, R};
+use winapi::um::winbase::{CREATE_NO_WINDOW};
+
+use crate::r::{self};
 
 pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
     let cmd_str: Vec<&str> = cmds.iter().map(|s| s.as_str()).collect();
     let final_cmd = std::iter::once("/C").chain(cmd_str);
-    let output = Command::new("cmd").args(final_cmd).output();
+    let output = Command::new("cmd")
+        .creation_flags(CREATE_NO_WINDOW)
+        .args(final_cmd)
+        .output();
+    
     output
 }
 
