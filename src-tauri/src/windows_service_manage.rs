@@ -310,8 +310,7 @@ impl WindowsServiceManage {
             service_notify.pfnNotifyCallback = Some(callback);
             service_notify.dwVersion = SERVICE_NOTIFY_STATUS_CHANGE;
             service_notify.pContext = event_handler;
-            // 将字符串转换为字节数组
-
+  
             let raw_ptr: *mut i8 = my_bytes.as_mut_ptr() as *mut i8;
             service_notify.pszServiceNames = raw_ptr;
             loop {

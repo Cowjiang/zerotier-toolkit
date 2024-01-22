@@ -21,12 +21,12 @@ pub(crate) fn is_admin() -> String {
     match output {
         Ok(_value) => {
             if _value.status.success() {
-                r::success_json(String::from("管理呀铁铁"))
+                r::success_json(true)
             } else {
-                r::success_json(String::from("你不是管理捏"))
+                r::success_json(false)
             }
         }
-        Err(_error) => r::success_json(String::from("你不是管理捏")),
+        Err(_error) => r::success_json(false),
     }
 }
 
