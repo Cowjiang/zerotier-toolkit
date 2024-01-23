@@ -5,14 +5,28 @@ import Home from './pages/Home.tsx'
 import { useZeroTierStore } from './store/zerotier.ts'
 import { useAppStore } from './store/app.ts'
 import { SERVICE_POLLING_INTERVAL } from '../constant.ts'
+import { useNotification } from './components/NotificationBar.tsx'
 
 function App() {
   const {isLoading, isAdmin, setLoading, checkAdmin} = useAppStore()
   const {getServiceState} = useZeroTierStore()
 
+  const {setNotification} = useNotification()
+
   useEffect(() => {
-    Promise.all([checkAdmin(), getServiceState()]).then(() => setLoading(false))
+    Promise.all([checkAdmin(), getServiceState()]).finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (!isAdmin && !isLoading) {
+      setNotification({
+        type: 'warning',
+        children: <div className="cursor-pointer">Please click here to relaunch with administrator privileges to access all functionalities</div>
+      })
+    } else {
+      setNotification({})
+    }
+  }, [isAdmin, isLoading]);
 
   const pollingInterval = () => setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
   useEffect(() => {
@@ -34,13 +48,17 @@ function App() {
   }, [isAdmin, getServiceState])
 
   return (
-    isLoading
-      ? (
-        <div className="w-screen h-screen flex justify-center items-center">
-          <Spinner size="lg" />
-        </div>
-      )
-      : <Home />
+    <div className="text-foreground">
+      {
+        isLoading
+          ? (
+            <div className="w-screen h-screen flex justify-center items-center bg-background z-[100]">
+              <Spinner size="lg" />
+            </div>
+          )
+          : <Home />
+      }
+    </div>
   )
 }
 

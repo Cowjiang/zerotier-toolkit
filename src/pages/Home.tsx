@@ -58,7 +58,7 @@ function Home() {
         </a>
       </div>
 
-      <p className="mt-4 font-bold text-default-700">Build with Tauri, Vite, React, Next UI and Tailwind CSS</p>
+      <p className="mt-4 font-bold">Build with Tauri, Vite, React, Next UI and Tailwind CSS</p>
 
       <div className="w-full mt-5 flex justify-center items-center">
         {serviceButton}
