@@ -28,7 +28,7 @@ function Home() {
       className={classNames([
         'w-40 bg-gradient-to-tr text-white shadow-lg',
         serviceState === ServiceStatus.RUNNING ? 'bg-none bg-red-800' : 'from-pink-500 to-yellow-500',
-        disabled ? 'bg-none bg-default-100 text-neutral-400 shadow-none cursor-not-allowed' : ''
+        disabled ? 'bg-none bg-default-100 text-default-400 shadow-none cursor-not-allowed' : ''
       ])}
       size="lg"
       disabled={disabled}
@@ -58,12 +58,12 @@ function Home() {
         </a>
       </div>
 
-      <p className="mt-4 font-bold text-gray-700">Build with Tauri, Vite, React, Next UI and Tailwind CSS</p>
+      <p className="mt-4 font-bold text-default-700">Build with Tauri, Vite, React, Next UI and Tailwind CSS</p>
 
       <div className="w-full mt-5 flex justify-center items-center">
         {serviceButton}
         <Button
-          className="ml-2 bg-default-100 hover:bg-default-200 text-neutral-600"
+          className="ml-2 bg-default-100 hover:bg-default-200 text-default-700"
           size="lg"
           isIconOnly
           onClick={onModalOpen}

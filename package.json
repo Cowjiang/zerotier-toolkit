@@ -21,6 +21,7 @@
     "@tauri-apps/api": "^1.5.2",
     "classnames": "^2.5.1",
     "framer-motion": "^10.18.0",
+    "next-themes": "^0.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "zustand": "^4.5.0"
