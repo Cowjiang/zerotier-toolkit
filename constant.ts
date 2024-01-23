@@ -1,0 +1,1 @@
+export const SERVICE_POLLING_INTERVAL = 2000

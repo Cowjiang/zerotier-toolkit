@@ -4,29 +4,34 @@ import { Spinner } from '@nextui-org/react'
 import Home from './pages/Home.tsx'
 import { useZeroTierStore } from './store/zerotier.ts'
 import { useAppStore } from './store/app.ts'
+import { SERVICE_POLLING_INTERVAL } from '../constant.ts'
 
 function App() {
-  const {isLoading, setLoading, checkAdmin} = useAppStore()
+  const {isLoading, isAdmin, setLoading, checkAdmin} = useAppStore()
   const {getServiceState} = useZeroTierStore()
 
   useEffect(() => {
     Promise.all([checkAdmin(), getServiceState()]).then(() => setLoading(false))
   }, [])
 
+  const pollingInterval = () => setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
   useEffect(() => {
-    let healthcheck = setInterval(getServiceState, 2000)
+    let pollingTimer: number
+    if (isAdmin) {
+      pollingTimer = pollingInterval()
+    }
     const handleVisibilityChange = () => {
-      clearInterval(healthcheck)
-      if (document.visibilityState === 'visible') {
-        healthcheck = setInterval(getServiceState, 2000)
+      clearInterval(pollingTimer)
+      if (document.visibilityState === 'visible' && isAdmin) {
+        pollingTimer = pollingInterval()
       }
     }
     window.addEventListener('visibilitychange', handleVisibilityChange)
     return () => {
       window.removeEventListener('visibilitychange', handleVisibilityChange)
-      clearInterval(healthcheck)
+      clearInterval(pollingTimer)
     }
-  }, [])
+  }, [isAdmin, getServiceState])
 
   return (
     isLoading
