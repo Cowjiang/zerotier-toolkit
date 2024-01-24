@@ -54,7 +54,9 @@ function NotificationBar(props: NotificationBarProps) {
         {props.children}
         {props.hideCloseButton ? '' : (
           <CloseIcon
-            className="ml-auto cursor-pointer"
+            width={20}
+            height={20}
+            className="ml-auto cursor-pointer hover:opacity-75"
             onClick={closeNotification}
           />
         )}
