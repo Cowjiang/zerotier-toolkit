@@ -8,7 +8,7 @@ import { SERVICE_POLLING_INTERVAL } from '../constant.ts'
 import { useNotification } from './components/NotificationBar.tsx'
 
 function App() {
-  const {isLoading, isAdmin, setLoading, checkAdmin,restartAsAdmin} = useAppStore()
+  const {isLoading, isAdmin, setLoading, checkAdmin, restartAsAdmin} = useAppStore()
   const {getServiceState} = useZeroTierStore()
 
   const {setNotification} = useNotification()
@@ -18,16 +18,10 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!isAdmin && !isLoading) {
-      setNotification({
-        type: 'warning',
-        children: <div className="cursor-pointer" onClick={()=>{
-          restartAsAdmin()
-        }}>Please click here to relaunch with administrator privileges to access all functionalities</div>
-      })
-    } else {
-      setNotification({})
-    }
+    !isAdmin && !isLoading && setNotification({
+      type: 'warning',
+      children: <div className="cursor-pointer" onClick={restartAsAdmin}>Please click here to relaunch with administrator privileges to access all functionalities</div>
+    })
   }, [isAdmin, isLoading]);
 
   const pollingInterval = () => setInterval(getServiceState, SERVICE_POLLING_INTERVAL)

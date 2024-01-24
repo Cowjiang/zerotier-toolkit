@@ -1,29 +1,38 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react'
-import classNames from 'classnames';
-import { CloseIcon } from './Icon.tsx';
+import classNames from 'classnames'
+import { CloseIcon } from './Icon.tsx'
 
-type NotificationBarProps = {
-  type: 'success' | 'warning' | 'error' | 'primary' | 'secondary'
+type NotificationBarOptions = {
+  type?: 'success' | 'warning' | 'error' | 'primary' | 'secondary'
   className?: string
   children?: ReactNode
   hideCloseButton?: boolean
+  animate?: boolean
   onClose?: () => void
 }
 
+type NotificationBarProps = {
+  hidden?: boolean
+} & NotificationBarOptions
+
 type NotificationContext = {
   setNotification: (props: NotificationBarProps) => void
+  closeNotification: () => void
 }
 
 const NotificationContext = createContext<NotificationContext | null>(null)
 
 function NotificationBar(props: NotificationBarProps) {
   const styles = useMemo(() => {
-    const defaultClassName = 'w-full px-4 py-2 fixed top-0 z-50 flex items-center text-sm font-semibold'
+    const defaultClassNames = [
+      'w-full px-4 py-2 fixed top-0 z-50 flex items-center text-sm font-semibold transition-transform-all',
+      props.animate ? 'duration-250' : 'duration-0'
+    ]
     if (!props.children) {
-      return [defaultClassName]
+      return [...defaultClassNames]
     }
     if (props.className) {
-      return [defaultClassName, props.className]
+      return [...defaultClassNames, props.className]
     }
     const preset = {
       'success': 'bg-success text-success-foreground',
@@ -32,14 +41,16 @@ function NotificationBar(props: NotificationBarProps) {
       'primary': 'bg-primary text-primary-foreground',
       'secondary': 'bg-secondary text-secondary-foreground'
     }
-    return [defaultClassName, preset?.[props.type] ?? preset['primary']]
+    return [...defaultClassNames, preset?.[props?.type ?? 'primary'] ?? preset['primary']]
   }, [props])
 
   const closeNotification = () => props.onClose?.()
 
   return (
     props.children ? (
-      <div className={classNames(styles)}>
+      <div className={classNames(
+        [...styles, props.hidden ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto']
+      )}>
         {props.children}
         {props.hideCloseButton ? '' : (
           <CloseIcon
@@ -54,18 +65,27 @@ function NotificationBar(props: NotificationBarProps) {
 
 function NotificationProvider({children}: { children: ReactNode }) {
   const initialOptions: NotificationBarProps = {
-    type: 'primary'
+    type: 'primary',
+    animate: true
   }
   const [options, setOptions] = useState<NotificationBarProps>(initialOptions)
-  const setNotification = (props: NotificationBarProps) => {
-    setOptions(props)
+  const [hidden, setHidden] = useState(true)
+
+  const setNotification = (options: NotificationBarOptions) => {
+    setOptions({...initialOptions, ...options})
+    setTimeout(() => setHidden(false), options.animate ? 250 : 0)
+  }
+  const closeNotification = () => {
+    setHidden(true)
+    setTimeout(() => setOptions(initialOptions), options.animate ? 250 : 0)
   }
 
   return (
-    <NotificationContext.Provider value={{setNotification}}>
+    <NotificationContext.Provider value={{setNotification, closeNotification}}>
       {children}
       <NotificationBar
-        onClose={() => setOptions(initialOptions)}
+        onClose={closeNotification}
+        hidden={hidden}
         {...options}
       />
     </NotificationContext.Provider>
