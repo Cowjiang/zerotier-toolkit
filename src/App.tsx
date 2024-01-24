@@ -8,7 +8,7 @@ import { SERVICE_POLLING_INTERVAL } from '../constant.ts'
 import { useNotification } from './components/NotificationBar.tsx'
 
 function App() {
-  const {isLoading, isAdmin, setLoading, checkAdmin} = useAppStore()
+  const {isLoading, isAdmin, setLoading, checkAdmin,restartAsAdmin} = useAppStore()
   const {getServiceState} = useZeroTierStore()
 
   const {setNotification} = useNotification()
@@ -21,7 +21,9 @@ function App() {
     if (!isAdmin && !isLoading) {
       setNotification({
         type: 'warning',
-        children: <div className="cursor-pointer">Please click here to relaunch with administrator privileges to access all functionalities</div>
+        children: <div className="cursor-pointer" onClick={()=>{
+          restartAsAdmin()
+        }}>Please click here to relaunch with administrator privileges to access all functionalities</div>
       })
     } else {
       setNotification({})

@@ -290,9 +290,7 @@ impl WindowsServiceManage {
         }
         error_message
     }
-    /**
-     * 已经可以工作了，但是不懂如何让他异步更新self.state
-     */
+
     pub(crate) fn register_state_listener(&mut self) {
         let service_name = self.service_name.clone();
         let arc_state = Arc::clone(&(self.state));

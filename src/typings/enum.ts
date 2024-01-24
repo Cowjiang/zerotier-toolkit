@@ -10,5 +10,6 @@ export enum InvokeEvent {
   IS_ADMIN = 'is_admin',
   GET_SERVICE_STATE = 'get_zerotier_state',
   START_ZEROTIER = 'start_zerotier',
-  STOP_ZEROTIER = 'stop_zerotier'
+  STOP_ZEROTIER = 'stop_zerotier',
+  RESTART_AS_ADMIN ='restart_as_admin'
 }
