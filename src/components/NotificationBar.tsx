@@ -9,7 +9,12 @@ type NotificationBarProps = {
   hideCloseButton?: boolean
   onClose?: () => void
 }
-const NotificationContext = createContext<any>(null)
+
+type NotificationContext = {
+  setNotification: (props: NotificationBarProps) => void
+}
+
+const NotificationContext = createContext<NotificationContext | null>(null)
 
 function NotificationBar(props: NotificationBarProps) {
   const styles = useMemo(() => {
