@@ -5,7 +5,6 @@ import tailwindcss from 'tailwindcss';
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [react()],
-
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors
@@ -19,4 +18,8 @@ export default defineConfig(async () => ({
       ignored: ["**/src-tauri/**"],
     },
   },
+  test: {
+    include: ["**/src/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
+    environment: 'jsdom',
+  }
 }));
