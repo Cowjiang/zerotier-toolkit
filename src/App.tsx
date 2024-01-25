@@ -1,13 +1,16 @@
-import { useEffect } from 'react'
 import './App.css'
-import { Spinner } from '@nextui-org/react'
-import Home from './pages/Home.tsx'
+import { useEffect } from 'react'
+import { Route, Routes, useNavigate } from 'react-router-dom'
+import { NextUIProvider, Spinner } from '@nextui-org/react'
 import { useZeroTierStore } from './store/zerotier.ts'
 import { useAppStore } from './store/app.ts'
 import { SERVICE_POLLING_INTERVAL } from '../constant.ts'
-import { useNotification } from './components/NotificationBar.tsx'
+import { useNotification } from './components/NotificationBar'
+import Home from './pages/Home.tsx'
 
 function App() {
+  const navigate = useNavigate()
+
   const {isLoading, isAdmin, setLoading, checkAdmin, restartAsAdmin} = useAppStore()
   const {getServiceState} = useZeroTierStore()
 
@@ -22,7 +25,7 @@ function App() {
       type: 'warning',
       children: <div className="cursor-pointer" onClick={restartAsAdmin}>Please click here to relaunch with administrator privileges to access all functionalities</div>
     })
-  }, [isAdmin, isLoading]);
+  }, [isAdmin, isLoading])
 
   const pollingInterval = () => setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
   useEffect(() => {
@@ -44,17 +47,23 @@ function App() {
   }, [isAdmin, getServiceState])
 
   return (
-    <div className="text-foreground">
-      {
-        isLoading
-          ? (
-            <div className="w-screen h-screen flex justify-center items-center bg-background z-[100]">
-              <Spinner size="lg" />
-            </div>
-          )
-          : <Home />
-      }
-    </div>
+    <NextUIProvider navigate={navigate}>
+      <div className="text-foreground">
+        {
+          isLoading
+            ? (
+              <div className="w-screen h-screen flex justify-center items-center bg-background z-[100]">
+                <Spinner size="lg" />
+              </div>
+            )
+            : (
+              <Routes>
+                <Route path="/" element={<Home />} />\
+              </Routes>
+            )
+        }
+      </div>
+    </NextUIProvider>
   )
 }
 
