@@ -8,6 +8,7 @@ type NotificationBarOptions = {
   children?: ReactNode
   hideCloseButton?: boolean
   animate?: boolean
+  duration?: number
   onClose?: () => void
 }
 
@@ -73,13 +74,25 @@ function NotificationProvider({children}: { children: ReactNode }) {
   const [options, setOptions] = useState<NotificationBarProps>(initialOptions)
   const [hidden, setHidden] = useState(true)
 
+  const [autoCloseTimer, setAutoCloseTimer] = useState<number | undefined>(undefined)
+
   const setNotification = (options: NotificationBarOptions) => {
+    clearTimer()
     setOptions({...initialOptions, ...options})
-    setTimeout(() => setHidden(false), options.animate ? 250 : 0)
+    setTimeout(() => setHidden(false), 0)
+    options.duration && setAutoCloseTimer(setTimeout(closeNotification, options.duration))
   }
   const closeNotification = () => {
+    clearTimer()
     setHidden(true)
     setTimeout(() => setOptions(initialOptions), options.animate ? 250 : 0)
+  }
+
+  const clearTimer = () => {
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer)
+      setAutoCloseTimer(undefined)
+    }
   }
 
   return (
