@@ -2,12 +2,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use command::*;
-use system::{__cmd__restart_as_admin, restart_as_admin};
+use log::debug;
+use system::{__cmd__restart_as_admin, restart_as_admin, Configuration, CONFIGURATION};
+use tauri::api::path::config_dir;
 use tauri::Manager;
 
 use crate::logger::init_logger;
 use crate::zerotier_manage::*;
-
 mod command;
 #[cfg(test)]
 mod experiment;
@@ -16,7 +17,7 @@ mod r;
 mod system;
 mod windows_service_manage;
 mod zerotier_manage;
-const SHUTDOWN_EVENT: &str = "SHUTDOWN_EVENT";
+
 fn main() {
     init_logger();
     start_tauri();
@@ -37,7 +38,26 @@ fn start_tauri() {
             restart_as_admin
         ])
         .setup(|app| {
-            // TODO CLOSE APP NICLY
+            let app_handle = app.app_handle();
+            debug!("开始加载配置文件");
+            let opt_configuration_json_file = app_handle
+                .path_resolver()
+                .resolve_resource("configuration.json");
+            match opt_configuration_json_file {
+                Some(value) => {
+                    let file = std::fs::File::open(&value);
+                    if file.is_err() {
+                        debug!("找不到配置文件使用默认配置");
+                        return Ok(());
+                    }
+                    debug!("找到配置文件,开始解析");
+                    let config: Configuration = serde_json::from_reader(file.unwrap()).unwrap();
+                    let mut config_write = CONFIGURATION.write();
+                    debug!("解析完成进行覆盖");
+                    config_write.load(config)
+                }
+                None => {debug!("找不到配置文件使用默认配置");}
+            }
             Ok(())
         })
         .run(tauri::generate_context!())

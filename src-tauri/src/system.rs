@@ -1,12 +1,34 @@
-use std::env;
-
-use serde::de::value;
-use tauri::AppHandle;
-
 use crate::{
     execute_cmd,
-    r::{self, fail_message_json, success, success_json},
+    r::{fail_message_json, success_json},
 };
+use lazy_static::lazy_static;
+use parking_lot::RwLock;
+use serde::Deserialize;
+use std::env;
+
+lazy_static! {
+    pub static ref CONFIGURATION: RwLock<Configuration> = RwLock::new(Configuration::default());
+}
+
+#[derive(Clone, Deserialize,Debug)]
+pub struct Configuration {
+    lang: Option<String>,
+}
+impl Configuration {
+    fn default() -> Configuration {
+        Configuration { lang: None }
+    }
+    pub fn get_lang(&mut self) -> &mut String {
+        self.lang.get_or_insert_with(|| match env::var("LANG") {
+            Ok(lang) => lang,
+            Err(_ignored) => String::from("zh_CN"),
+        })
+    }
+    pub fn load(&mut self, config: Configuration) {
+        *self = config
+    }
+}
 
 #[tauri::command]
 pub(crate) fn restart_as_admin() -> String {
@@ -47,4 +69,6 @@ mod tests {
     fn test_restart_as_admin() {
         restart_as_admin();
     }
+
+
 }

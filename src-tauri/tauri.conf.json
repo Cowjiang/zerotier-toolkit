@@ -35,7 +35,10 @@
         "nsis": {
           "installMode": "perMachine"
         }
-      }
+      },
+      "resources": [
+        "resources/*"
+      ]
     },
     "security": {
       "csp": null
