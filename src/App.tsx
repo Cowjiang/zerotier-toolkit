@@ -6,7 +6,8 @@ import { useZeroTierStore } from './store/zerotier.ts'
 import { useAppStore } from './store/app.ts'
 import { SERVICE_POLLING_INTERVAL } from '../constant.ts'
 import { useNotification } from './components/NotificationBar'
-import Home from './pages/Home.tsx'
+import Home from './pages/Home'
+import Dev from './pages/Dev'
 
 function App() {
   const navigate = useNavigate()
@@ -58,7 +59,9 @@ function App() {
             )
             : (
               <Routes>
-                <Route path="/" element={<Home />} />\
+                <Route path="/" element={<Home />} />
+                {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
+                <Route path="*" element={<Home />} />
               </Routes>
             )
         }
