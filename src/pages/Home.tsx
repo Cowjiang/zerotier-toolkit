@@ -1,11 +1,12 @@
+import { useState } from 'react'
 import { Button, useDisclosure } from '@nextui-org/react'
 import classNames from 'classnames'
-import { ServiceStatus } from '../typings/enum.ts'
-import { useAppStore } from '../store/app.ts'
-import { useZeroTierStore } from '../store/zerotier.ts'
-import { HistoryIcon } from '../components/Icon.tsx'
-import LogsModal from '../components/LogsModal.tsx'
-import { useState } from 'react';
+import { motion } from 'framer-motion'
+import { ServiceStatus } from '../typings/enum'
+import { useAppStore } from '../store/app'
+import { useZeroTierStore } from '../store/zerotier'
+import { HistoryIcon } from '../components/Icon'
+import LogsModal from '../components/LogsModal'
 
 function Home() {
   const {isAdmin} = useAppStore()
@@ -40,7 +41,12 @@ function Home() {
   )
 
   return (
-    <div className="w-full mt-28 flex flex-col justify-center items-center">
+    <motion.div
+      className="w-full mt-28 flex flex-col justify-center items-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: .5 }}
+    >
       <h1
         className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#f02fc2] to-[#6094ea]">
         ZeroTier Toolkit
@@ -77,7 +83,7 @@ function Home() {
         backdrop="blur"
         onOpenChange={onModalOpenChange}
       />
-    </div>
+    </motion.div>
   )
 }
 

@@ -1,11 +1,12 @@
 import './App.css'
 import { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
-import { NextUIProvider, Spinner } from '@nextui-org/react'
-import { useZeroTierStore } from './store/zerotier.ts'
-import { useAppStore } from './store/app.ts'
-import { SERVICE_POLLING_INTERVAL } from '../constant.ts'
+import { NextUIProvider } from '@nextui-org/react'
+import { useZeroTierStore } from './store/zerotier'
+import { useAppStore } from './store/app'
+import { SERVICE_POLLING_INTERVAL } from '../constant'
 import { useNotification } from './components/NotificationBar'
+import Splash from './pages/Splash'
 import Home from './pages/Home'
 import Dev from './pages/Dev'
 
@@ -54,21 +55,12 @@ function App() {
   return (
     <NextUIProvider navigate={navigate}>
       <div className="text-foreground">
-        {
-          isLoading
-            ? (
-              <div className="w-screen h-screen flex justify-center items-center bg-background z-[100]">
-                <Spinner size="lg" />
-              </div>
-            )
-            : (
-              <Routes>
-                <Route path="/" element={<Home />} />
-                {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
-                <Route path="*" element={<Home />} />
-              </Routes>
-            )
-        }
+        <Routes>
+          <Route path="/" element={<Splash />} />
+          <Route path="/home" element={<Home />} />
+          {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
+          <Route path="*" element={<Home />} />
+        </Routes>
       </div>
     </NextUIProvider>
   )
