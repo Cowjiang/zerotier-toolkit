@@ -13,12 +13,16 @@ function App() {
   const navigate = useNavigate()
 
   const {isLoading, isAdmin, setLoading, checkAdmin, restartAsAdmin} = useAppStore()
-  const {getServiceState} = useZeroTierStore()
+  const {getServiceState, getServiceStartType} = useZeroTierStore()
 
   const {setNotification} = useNotification()
 
   useEffect(() => {
-    Promise.all([checkAdmin(), getServiceState()]).finally(() => setLoading(false))
+    Promise.all([
+      checkAdmin(),
+      getServiceState(),
+      getServiceStartType()
+    ]).finally(() => setLoading(false))
   }, [])
 
   useEffect(() => {
