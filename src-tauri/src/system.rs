@@ -4,30 +4,37 @@ use crate::{
 };
 use lazy_static::lazy_static;
 use parking_lot::RwLock;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::env;
 
 lazy_static! {
     pub static ref CONFIGURATION: RwLock<Configuration> = RwLock::new(Configuration::default());
 }
 
-#[derive(Clone, Deserialize,Debug)]
+#[derive(Clone, Deserialize, Debug, Serialize, Default)]
 pub struct Configuration {
     lang: Option<String>,
+    theme: Option<String>,
 }
 impl Configuration {
-    fn default() -> Configuration {
-        Configuration { lang: None }
-    }
-    pub fn get_lang(&mut self) -> &mut String {
-        self.lang.get_or_insert_with(|| match env::var("LANG") {
-            Ok(lang) => lang,
-            Err(_ignored) => String::from("zh_CN"),
-        })
+    const DEFAULT_LANG: &str = "zh_CN";
+    pub fn get_lang(&self) -> String {
+        match &self.lang {
+            Some(value) => value.to_string(),
+            None => match env::var("LANG") {
+                Ok(lang) => lang,
+                Err(_ignored) => String::from(Self::DEFAULT_LANG),
+            },
+        }
     }
     pub fn load(&mut self, config: Configuration) {
         *self = config
     }
+}
+#[tauri::command]
+pub fn get_config() -> String {
+    let config = CONFIGURATION.read();
+    success_json(config.clone())
 }
 
 #[tauri::command]
@@ -69,6 +76,4 @@ mod tests {
     fn test_restart_as_admin() {
         restart_as_admin();
     }
-
-
 }
