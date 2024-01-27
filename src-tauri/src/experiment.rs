@@ -2,11 +2,14 @@
 mod tests {
     use std::{
         ffi::CString,
-        mem,
+        fs, mem,
+        path::Path,
         process::{Command, Stdio},
         ptr,
     };
 
+    use serde::Serialize;
+    use tauri::api::path::home_dir;
     use winapi::{
         shared::{
             minwindef::{FALSE, TRUE},
@@ -55,5 +58,23 @@ mod tests {
             return;
         }
         loop {}
+    }
+
+    #[test]
+    fn test_get_zerotier_port() {
+        let file_path = Path::new("C:\\ProgramData\\ZeroTier\\One\\zerotier-one.port");
+        let res_secret = fs::read(file_path);
+        match res_secret {
+            Ok(secret) => {
+                println!("解析的认证信息:{:?}", String::from_utf8(secret))
+            }
+            Err(error) => println!("无法解析到认证信息文件:{}", error.to_string()),
+        }
+    }
+
+    #[test]
+    fn test_get_user_home() {
+        let home_dir = home_dir();
+        println!("{:?}", home_dir)
     }
 }

@@ -1,10 +1,38 @@
+use std::env::VarError;
+use std::fs;
+use std::io::Error;
+use std::path::Path;
 use std::string::ToString;
 
-use lazy_static::lazy_static;
+use serde::Serialize;
 
 use crate::r::{fail_message_json, success_json};
 use crate::windows_service_manage::{StartType, WindowsServiceManage};
+use log::error;
 
+use lazy_static::lazy_static;
+lazy_static! {
+    static ref GLOBAL_TRY_PROT_FILES: [String; 2] = {
+        #[cfg(windows)]
+        [
+            String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier-one.port"),
+            String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier.port"),
+        ]
+    };
+    static ref GLOBAL_TRY_SECRET_FILES: [String; 2] = {
+        #[cfg(windows)]
+        [
+            String::from("C:\\ProgramData\\ZeroTier\\One\\authtoken.secret"),
+            from_home_dir("AppData\\Local\\ZeroTier\\authtoken.secret"),
+        ]
+    };
+}
+
+#[derive(Serialize)]
+pub struct ZerotierServerInfo {
+    port: String,
+    secret: String,
+}
 lazy_static! {
     static ref ZEROTIER_SERVICE_NAME: String = String::from("ZeroTierOneService");
     static ref ZEROTIER_SERVICE_MANAGE: WindowsServiceManage =
@@ -63,6 +91,63 @@ pub(crate) fn get_zerotier_state() -> String {
         Ok(value) => success_json(format!("{:?}", value)),
         Err(err) => fail_message_json(err.to_string()),
     };
+}
+
+#[tauri::command]
+pub(crate) fn get_zerotier_server_info() -> String {
+    let res_port = try_read_files(&GLOBAL_TRY_PROT_FILES.clone());
+    let res_secret = try_read_files(&GLOBAL_TRY_SECRET_FILES.clone());
+    if res_port.is_err() || res_secret.is_err() {
+        return fail_message_json(String::from("resolve port and secret fail"));
+    }
+    success_json(ZerotierServerInfo {
+        port: res_port.unwrap(),
+        secret: res_secret.unwrap(),
+    })
+}
+
+fn try_read_files(file_paths: &[String]) -> Result<String, Error> {
+    for file_path in file_paths {
+        let read_file_result = try_read_file(file_path.to_string());
+        match read_file_result {
+            Ok(file_content) => {
+                return Ok(file_content);
+            }
+            Err(error) => {
+                error!("read file {} fail with:{}", file_path, error.to_string());
+            }
+        }
+    }
+    Err(Error::new(
+        std::io::ErrorKind::Other,
+        format!("can't not read content from any file of {:?}", file_paths),
+    ))
+}
+
+fn try_read_file(file_url: String) -> Result<String, Error> {
+    let file_path = Path::new(file_url.as_str());
+    let res_secret = fs::read(file_path);
+    match res_secret {
+        Ok(secret) => Ok(String::from_utf8_lossy(&secret).to_string()),
+        Err(error) => Err(error),
+    }
+}
+fn from_home_dir<'a>(path: &str) -> String {
+    let home_dir = get_user_home_dir().unwrap();
+    let home_dir = Path::new(&home_dir);
+
+    let result = home_dir.join(path);
+    return result.into_os_string().into_string().unwrap();
+}
+
+pub fn get_user_home_dir() -> Result<String, VarError> {
+    #[cfg(windows)]
+    let home = std::env::var("USERPROFILE");
+
+    #[cfg(not(windows))]
+    let home = std::env::var("HOME");
+
+    home
 }
 
 #[cfg(test)]
@@ -140,5 +225,14 @@ mod tests {
             info!("current state{:?}", get_zerotier_state());
             thread::sleep(Duration::new(2, 0))
         }
+    }
+
+    #[test]
+    fn test_get_zerotier_server_info() {
+        setup();
+        info!(
+            "test_get_zerotier_server_info:{:?}",
+            get_zerotier_server_info()
+        )
     }
 }

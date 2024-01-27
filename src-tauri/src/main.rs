@@ -5,7 +5,7 @@ use std::fs::{File, OpenOptions};
 
 use command::*;
 use log::{debug, warn, LevelFilter};
-use system::{__cmd__restart_as_admin, get_config, restart_as_admin, Configuration, CONFIGURATION};
+use system::{get_config, restart_as_admin, Configuration, __cmd__restart_as_admin, CONFIGURATION};
 use tauri::{AppHandle, Manager};
 
 use crate::zerotier_manage::*;
@@ -13,6 +13,7 @@ use crate::zerotier_manage::*;
 mod command;
 #[cfg(test)]
 mod experiment;
+
 mod logger;
 mod r;
 mod system;
@@ -33,6 +34,7 @@ fn start_tauri() {
             start_zerotier,
             stop_zerotier,
             get_zerotier_state,
+            get_zerotier_server_info,
             // other handlers
             is_admin,
             restart_as_admin,

@@ -59,7 +59,9 @@ pub(crate) fn init_logger_with_level_and_file(level: LevelFilter, file: Option<F
         let mut log_writer = LogWriter {
             writers: LinkedList::new(),
         };
-        log_writer.append(Box::new(file.unwrap()));
+        if file.is_some() {
+            log_writer.append(Box::new(file.unwrap()));
+        }
 
         builder.target(env_logger::Target::Pipe(Box::new(log_writer)));
         builder.init();

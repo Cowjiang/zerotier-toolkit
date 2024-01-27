@@ -9,14 +9,15 @@ import { useNotification } from './components/NotificationBar'
 import Splash from './pages/Splash'
 import Home from './pages/Home'
 import Dev from './pages/Dev'
+import DevNetworks from './pages/DevNetworks'
 
 function App() {
   const navigate = useNavigate()
 
-  const {isLoading, isAdmin, setLoading, checkAdmin, restartAsAdmin} = useAppStore()
-  const {getServiceState, getServiceStartType} = useZeroTierStore()
+  const { isLoading, isAdmin, setLoading, checkAdmin, restartAsAdmin } = useAppStore()
+  const { getServiceState, getServiceStartType } = useZeroTierStore()
 
-  const {setNotification} = useNotification()
+  const { setNotification } = useNotification()
 
   useEffect(() => {
     Promise.all([
@@ -52,6 +53,20 @@ function App() {
     }
   }, [isAdmin, getServiceState])
 
+  import.meta.env.DEV && useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'd') {
+        const isDevPage = window.location.pathname === '/dev'
+        !isDevPage && (window.location.href = '/dev')
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    };
+  }, []);
+
+
   return (
     <NextUIProvider navigate={navigate}>
       <div className="text-foreground">
@@ -59,6 +74,7 @@ function App() {
           <Route path="/" element={<Splash />} />
           <Route path="/home" element={<Home />} />
           {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
+          {import.meta.env.DEV && <Route path="/dev-networks" element={<DevNetworks />} />}
           <Route path="*" element={<Home />} />
         </Routes>
       </div>

@@ -10,12 +10,11 @@ function Dev() {
     content: ""
   })
 
-
-  const getConfigButton = (
+  const invokeCommandButton = (command: string) => (
     <Button onClick={
       () => {
         onOpen()
-        invokeCommand("get_config").then(res => {
+        invokeCommand(command).then(res => {
           setInfoModalControl({
             content: JSON.stringify(res, null, 2)
           })
@@ -26,15 +25,23 @@ function Dev() {
         })
       }
     }>
-      invoke:【get_config】
+      invoke:【{command}】
     </Button>
   )
+
+
+
+
   return (
-    <div className="w-full mt-28 flex flex-col justify-center items-center">
-      {getConfigButton}
+    <div className="w-full">
+      <div className="mt-28 grid grid-cols-auto gap-4 p-3">
+        {invokeCommandButton('get_config')}
+        {invokeCommandButton('get_zerotier_server_info')}
+
+      </div>
       <Modal size="md" isOpen={isOpen} onClose={onClose} >
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">Info Modal</ModalHeader>
               <ModalBody>
@@ -45,6 +52,8 @@ function Dev() {
         </ModalContent>
       </Modal>
     </div>
+
+
 
   )
 }
