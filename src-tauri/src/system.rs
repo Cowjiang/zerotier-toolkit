@@ -13,20 +13,9 @@ lazy_static! {
 
 #[derive(Clone, Deserialize, Debug, Serialize, Default)]
 pub struct Configuration {
-    lang: Option<String>,
     theme: Option<String>,
 }
 impl Configuration {
-    const DEFAULT_LANG: &str = "zh_CN";
-    pub fn get_lang(&self) -> String {
-        match &self.lang {
-            Some(value) => value.to_string(),
-            None => match env::var("LANG") {
-                Ok(lang) => lang,
-                Err(_ignored) => String::from(Self::DEFAULT_LANG),
-            },
-        }
-    }
     pub fn load(&mut self, config: Configuration) {
         *self = config
     }

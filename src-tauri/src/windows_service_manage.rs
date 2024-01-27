@@ -30,8 +30,6 @@ pub(crate) struct WindowsServiceManage {
     service_name: String,
     state: Arc<Mutex<State>>,
     stop_listent_state: Arc<Mutex<bool>>,
-    // TODO control 
-    write_lock: Mutex<i8>,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -63,7 +61,6 @@ impl WindowsServiceManage {
             service_name,
             state: Arc::new(Mutex::new(State::Unknown)),
             stop_listent_state: Arc::new(Mutex::new(false)),
-            write_lock: Mutex::new(0),
         };
         instance.register_state_listener();
         instance
@@ -309,7 +306,7 @@ impl WindowsServiceManage {
             service_notify.pfnNotifyCallback = Some(callback);
             service_notify.dwVersion = SERVICE_NOTIFY_STATUS_CHANGE;
             service_notify.pContext = event_handler;
-  
+
             let raw_ptr: *mut i8 = my_bytes.as_mut_ptr() as *mut i8;
             service_notify.pszServiceNames = raw_ptr;
             loop {
