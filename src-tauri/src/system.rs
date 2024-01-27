@@ -1,12 +1,30 @@
-use std::env;
-
-use serde::de::value;
-use tauri::AppHandle;
-
 use crate::{
     execute_cmd,
-    r::{self, fail_message_json, success, success_json},
+    r::{fail_message_json, success_json},
 };
+use lazy_static::lazy_static;
+use parking_lot::RwLock;
+use serde::{Deserialize, Serialize};
+use std::env;
+
+lazy_static! {
+    pub static ref CONFIGURATION: RwLock<Configuration> = RwLock::new(Configuration::default());
+}
+
+#[derive(Clone, Deserialize, Debug, Serialize, Default)]
+pub struct Configuration {
+    theme: Option<String>,
+}
+impl Configuration {
+    pub fn load(&mut self, config: Configuration) {
+        *self = config
+    }
+}
+#[tauri::command]
+pub fn get_config() -> String {
+    let config = CONFIGURATION.read();
+    success_json(config.clone())
+}
 
 #[tauri::command]
 pub(crate) fn restart_as_admin() -> String {

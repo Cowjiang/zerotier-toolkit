@@ -13,7 +13,11 @@ edition = "2021"
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = [ "process-exit", "shell-open", "process-command-api"] }
+tauri = { version = "1.5", features = [
+    "process-exit",
+    "shell-open",
+    "process-command-api",
+] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 log = "0.4"
@@ -21,6 +25,7 @@ env_logger = "0.11.0"
 lazy_static = { version = "1.4.0", features = [] }
 chrono = "0.4.31"
 winapi = { version = "0.3.9", features = ["winsvc", "winbase"] }
+parking_lot = "0.12.1"
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!
