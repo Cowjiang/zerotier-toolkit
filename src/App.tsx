@@ -9,7 +9,6 @@ import { useNotification } from './components/NotificationBar'
 import Splash from './pages/Splash'
 import Home from './pages/Home'
 import Dev from './pages/Dev'
-import DevNetworks from './pages/DevNetworks'
 
 function App() {
   const navigate = useNavigate()
@@ -63,9 +62,8 @@ function App() {
     document.addEventListener('keydown', handleKeyDown)
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
-    };
-  }, []);
-
+    }
+  }, [])
 
   return (
     <NextUIProvider navigate={navigate}>
@@ -74,7 +72,6 @@ function App() {
           <Route path="/" element={<Splash />} />
           <Route path="/home" element={<Home />} />
           {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
-          {import.meta.env.DEV && <Route path="/dev-networks" element={<DevNetworks />} />}
           <Route path="*" element={<Home />} />
         </Routes>
       </div>
