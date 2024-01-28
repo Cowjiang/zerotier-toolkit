@@ -3,3 +3,7 @@ export type InvokeResponse = {
   message?: string
   data: any
 }
+
+export type AppConfig = {
+  theme?: string
+}

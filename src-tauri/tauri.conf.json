@@ -18,6 +18,10 @@
       },
       "process": {
         "exit": true
+      },
+      "http": {
+        "request": true,
+        "scope": ["http://127.0.0.1*"]
       }
     },
     "bundle": {

@@ -1,11 +1,14 @@
 import { create } from 'zustand'
 import { InvokeEvent, ServiceStartType, ServiceStatus } from '../typings/enum.ts'
+import { Network, ServerInfo } from '../typings/zerotier.ts'
 import { invokeCommand } from '../utils/tauriHelpers.ts'
 import { insertLog } from '../utils/logHelpers.ts'
 
 export type ZeroTierState = {
   serviceState: ServiceStatus
   serviceStartType: ServiceStartType
+  serverInfo: ServerInfo
+  networks: Network[]
 }
 
 export type ZeroTierAction = {
@@ -14,11 +17,15 @@ export type ZeroTierAction = {
   stopService: () => Promise<ServiceStatus>,
   getServiceStartType: () => Promise<ServiceStartType>,
   setServiceStartType: (serviceStartType: ServiceStartType) => Promise<boolean>
+  getServerInfo: () => Promise<ServerInfo>,
+  getNetworks: () => Promise<Network[]>
 }
 
 export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()((set) => ({
   serviceState: ServiceStatus.UNKNOWN,
   serviceStartType: ServiceStartType.DEMAND_START,
+  serverInfo: {},
+  networks: [],
   getServiceState: async () => {
     const {data: serviceState} = await invokeCommand(InvokeEvent.GET_SERVICE_STATE)
     set((state) => ({...state, serviceState}))
@@ -49,5 +56,15 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()((set) =
     const {success} = await invokeCommand(InvokeEvent.SET_SERVICE_START_TYPE, {startType})
     insertLog(`Changed service start type to: ${startType}`)
     return success
+  },
+  getServerInfo: async () => {
+    const {data: serverInfo} = await invokeCommand(InvokeEvent.GET_ZEROTIER_SERVER_INFO)
+    set((state) => ({...state, serverInfo}))
+    return serverInfo
+  },
+  getNetworks: async () => {
+    const {data: networks} = await invokeCommand(InvokeEvent.GET_NETWORKS)
+    set((state) => ({...state, networks}))
+    return networks
   }
 }))

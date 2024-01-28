@@ -1,5 +1,6 @@
 import { invoke, InvokeArgs } from '@tauri-apps/api/tauri'
-import { InvokeResponse } from '../typings/types.ts'
+import { getClient, HttpOptions } from '@tauri-apps/api/http'
+import { InvokeResponse } from '../typings/global.ts'
 
 export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<InvokeResponse & { success: boolean }> => {
   const result: string = await invoke(cmd, args)
@@ -11,4 +12,9 @@ export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<Inv
     console.error(e)
     return {code: -1, data: result, message: result, success: false}
   }
+}
+
+export const httpRequest = async (options: HttpOptions) => {
+  const client = await getClient()
+  return await client.request(options)
 }

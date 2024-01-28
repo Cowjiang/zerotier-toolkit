@@ -13,16 +13,17 @@ import Dev from './pages/Dev'
 function App() {
   const navigate = useNavigate()
 
-  const { isLoading, isAdmin, setLoading, checkAdmin, restartAsAdmin } = useAppStore()
-  const { getServiceState, getServiceStartType } = useZeroTierStore()
+  const {isLoading, isAdmin, setLoading, checkAdmin, restartAsAdmin} = useAppStore()
+  const {getServiceState, getServiceStartType, getServerInfo} = useZeroTierStore()
 
-  const { setNotification } = useNotification()
+  const {setNotification} = useNotification()
 
   useEffect(() => {
     Promise.all([
       checkAdmin(),
       getServiceState(),
-      getServiceStartType()
+      getServiceStartType(),
+      getServerInfo()
     ]).finally(() => setLoading(false))
   }, [])
 
