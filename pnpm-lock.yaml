@@ -73,6 +73,9 @@ devDependencies:
   eslint-plugin-simple-import-sort:
     specifier: ^7.0.0
     version: 7.0.0(eslint@8.56.0)
+  husky:
+    specifier: ^9.0.7
+    version: 9.0.7
   jsdom:
     specifier: ^24.0.0
     version: 24.0.0
@@ -4349,6 +4352,12 @@ packages:
   /human-signals@5.0.0:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==, tarball: https://registry.npmmirror.com/human-signals/-/human-signals-5.0.0.tgz}
     engines: {node: '>=16.17.0'}
+    dev: true
+
+  /husky@9.0.7:
+    resolution: {integrity: sha512-vWdusw+y12DUEeoZqW1kplOFqk3tedGV8qlga8/SF6a3lOiWLqGZZQvfWvY0fQYdfiRi/u1DFNpudTSV9l1aCg==, tarball: https://registry.npmmirror.com/husky/-/husky-9.0.7.tgz}
+    engines: {node: '>=18'}
+    hasBin: true
     dev: true
 
   /iconv-lite@0.6.3:

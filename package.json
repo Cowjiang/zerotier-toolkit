@@ -9,10 +9,12 @@
     "info": "tauri info",
     "tauri": "tauri",
     "test": "vitest",
+    "test:no-watch": "vitest run",
     "lint": "eslint src/ --fix --ext js,jsx,ts,tsx",
     "vite:dev": "vite",
     "vite:build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=20"
@@ -43,6 +45,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^9.0.7",
     "jsdom": "^24.0.0",
     "postcss": "^8.4.33",
     "prettier": "3.2.4",

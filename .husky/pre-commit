@@ -1,0 +1,2 @@
+pnpm test:no-watch
+pnpm lint
