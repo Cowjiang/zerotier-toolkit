@@ -5,7 +5,6 @@ import { NextUIProvider } from '@nextui-org/react'
 import { useZeroTierStore } from './store/zerotier'
 import { useAppStore } from './store/app'
 import { SERVICE_POLLING_INTERVAL } from '../constant'
-import { useNotification } from './components/NotificationBar'
 import Splash from './pages/Splash'
 import Home from './pages/Home'
 import Dev from './pages/Dev'
@@ -13,10 +12,8 @@ import Dev from './pages/Dev'
 function App() {
   const navigate = useNavigate()
 
-  const {isLoading, isAdmin, setLoading, checkAdmin, restartAsAdmin} = useAppStore()
+  const {isAdmin, setLoading, checkAdmin} = useAppStore()
   const {getServiceState, getServiceStartType, getServerInfo} = useZeroTierStore()
-
-  const {setNotification} = useNotification()
 
   useEffect(() => {
     Promise.all([
@@ -26,13 +23,6 @@ function App() {
       getServerInfo()
     ]).finally(() => setLoading(false))
   }, [])
-
-  useEffect(() => {
-    !isAdmin && !isLoading && setNotification({
-      type: 'warning',
-      children: <div className="cursor-pointer" onClick={restartAsAdmin}>Please click here to relaunch with administrator privileges to access all functionalities</div>
-    })
-  }, [isAdmin, isLoading])
 
   const pollingInterval = () => setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
   useEffect(() => {
