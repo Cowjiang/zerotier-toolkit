@@ -1,6 +1,7 @@
-import { test, expect } from 'vitest'
-import { insertLog } from '../logHelpers'
+import { expect, test } from 'vitest'
+
 import { useAppStore } from '../../store/app'
+import { insertLog } from '../logHelpers'
 
 test('insert log', () => {
   insertLog('log test content')

@@ -46,7 +46,6 @@ export interface Network {
   type?: string
 }
 
-
 export interface Dns {
   domain?: string
   servers?: string[]

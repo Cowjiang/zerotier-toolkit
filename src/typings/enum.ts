@@ -9,7 +9,7 @@ export enum ServiceStatus {
 export enum ServiceStartType {
   AUTO_START = 'AutoStart',
   DEMAND_START = 'DemandStart',
-  DISABLED = 'Disabled'
+  DISABLED = 'Disabled',
 }
 
 export enum InvokeEvent {
@@ -22,5 +22,5 @@ export enum InvokeEvent {
   SET_SERVICE_START_TYPE = 'set_zerotier_start_type',
   GET_ZEROTIER_SERVER_INFO = 'get_zerotier_server_info',
   GET_CONFIG = 'get_config',
-  GET_NETWORKS = 'get_networks'
+  GET_NETWORKS = 'get_networks',
 }

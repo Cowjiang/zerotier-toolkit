@@ -1,11 +1,13 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
 import './styles.css'
-import {BrowserRouter} from 'react-router-dom'
+
 import { NextUIProvider } from '@nextui-org/react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import NotificationProvider from './components/NotificationBar'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+
 import App from './App'
+import NotificationProvider from './components/NotificationBar'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -18,5 +20,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         </NextThemesProvider>
       </NextUIProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 )

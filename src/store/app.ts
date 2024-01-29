@@ -1,14 +1,15 @@
+import { exit } from '@tauri-apps/api/process'
 import { create } from 'zustand'
-import { invokeCommand } from '../utils/tauriHelpers.ts'
+
 import { InvokeEvent } from '../typings/enum.ts'
 import type { AppConfig } from '../typings/global.ts'
 import type { Log } from '../utils/logHelpers.ts'
-import { exit } from '@tauri-apps/api/process'
+import { invokeCommand } from '../utils/tauriHelpers.ts'
 
 export type AppState = {
   isLoading: boolean
   isAdmin: boolean
-  logs: Log[],
+  logs: Log[]
   config: AppConfig
 }
 
@@ -25,30 +26,35 @@ export const useAppStore = create<AppState & AppAction>()((set) => ({
   isAdmin: false,
   logs: [],
   config: {},
-  setLoading: (loading) => set((state) => ({...state, isLoading: loading})),
+  setLoading: (loading) => set((state) => ({ ...state, isLoading: loading })),
   checkAdmin: async () => {
-    const {data: isAdmin} = await invokeCommand(InvokeEvent.IS_ADMIN)
-    set((state) => ({...state, isAdmin}))
+    const { data: isAdmin } = await invokeCommand(InvokeEvent.IS_ADMIN)
+    set((state) => ({ ...state, isAdmin }))
     return isAdmin
   },
-  insertLog: (content) => set((state) => ({
-    ...state, logs: [...state.logs, {
-      timestamp: Date.now(),
-      content
-    }]
-  })),
+  insertLog: (content) =>
+    set((state) => ({
+      ...state,
+      logs: [
+        ...state.logs,
+        {
+          timestamp: Date.now(),
+          content,
+        },
+      ],
+    })),
   restartAsAdmin: async () => {
     try {
-      const {success} = await invokeCommand(InvokeEvent.RESTART_AS_ADMIN)
+      const { success } = await invokeCommand(InvokeEvent.RESTART_AS_ADMIN)
       // TODO handle exit callback
-      success && await exit(1)
+      success && (await exit(1))
     } catch (e) {
       console.error(e)
     }
   },
   getConfig: async () => {
-    const {data: config} = await invokeCommand(InvokeEvent.GET_CONFIG)
-    set((state) => ({...state, config}))
+    const { data: config } = await invokeCommand(InvokeEvent.GET_CONFIG)
+    set((state) => ({ ...state, config }))
     return config
-  }
+  },
 }))

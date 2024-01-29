@@ -1,30 +1,34 @@
 import './App.css'
+
+import { NextUIProvider } from '@nextui-org/react'
 import { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
-import { NextUIProvider } from '@nextui-org/react'
-import { useZeroTierStore } from './store/zerotier'
-import { useAppStore } from './store/app'
+
 import { SERVICE_POLLING_INTERVAL } from '../constant'
-import Splash from './pages/Splash'
-import Home from './pages/Home'
 import Dev from './pages/Dev'
+import Home from './pages/Home'
+import Splash from './pages/Splash'
+import { useAppStore } from './store/app'
+import { useZeroTierStore } from './store/zerotier'
 
 function App() {
   const navigate = useNavigate()
 
-  const {isAdmin, setLoading, checkAdmin} = useAppStore()
-  const {getServiceState, getServiceStartType, getServerInfo} = useZeroTierStore()
+  const { isAdmin, setLoading, checkAdmin } = useAppStore()
+  const { getServiceState, getServiceStartType, getServerInfo } =
+    useZeroTierStore()
 
   useEffect(() => {
     Promise.all([
       checkAdmin(),
       getServiceState(),
       getServiceStartType(),
-      getServerInfo()
+      getServerInfo(),
     ]).finally(() => setLoading(false))
   }, [])
 
-  const pollingInterval = () => setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
+  const pollingInterval = () =>
+    setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
   useEffect(() => {
     let pollingTimer: number
     if (isAdmin) {
@@ -43,18 +47,19 @@ function App() {
     }
   }, [isAdmin, getServiceState])
 
-  import.meta.env.DEV && useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 'd') {
-        const isDevPage = window.location.pathname === '/dev'
-        !isDevPage && (window.location.href = '/dev')
+  import.meta.env.DEV &&
+    useEffect(() => {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.ctrlKey && event.key === 'd') {
+          const isDevPage = window.location.pathname === '/dev'
+          !isDevPage && (window.location.href = '/dev')
+        }
       }
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [])
+      document.addEventListener('keydown', handleKeyDown)
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown)
+      }
+    }, [])
 
   return (
     <NextUIProvider navigate={navigate}>
