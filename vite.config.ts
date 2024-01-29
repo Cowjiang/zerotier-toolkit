@@ -1,6 +1,5 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import tailwindcss from 'tailwindcss';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -15,11 +14,12 @@ export default defineConfig(async () => ({
     strictPort: true,
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
-      ignored: ["**/src-tauri/**"],
-    },
+      ignored: ['**/src-tauri/**']
+    }
   },
   test: {
-    include: ["**/src/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
+    include: ['**/src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     environment: 'jsdom',
+    globals: true,
   }
-}));
+}))
