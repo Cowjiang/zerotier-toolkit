@@ -88,7 +88,7 @@ impl WindowsServiceManage {
             }
             Err(error) => Err(Error::new(
                 Other,
-                "执行命令异常".to_string() + &*error.to_string(),
+                "command execute error:".to_string() + &*error.to_string(),
             )),
         };
     }
@@ -122,7 +122,7 @@ impl WindowsServiceManage {
                 ptr::null(),
             )
         };
-        debug!("执行修改完成,结果:{}", result);
+        debug!("update start type  success,:{}", result);
         unsafe {
             CloseServiceHandle(sc_manager);
             CloseServiceHandle(service);
@@ -130,7 +130,7 @@ impl WindowsServiceManage {
         if result == 0 {
             return Err(Error::new(
                 Other,
-                format!("修改失败:{:?}", Self::get_last_error()),
+                format!("update start type fail:{:?}", Self::get_last_error()),
             ));
         }
         Ok(())
@@ -144,7 +144,7 @@ impl WindowsServiceManage {
         let (sc_manager, service) = service_result.ok().unwrap();
         let result = unsafe { StartServiceA(service, 0, ptr::null_mut()) };
 
-        debug!("执行启动完成,结果:{}", result);
+        debug!("start success:{}", result);
         unsafe {
             CloseServiceHandle(sc_manager);
             CloseServiceHandle(service);
@@ -152,7 +152,7 @@ impl WindowsServiceManage {
         if result == 0 {
             return Err(Error::new(
                 Other,
-                format!("启动失败{:?}", Self::get_last_error()),
+                format!("start fail:{:?}", Self::get_last_error()),
             ));
         }
         Ok(())
@@ -169,7 +169,7 @@ impl WindowsServiceManage {
         let result: BOOL =
             unsafe { ControlService(service, SERVICE_CONTROL_STOP, &mut service_status) };
 
-        debug!("执行关闭完成,结果:{}", result);
+        debug!("close success:{}", result);
         unsafe {
             CloseServiceHandle(sc_manager);
             CloseServiceHandle(service);
@@ -177,7 +177,7 @@ impl WindowsServiceManage {
         if result == 0 {
             return Err(Error::new(
                 Other,
-                format!("关闭失败{:?}", Self::get_last_error()),
+                format!("close fail{:?}", Self::get_last_error()),
             ));
         }
         Ok(())
@@ -196,7 +196,7 @@ impl WindowsServiceManage {
             String::from("findstr"),
             String::from("STATE"),
         ];
-        debug!("执行命令{:?}", commands.join(" "));
+        debug!("exec command:{:?}", commands.join(" "));
         let output = execute_cmd(commands);
         return match Self::deal_with_cmd_result(output) {
             Ok(start_type) => {
@@ -204,7 +204,7 @@ impl WindowsServiceManage {
             }
             Err(error) => Err(Error::new(
                 Other,
-                "执行命令异常".to_string() + &*error.to_string(),
+                "exec fail".to_string() + &*error.to_string(),
             )),
         };
     }
@@ -232,13 +232,13 @@ impl WindowsServiceManage {
             Ok(value) => {
                 let status = value.status;
                 if !status.success() {
-                    return Err(Error::new(Other, "执行命令异常"));
+                    return Err(Error::new(Other, "exec command error"));
                 }
                 Ok(parse_output(value.stdout))
             }
             Err(error) => Err(Error::new(
                 Other,
-                "执行命令异常".to_string() + &*error.to_string(),
+                "exec command error".to_string() + &*error.to_string(),
             )),
         };
     }
@@ -250,7 +250,7 @@ impl WindowsServiceManage {
         let sc_manager = unsafe { OpenSCManagerA(ptr::null(), ptr::null(), SC_MANAGER_CONNECT) };
         if sc_manager.is_null() {
             unsafe { CloseServiceHandle(sc_manager) };
-            return Err(Error::new(Other, "请使用管理员权限开启"));
+            return Err(Error::new(Other, "please resater as admin"));
         }
         let service_name = CString::new(service_name.clone()).unwrap();
         let service = unsafe { OpenServiceA(sc_manager, service_name.as_ptr(), dw_desired_access) };
@@ -258,7 +258,7 @@ impl WindowsServiceManage {
             unsafe { CloseServiceHandle(sc_manager) };
             return Err(Error::new(
                 Other,
-                format!("无法启动服务管理器{:?}", Self::get_last_error()),
+                format!("can not open SCManager{:?}", Self::get_last_error()),
             ));
         }
         return Ok((sc_manager, service));
@@ -293,11 +293,11 @@ impl WindowsServiceManage {
         let arc_state = Arc::clone(&(self.state));
         let arc_stop_listent_state = Arc::clone(&(self.stop_listent_state));
         thread::spawn(move || {
-            debug!("开始注册状态监听线程");
+            debug!("register state listener thread");
             let mut my_bytes = service_name.clone().into_bytes();
             let service_result = Self::get_service_winapi(service_name.clone(), SERVICE_ALL_ACCESS);
             if service_result.is_err() {
-                error!("启动异步监听失败{}", Self::get_last_error());
+                error!("state listener fail{}", Self::get_last_error());
                 return;
             }
             let (sc_manager, service) = service_result.ok().unwrap();
@@ -321,18 +321,17 @@ impl WindowsServiceManage {
                     )
                 };
 
-                debug!("启动服务状态监听,结果:{}", result);
                 if result != ERROR_SUCCESS {
-                    error!("启动监听失败{:?}", Self::get_last_error());
+                    error!("state listener{:?}", Self::get_last_error());
                     return;
                 }
                 let wait_result = unsafe { WaitForSingleObjectEx(event_handler, 99999999, TRUE) };
 
                 if wait_result == WAIT_FAILED {
-                    return error!("等待通知失败{:?}", Self::get_last_error());
+                    return error!("wait for state notify fail{:?}", Self::get_last_error());
                 }
                 debug!(
-                    "收到通知,状态为:{:?}",
+                    "accpet a state notify,state:{:?}",
                     service_notify.ServiceStatus.dwCurrentState
                 );
                 let mut state = arc_state.lock().unwrap();
@@ -346,7 +345,7 @@ impl WindowsServiceManage {
                 drop(state);
                 let stop_listent_state = arc_stop_listent_state.lock().unwrap();
                 if *stop_listent_state {
-                    debug!("开始清理state监听");
+                    debug!("cleaning state listener");
                     unsafe {
                         CloseServiceHandle(sc_manager);
                         CloseServiceHandle(service);

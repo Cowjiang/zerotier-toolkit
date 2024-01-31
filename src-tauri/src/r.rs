@@ -2,16 +2,18 @@ use serde::Serialize;
 
 #[derive(Debug, Serialize)]
 pub struct R<T>
-    where
-        T: Serialize, {
+where
+    T: Serialize,
+{
     code: i8,
     message: String,
     data: T,
 }
 
 pub(crate) fn success<T>(data: T) -> R<T>
-    where
-        T: Serialize, {
+where
+    T: Serialize,
+{
     R {
         code: 0,
         message: String::from("success"),
@@ -21,8 +23,9 @@ pub(crate) fn success<T>(data: T) -> R<T>
 
 #[allow(unused)]
 pub(crate) fn fail<T>(data: T) -> R<T>
-    where
-        T: Serialize, {
+where
+    T: Serialize,
+{
     R {
         code: -1,
         message: String::from("fail"),
@@ -31,21 +34,22 @@ pub(crate) fn fail<T>(data: T) -> R<T>
 }
 
 pub(crate) fn success_json<T>(data: T) -> String
-    where
-        T: Serialize, {
+where
+    T: Serialize,
+{
     let result = success(data);
-    serde_json::to_string(&result).expect("格式化json错误")
+    serde_json::to_string(&result).unwrap()
 }
 
 pub(crate) fn fail_message_json(message: String) -> String {
     let result = fail_message(message);
-    serde_json::to_string(&result).expect("格式化json错误")
+    serde_json::to_string(&result).unwrap()
 }
 
 #[allow(unused)]
 pub(crate) fn fail_json() -> String {
-    let result = fail_message(String::from("执行异常"));
-    serde_json::to_string(&result).expect("格式化json错误")
+    let result = fail_message(String::from("fail"));
+    serde_json::to_string(&result).unwrap()
 }
 
 pub(crate) fn fail_message(message: String) -> R<Option<String>> {

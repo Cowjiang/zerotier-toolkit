@@ -65,7 +65,7 @@ pub(crate) fn init_logger_with_level_and_file(level: LevelFilter, file: Option<F
 
         builder.target(env_logger::Target::Pipe(Box::new(log_writer)));
         builder.init();
-        info!("日志初始化成功 {:?}", level);
+        info!("init logger success. level {:?}", level);
     });
 }
 #[allow(unused)]

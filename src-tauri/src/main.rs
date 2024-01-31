@@ -65,12 +65,12 @@ fn init_logger(app_handle: AppHandle) {
                     let _ = opt_open_log_file.insert(file);
                 }
                 Err(error) => {
-                    println!("加载日志文件失败:{}", error.to_string())
+                    println!("loading log file fail:{}", error.to_string())
                 }
             }
         }
         None => {
-            println!("加载日志文件失败:{:?}", opt_log_file)
+            println!("loading log file fail:{:?}", opt_log_file)
         }
     }
     #[cfg(debug_assertions)]
