@@ -62,3 +62,29 @@ export interface Route {
   target?: string
   via?: string
 }
+
+export interface Status {
+  address?: string
+  clock?: number
+  config?: Config
+  online?: boolean
+  planetWorldId?: number
+  planetWorldTimestamp?: number
+  publicIdentity?: string
+  tcpFallbackActive?: boolean
+  version?: string
+  versionBuild?: number
+  versionMajor?: number
+  versionMinor?: number
+  versionRev?: number
+}
+
+export interface Config {
+  settings?: Settings
+}
+
+export interface Settings {
+  allowTcpFallbackRelay?: boolean
+  portMappingEnabled?: boolean
+  primaryPort?: number
+}

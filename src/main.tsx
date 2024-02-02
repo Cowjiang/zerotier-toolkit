@@ -1,4 +1,5 @@
 import './styles.css'
+import './i18n'
 
 import { NextUIProvider } from '@nextui-org/react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
@@ -8,7 +9,6 @@ import { BrowserRouter } from 'react-router-dom'
 
 import App from './App'
 import NotificationProvider from './components/NotificationBar'
-import './i18n'
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>

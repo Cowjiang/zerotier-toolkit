@@ -51,8 +51,12 @@ function App() {
     useEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.ctrlKey && event.key === 'd') {
+          let redirectUrl = '/'
           const isDevPage = window.location.pathname === '/dev'
-          !isDevPage && (window.location.href = '/dev')
+          if (!isDevPage) {
+            redirectUrl = '/dev'
+          }
+          window.location.href = redirectUrl
         }
       }
       document.addEventListener('keydown', handleKeyDown)
