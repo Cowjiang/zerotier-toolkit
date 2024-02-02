@@ -25,9 +25,11 @@
     "@tauri-apps/api": "^1.5.2",
     "classnames": "^2.5.1",
     "framer-motion": "^10.18.0",
+    "i18next": "^23.8.2",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^14.0.1",
     "react-router-dom": "^6.21.3",
     "zustand": "^4.5.0"
   },

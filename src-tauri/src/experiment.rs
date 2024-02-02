@@ -8,7 +8,6 @@ mod tests {
         ptr,
     };
 
-    use serde::Serialize;
     use tauri::api::path::home_dir;
     use winapi::{
         shared::{

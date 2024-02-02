@@ -17,6 +17,9 @@ dependencies:
   framer-motion:
     specifier: ^10.18.0
     version: 10.18.0(react-dom@18.2.0)(react@18.2.0)
+  i18next:
+    specifier: ^23.8.2
+    version: 23.8.2
   next-themes:
     specifier: ^0.2.1
     version: 0.2.1(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
@@ -26,6 +29,9 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: registry.npmmirror.com/react-dom@18.2.0(react@18.2.0)
+  react-i18next:
+    specifier: ^14.0.1
+    version: 14.0.1(i18next@23.8.2)(react-dom@18.2.0)(react@18.2.0)
   react-router-dom:
     specifier: ^6.21.3
     version: 6.21.3(react-dom@18.2.0)(react@18.2.0)
@@ -4490,6 +4496,12 @@ packages:
       whatwg-encoding: 3.1.1
     dev: true
 
+  /html-parse-stringify@3.0.1:
+    resolution: {integrity: sha512-KknJ50kTInJ7qIScF3jeaFRpMpE8/lfiTdzf/twXyPBLAGrLRTmkz3AdTnKeh40X8k9L2fdYwEp/42WGXIRGcg==, tarball: https://registry.npmmirror.com/html-parse-stringify/-/html-parse-stringify-3.0.1.tgz}
+    dependencies:
+      void-elements: 3.1.0
+    dev: false
+
   /http-proxy-agent@7.0.0:
     resolution: {integrity: sha512-+ZT+iBxVUQ1asugqnD6oWoRiS25AkjNfG085dKJGtGxkdwLQrMKU5wJr2bOOFAXzKcTuqq+7fZlTMgG3SRfIYQ==, tarball: https://registry.npmmirror.com/http-proxy-agent/-/http-proxy-agent-7.0.0.tgz}
     engines: {node: '>= 14'}
@@ -4520,6 +4532,12 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
     dev: true
+
+  /i18next@23.8.2:
+    resolution: {integrity: sha512-Z84zyEangrlERm0ZugVy4bIt485e/H8VecGUZkZWrH7BDePG6jT73QdL9EA1tRTTVVMpry/MgWIP1FjEn0DRXA==, tarball: https://registry.npmmirror.com/i18next/-/i18next-23.8.2.tgz}
+    dependencies:
+      '@babel/runtime': 7.23.8
+    dev: false
 
   /iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==, tarball: https://registry.npmmirror.com/iconv-lite/-/iconv-lite-0.6.3.tgz}
@@ -5439,6 +5457,26 @@ packages:
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==, tarball: https://registry.npmmirror.com/queue-microtask/-/queue-microtask-1.2.3.tgz}
 
+  /react-i18next@14.0.1(i18next@23.8.2)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-TMV8hFismBmpMdIehoFHin/okfvgjFhp723RYgIqB4XyhDobVMyukyM3Z8wtTRmajyFMZrBl/OaaXF2P6WjUAw==, tarball: https://registry.npmmirror.com/react-i18next/-/react-i18next-14.0.1.tgz}
+    peerDependencies:
+      i18next: '>= 23.2.3'
+      react: '>= 16.8.0'
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.23.8
+      html-parse-stringify: 3.0.1
+      i18next: 23.8.2
+      react: registry.npmmirror.com/react@18.2.0
+      react-dom: registry.npmmirror.com/react-dom@18.2.0(react@18.2.0)
+    dev: false
+
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==, tarball: https://registry.npmmirror.com/react-is/-/react-is-16.13.1.tgz}
     dev: true
@@ -6315,6 +6353,11 @@ packages:
       - supports-color
       - terser
     dev: true
+
+  /void-elements@3.1.0:
+    resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==, tarball: https://registry.npmmirror.com/void-elements/-/void-elements-3.1.0.tgz}
+    engines: {node: '>=0.10.0'}
+    dev: false
 
   /w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==, tarball: https://registry.npmmirror.com/w3c-xmlserializer/-/w3c-xmlserializer-5.0.0.tgz}

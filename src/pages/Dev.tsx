@@ -11,6 +11,8 @@ import { useState } from 'react'
 
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { zerotierService } from '../utils/zerotierHelpers.ts'
+import i18n from '../i18n/index.ts' 
+
 
 function Dev() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -47,6 +49,12 @@ function Dev() {
         {invokeCommandButton('get_config')}
         {invokeCommandButton('get_zerotier_server_info')}
         <Button onClick={() => zerotierService.get('/a')} />
+        <Button onClick={() => {
+          setInfoModalControl({
+            content: i18n.t("hello")
+          })
+          onOpen()
+        }}>translation</Button>
       </div>
       <Modal size="md" isOpen={isOpen} onClose={onClose}>
         <ModalContent>
