@@ -11,7 +11,11 @@ type RequestOptions = {
   body?: Body
 }
 
-const request = async ({ path, method, ...options }: RequestOptions) => {
+export const request = async <T>({
+  path,
+  method,
+  ...options
+}: RequestOptions) => {
   const { port, secret } = useZeroTierStore.getState().serverInfo
   if (!port || !secret) {
     throw new Error('Invalid port or secret for the ZeroTier service')
@@ -24,9 +28,5 @@ const request = async ({ path, method, ...options }: RequestOptions) => {
     },
     ...options,
   }
-  return await httpRequest(httpOptions)
-}
-
-export const zerotierService = {
-  get: async (path: string) => await request({ method: 'GET', path }),
+  return await httpRequest<T>(httpOptions)
 }

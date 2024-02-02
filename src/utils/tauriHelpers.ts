@@ -18,7 +18,7 @@ export const invokeCommand = async (
   }
 }
 
-export const httpRequest = async (options: HttpOptions) => {
+export const httpRequest = async <T>(options: HttpOptions) => {
   const client = await getClient()
-  return await client.request(options)
+  return await client.request<T>(options)
 }
