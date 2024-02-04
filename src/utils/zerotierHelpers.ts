@@ -1,4 +1,5 @@
 import { Body, HttpVerb } from '@tauri-apps/api/http'
+
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { httpRequest } from './tauriHelpers.ts'
@@ -19,16 +20,16 @@ const request = async <T>({ path, method, ...options }: RequestOptions) => {
     url: `${ZEROTIER_SERVICE_HOST}:${port}${path}`,
     method,
     headers: {
-      'X-ZT1-Auth': secret
+      'X-ZT1-Auth': secret,
     },
-    ...options
+    ...options,
   }
   const res = await httpRequest<T>(httpOptions)
   console.log('[Request]', httpOptions.url, res)
-  !res.ok && await Promise.reject(res)
+  !res.ok && (await Promise.reject(res))
   return res
 }
 
 export const zerotierService = {
-  get: async <T>(path: string) => await request<T>({ method: 'GET', path })
+  get: async <T>(path: string) => await request<T>({ method: 'GET', path }),
 }
