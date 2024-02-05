@@ -88,3 +88,25 @@ export interface Settings {
   portMappingEnabled?: boolean
   primaryPort?: number
 }
+
+export interface Peer {
+  address?: string
+  isBonded?: boolean
+  latency?: number
+  paths?: Path[]
+  role?: string
+  version?: string
+  versionMajor?: number
+  versionMinor?: number
+  versionRev?: number
+}
+
+export interface Path {
+  active?: boolean
+  address?: string
+  expired?: boolean
+  lastReceive?: number
+  lastSend?: number
+  preferred?: boolean
+  trustedPathId?: number
+}

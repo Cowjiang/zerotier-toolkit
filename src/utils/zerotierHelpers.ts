@@ -32,4 +32,14 @@ const request = async <T>({ path, method, ...options }: RequestOptions) => {
 
 export const zerotierService = {
   get: async <T>(path: string) => await request<T>({ method: 'GET', path }),
+
+  delete: async <T>(path: string) =>
+    await request<T>({ method: 'DELETE', path }),
+
+  post: async <P, R>(path: string, body?: P) =>
+    await request<R>({
+      method: 'POST',
+      path,
+      body: Body.json({ ...body }),
+    }),
 }
