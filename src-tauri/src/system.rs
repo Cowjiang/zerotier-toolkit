@@ -78,6 +78,7 @@ pub(crate) fn show_main_window(app_handler: AppHandle) -> String {
     match main_window {
         Some(window) => {
             let _ = window.show();
+            let _ = window.set_focus();
         }
         None => {
             return fail_message_json(String::from("no window found"));
