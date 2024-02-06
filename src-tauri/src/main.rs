@@ -5,7 +5,8 @@ use std::fs::{File, OpenOptions};
 
 use command::*;
 use log::{debug, warn, LevelFilter};
-use system::{get_config, restart_as_admin, Configuration, __cmd__restart_as_admin, CONFIGURATION};
+use system::*;
+use system_tray::{handle_system_tray_event, init_system_tray};
 use tauri::{AppHandle, Manager};
 
 use crate::zerotier_manage::*;
@@ -17,15 +18,17 @@ mod experiment;
 mod logger;
 mod r;
 mod system;
+mod system_tray;
 mod windows_service_manage;
 mod zerotier_manage;
-
 fn main() {
     start_tauri();
 }
 
 fn start_tauri() {
     tauri::Builder::default()
+        .system_tray(init_system_tray())
+        .on_system_tray_event(handle_system_tray_event)
         .invoke_handler(tauri::generate_handler![
             // zerotier handler
             get_zerotier_services,
@@ -35,6 +38,9 @@ fn start_tauri() {
             stop_zerotier,
             get_zerotier_state,
             get_zerotier_server_info,
+            // window handlers
+            hide_main_window,
+            show_main_window,
             // other handlers
             is_admin,
             restart_as_admin,

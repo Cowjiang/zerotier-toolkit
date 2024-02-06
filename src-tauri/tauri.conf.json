@@ -55,6 +55,10 @@
     "security": {
       "csp": null
     },
+    "systemTray": {
+      "iconPath": "icons/icon.ico",
+      "menuOnLeftClick": true
+    },
     "windows": [
       {
         "fullscreen": false,

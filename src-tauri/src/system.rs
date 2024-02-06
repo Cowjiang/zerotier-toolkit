@@ -6,6 +6,7 @@ use lazy_static::lazy_static;
 use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
 use std::env;
+use tauri::{AppHandle, Manager};
 
 lazy_static! {
     pub static ref CONFIGURATION: RwLock<Configuration> = RwLock::new(Configuration::default());
@@ -55,6 +56,34 @@ pub(crate) fn restart_as_admin() -> String {
         }
         Err(err) => fail_message_json(err.to_string()),
     };
+}
+
+#[tauri::command]
+pub(crate) fn hide_main_window(app_handler: AppHandle) -> String {
+    let main_window = app_handler.get_window("main");
+    match main_window {
+        Some(window) => {
+            let _ = window.hide();
+        }
+        None => {
+            return fail_message_json(String::from("no window found"));
+        }
+    }
+    return success_json("success");
+}
+
+#[tauri::command]
+pub(crate) fn show_main_window(app_handler: AppHandle) -> String {
+    let main_window = app_handler.get_window("main");
+    match main_window {
+        Some(window) => {
+            let _ = window.show();
+        }
+        None => {
+            return fail_message_json(String::from("no window found"));
+        }
+    }
+    return success_json("success");
 }
 
 #[cfg(test)]

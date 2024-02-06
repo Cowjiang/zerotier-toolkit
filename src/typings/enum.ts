@@ -23,4 +23,5 @@ export enum InvokeEvent {
   GET_ZEROTIER_SERVER_INFO = 'get_zerotier_server_info',
   GET_CONFIG = 'get_config',
   GET_NETWORKS = 'get_networks',
+  HIDE_MAIN_WINDOW = 'hide_main_window',
 }
