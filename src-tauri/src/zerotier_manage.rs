@@ -157,6 +157,7 @@ mod tests {
 
     use log::info;
     use log::LevelFilter::Debug;
+    use tauri::async_runtime;
 
     use crate::logger::init_logger_with_level;
     use crate::zerotier_manage::*;
@@ -198,18 +199,18 @@ mod tests {
         )
     }
 
-    #[test]
-    fn test_start_zerotier() {
+    #[tokio::test]
+    async fn test_start_zerotier() {
         setup();
-        info!("test_start_zerotier:{:?}", start_zerotier());
+        info!("test_start_zerotier:{:?}", start_zerotier().await);
         let state = get_zerotier_state();
         info!("test_start_zerotier:{:?}", state);
     }
 
-    #[test]
-    fn test_stop_zerotier() {
+    #[tokio::test]
+    async fn test_stop_zerotier() {
         setup();
-        info!("test_stop_zerotier:{:?}", stop_zerotier());
+        info!("test_stop_zerotier:{:?}", stop_zerotier().await);
         let state = get_zerotier_state();
         info!("test_stop_zerotier:{:?}", state);
     }
