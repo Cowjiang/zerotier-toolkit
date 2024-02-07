@@ -4,20 +4,25 @@ import { Response } from '@tauri-apps/api/http'
 import i18n from '../i18n/index.ts'
 import { getNetworks } from '../services/zerotierService.ts'
 import { invokeCommand } from '../utils/tauriHelpers.ts'
+import { useAppStore } from '../store/app.ts'
+import { useTheme } from 'next-themes'
 
 function Dev() {
+  const { restartAsAdmin } = useAppStore()
+  const { theme, setTheme } = useTheme()
+
   const invokeCommandButton = (command: string) => ({
     text: `[Invoke] ${command}`,
     onClick: () => {
       invokeCommand(command)
         .then((res) => console.log(res))
         .catch((err) => console.error(err))
-    },
+    }
   })
 
   const apiButton = (func: () => Promise<Response<any>>) => ({
     text: `[Api] ${func.name}`,
-    onClick: async () => console.log(await func()),
+    onClick: async () => console.log(await func())
   })
 
   const btnList = [
@@ -26,8 +31,16 @@ function Dev() {
     apiButton(getNetworks),
     {
       text: '[i18n]: translation',
-      onClick: () => console.log(`hello => ${i18n.t('hello')}`),
+      onClick: () => console.log(`hello => ${i18n.t('hello')}`)
     },
+    {
+      text: 'Restart As Admin',
+      onClick: restartAsAdmin
+    },
+    {
+      text: 'Theme Switcher',
+      onClick: () => setTheme(theme === 'light' ? 'dark' : 'light')
+    }
   ]
 
   return (
