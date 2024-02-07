@@ -70,7 +70,7 @@ pub(crate) fn set_zerotier_start_type(start_type: String) -> String {
 }
 
 #[tauri::command]
-pub(crate) fn start_zerotier() -> String {
+pub(crate) async fn start_zerotier() -> String {
     return match ZEROTIER_SERVICE_MANAGE.start() {
         Ok(value) => success_json(value),
         Err(err) => fail_message_json(err.to_string()),
@@ -78,7 +78,7 @@ pub(crate) fn start_zerotier() -> String {
 }
 
 #[tauri::command]
-pub(crate) fn stop_zerotier() -> String {
+pub(crate) async fn stop_zerotier() -> String {
     return match ZEROTIER_SERVICE_MANAGE.stop() {
         Ok(value) => success_json(value),
         Err(err) => fail_message_json(err.to_string()),
