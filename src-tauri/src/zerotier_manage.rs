@@ -157,7 +157,6 @@ mod tests {
 
     use log::info;
     use log::LevelFilter::Debug;
-    use tauri::async_runtime;
 
     use crate::logger::init_logger_with_level;
     use crate::zerotier_manage::*;
