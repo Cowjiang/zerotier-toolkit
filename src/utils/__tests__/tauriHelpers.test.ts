@@ -1,5 +1,6 @@
-import { beforeEach, expect } from 'vitest'
 import { mockIPC } from '@tauri-apps/api/mocks'
+import { beforeEach, expect } from 'vitest'
+
 import { invokeCommand, readTextFile, writeTextFile } from '../tauriHelpers'
 
 beforeEach(() => {
@@ -8,11 +9,12 @@ beforeEach(() => {
       return JSON.stringify({ code: 0, data: args.data })
     } else if (cmd === 'tauri') {
       const cmdMap: { [key: string]: any } = {
-        'resolvePath': '\\debug\\resources\\configuration.json',
-        'readTextFile': 'content test',
-        'writeFile': undefined
+        resolvePath: '\\debug\\resources\\configuration.json',
+        readTextFile: 'content test',
+        writeFile: undefined,
       }
-      !Object.keys(cmdMap).includes((args.message as any)?.cmd) && console.log(args)
+      !Object.keys(cmdMap).includes((args.message as any)?.cmd) &&
+        console.log(args)
       return cmdMap?.[(args.message as any)?.cmd]
     }
   })
@@ -21,7 +23,7 @@ beforeEach(() => {
 describe('Tauri helpers', () => {
   it('should invoke command', async () => {
     const { success, data } = await invokeCommand('invokeCommandTest', {
-      data: 'success'
+      data: 'success',
     })
     expect(success).toBeTruthy()
     expect(data).toBe('success')

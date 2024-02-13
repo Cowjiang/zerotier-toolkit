@@ -1,11 +1,15 @@
 import { Button } from '@nextui-org/react'
 import { Response } from '@tauri-apps/api/http'
+import { useTheme } from 'next-themes'
 
 import i18n from '../i18n/index.ts'
 import { getNetworks } from '../services/zerotierService.ts'
-import { invokeCommand, readTextFile, writeTextFile } from '../utils/tauriHelpers.ts'
 import { useAppStore } from '../store/app.ts'
-import { useTheme } from 'next-themes'
+import {
+  invokeCommand,
+  readTextFile,
+  writeTextFile,
+} from '../utils/tauriHelpers.ts'
 
 function Dev() {
   const { restartAsAdmin } = useAppStore()
@@ -25,12 +29,12 @@ function Dev() {
       invokeCommand(command)
         .then((res) => console.log(res))
         .catch((err) => console.error(err))
-    }
+    },
   })
 
   const apiButton = (func: () => Promise<Response<any>>) => ({
     text: `[Api] ${func.name}`,
-    onClick: async () => console.log(await func())
+    onClick: async () => console.log(await func()),
   })
 
   const btnList = [
@@ -39,15 +43,15 @@ function Dev() {
     apiButton(getNetworks),
     {
       text: '[i18n]: translation',
-      onClick: () => console.log(`hello => ${i18n.t('hello')}`)
+      onClick: () => console.log(`hello => ${i18n.t('hello')}`),
     },
     {
       text: 'Restart As Admin',
-      onClick: restartAsAdmin
+      onClick: restartAsAdmin,
     },
     {
       text: 'Theme Switcher',
-      onClick: () => setTheme(theme === 'light' ? 'dark' : 'light')
+      onClick: () => setTheme(theme === 'light' ? 'dark' : 'light'),
     },
     {
       text: '[fs] read configuration file',
