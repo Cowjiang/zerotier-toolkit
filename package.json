@@ -16,6 +16,11 @@
     "preview": "vite preview",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ]
+  },
   "engines": {
     "node": ">=20"
   },
@@ -50,6 +55,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^9.0.7",
     "jsdom": "^24.0.0",
+    "lint-staged": "^15.2.2",
     "postcss": "^8.4.33",
     "prettier": "3.2.4",
     "tailwindcss": "^3.4.1",
