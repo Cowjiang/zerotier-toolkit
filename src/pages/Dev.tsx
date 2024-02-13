@@ -5,11 +5,7 @@ import { useTheme } from 'next-themes'
 import i18n from '../i18n/index.ts'
 import { getNetworks } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
-import {
-  invokeCommand,
-  readTextFile,
-  writeTextFile,
-} from '../utils/tauriHelpers.ts'
+import { invokeCommand, readTextFile, writeTextFile } from '../utils/tauriHelpers.ts'
 
 function Dev() {
   const { restartAsAdmin } = useAppStore()
@@ -29,12 +25,12 @@ function Dev() {
       invokeCommand(command)
         .then((res) => console.log(res))
         .catch((err) => console.error(err))
-    },
+    }
   })
 
   const apiButton = (func: () => Promise<Response<any>>) => ({
     text: `[Api] ${func.name}`,
-    onClick: async () => console.log(await func()),
+    onClick: async () => console.log(await func())
   })
 
   const btnList = [
@@ -43,21 +39,21 @@ function Dev() {
     apiButton(getNetworks),
     {
       text: '[i18n]: translation',
-      onClick: () => console.log(`hello => ${i18n.t('hello')}`),
+      onClick: () => console.log(`hello => ${i18n.t('hello')}`)
     },
     {
       text: 'Restart As Admin',
-      onClick: restartAsAdmin,
+      onClick: restartAsAdmin
     },
     {
       text: 'Theme Switcher',
-      onClick: () => setTheme(theme === 'light' ? 'dark' : 'light'),
+      onClick: () => setTheme(theme === 'light' ? 'dark' : 'light')
     },
     {
       text: '[fs] read configuration file',
       onClick: async () => {
         console.log(await readConfiguration())
-      },
+      }
     },
     {
       text: '[fs] write configuration file',
@@ -73,15 +69,21 @@ function Dev() {
         await writeConfiguration(configuration)
         const recoverContent = await readConfiguration()
         console.log('read', recoverContent)
-      },
-    },
+      }
+    }
   ]
 
   return (
-    <div className="w-full">
-      <div className="mt-28 grid grid-cols-auto gap-4 p-3">
+    <div className="w-full min-h-[100vh] p-3">
+      <div className="w-full mt-5 flex flex-wrap ">
         {btnList.map(({ text, onClick }) => (
-          <Button onClick={onClick} key={text}>
+          <Button
+            size="lg"
+            className="font-bold mt-2 ml-2 flex-grow"
+            color="warning"
+            onClick={onClick}
+            key={text}
+          >
             {text}
           </Button>
         ))}
