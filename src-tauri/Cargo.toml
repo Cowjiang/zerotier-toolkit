@@ -13,7 +13,7 @@ edition = "2021"
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = [ "http-request",
+tauri = { version = "1.5", features = [ "path-all", "fs-write-file", "fs-read-file", "http-request",
     "process-exit",
     "shell-open",
     "process-command-api",

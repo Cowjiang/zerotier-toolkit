@@ -3,13 +3,21 @@ import { Response } from '@tauri-apps/api/http'
 
 import i18n from '../i18n/index.ts'
 import { getNetworks } from '../services/zerotierService.ts'
-import { invokeCommand } from '../utils/tauriHelpers.ts'
+import { invokeCommand, readTextFile, writeTextFile } from '../utils/tauriHelpers.ts'
 import { useAppStore } from '../store/app.ts'
 import { useTheme } from 'next-themes'
 
 function Dev() {
   const { restartAsAdmin } = useAppStore()
   const { theme, setTheme } = useTheme()
+
+  async function readConfiguration() {
+    return await readTextFile()
+  }
+
+  async function writeConfiguration(content: string) {
+    await writeTextFile(content)
+  }
 
   const invokeCommandButton = (command: string) => ({
     text: `[Invoke] ${command}`,
@@ -40,7 +48,29 @@ function Dev() {
     {
       text: 'Theme Switcher',
       onClick: () => setTheme(theme === 'light' ? 'dark' : 'light')
-    }
+    },
+    {
+      text: '[fs] read configuration file',
+      onClick: async () => {
+        console.log(await readConfiguration())
+      },
+    },
+    {
+      text: '[fs] write configuration file',
+      onClick: async () => {
+        const configuration = await readConfiguration()
+        console.log('read', configuration)
+        const testWriteContent = 'hello'
+        console.log('write', testWriteContent)
+        await writeConfiguration(testWriteContent)
+        const afterWriteContent = await readConfiguration()
+        console.log('read', afterWriteContent)
+        console.log('write', configuration)
+        await writeConfiguration(configuration)
+        const recoverContent = await readConfiguration()
+        console.log('read', recoverContent)
+      },
+    },
   ]
 
   return (

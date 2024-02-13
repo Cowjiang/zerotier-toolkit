@@ -22,6 +22,14 @@
       "http": {
         "request": true,
         "scope": ["http://127.0.0.1*"]
+      },
+      "path":{
+        "all": true
+      },
+      "fs": {
+        "readFile": true,
+        "writeFile": true,
+        "scope": ["$RESOURCE/resources/*"]
       }
     },
     "bundle": {
