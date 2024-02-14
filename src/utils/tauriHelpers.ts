@@ -31,8 +31,8 @@ export const httpRequest = async <T>(options: HttpOptions) => {
 }
 
 export const readTextFile = async (
-  options?: FsOptions,
   path = CONFIGURATION_FILE_PATH,
+  options?: FsOptions,
 ) => {
   const filePath = await resolveResource(path)
   const content = await tauriReadTextFile(filePath, options)
@@ -42,8 +42,8 @@ export const readTextFile = async (
 
 export const writeTextFile = async (
   contents: string,
-  options?: FsOptions,
   path = CONFIGURATION_FILE_PATH,
+  options?: FsOptions,
 ) => {
   const filePath = await resolveResource(path)
   const response = await tauriWriteTextFile(filePath, contents, options)
