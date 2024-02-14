@@ -16,20 +16,15 @@ function App() {
   const navigate = useNavigate()
 
   const { isAdmin, setLoading, checkAdmin, setConfig } = useAppStore()
-  const { getServiceState, getServiceStartType, getServerInfo } =
-    useZeroTierStore()
+  const { getServiceState, getServiceStartType, getServerInfo } = useZeroTierStore()
 
   useEffect(() => {
-    Promise.all([
-      checkAdmin(),
-      getServiceState(),
-      getServiceStartType(),
-      getServerInfo(),
-    ]).finally(() => setLoading(false))
+    Promise.all([checkAdmin(), getServiceState(), getServiceStartType(), getServerInfo()]).finally(() =>
+      setLoading(false),
+    )
   }, [])
 
-  const pollingInterval = () =>
-    setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
+  const pollingInterval = () => setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
   useEffect(() => {
     let pollingTimer: ReturnType<typeof setInterval>
     if (isAdmin) {
@@ -70,6 +65,8 @@ function App() {
   useEffect(() => {
     setConfig({ theme })
   }, [theme])
+
+  useEffect(() => {}, [])
 
   return (
     <NextUIProvider navigate={navigate}>

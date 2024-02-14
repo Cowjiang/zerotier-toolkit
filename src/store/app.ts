@@ -1,20 +1,11 @@
 import { exit } from '@tauri-apps/api/process'
 import { create } from 'zustand'
-import {
-  createJSONStorage,
-  persist,
-  StateStorage,
-  StorageValue,
-} from 'zustand/middleware'
+import { createJSONStorage, persist, StateStorage, StorageValue } from 'zustand/middleware'
 
 import { InvokeEvent } from '../typings/enum.ts'
 import type { AppConfig } from '../typings/global.ts'
 import type { Log } from '../utils/logHelpers.ts'
-import {
-  invokeCommand,
-  readTextFile,
-  writeTextFile,
-} from '../utils/tauriHelpers.ts'
+import { invokeCommand, readTextFile, writeTextFile } from '../utils/tauriHelpers.ts'
 
 export type AppState = {
   isLoading: boolean
@@ -33,6 +24,7 @@ export type AppAction = {
 
 const appConfigStorage = (): StateStorage => {
   const isTauri = !!window.__TAURI_IPC__
+  let configTemp = ''
   return {
     getItem: async () => {
       const value = {
@@ -50,7 +42,11 @@ const appConfigStorage = (): StateStorage => {
       const {
         state: { config },
       }: StorageValue<Pick<AppState, 'config'>> = JSON.parse(value)
-      isTauri && (await writeTextFile(JSON.stringify(config)))
+      const appConfig = JSON.stringify(config)
+      if (configTemp !== appConfig && isTauri) {
+        configTemp = appConfig
+        await writeTextFile(appConfig)
+      }
     },
     removeItem: (): void | Promise<void> => undefined,
   }
@@ -63,8 +59,7 @@ export const useAppStore = create<AppState & AppAction>()(
       isAdmin: false,
       logs: [],
       config: {},
-      setLoading: (loading) =>
-        set((state) => ({ ...state, isLoading: loading })),
+      setLoading: (loading) => set((state) => ({ ...state, isLoading: loading })),
       checkAdmin: async () => {
         const { data: isAdmin } = await invokeCommand(InvokeEvent.IS_ADMIN)
         set((state) => ({ ...state, isAdmin }))
@@ -96,10 +91,9 @@ export const useAppStore = create<AppState & AppAction>()(
     }),
     {
       name: 'appConfig',
+      // skipHydration: true,
+      partialize: (state) => ({ config: state.config }),
       storage: createJSONStorage(appConfigStorage),
-      partialize: (state) => ({
-        config: state.config,
-      }),
     },
   ),
 )
