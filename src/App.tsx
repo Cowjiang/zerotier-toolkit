@@ -1,6 +1,7 @@
 import './App.css'
 
 import { NextUIProvider } from '@nextui-org/react'
+import { useTheme } from 'next-themes'
 import { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
@@ -14,7 +15,7 @@ import { useZeroTierStore } from './store/zerotier'
 function App() {
   const navigate = useNavigate()
 
-  const { isAdmin, setLoading, checkAdmin } = useAppStore()
+  const { isAdmin, setLoading, checkAdmin, setConfig } = useAppStore()
   const { getServiceState, getServiceStartType, getServerInfo } =
     useZeroTierStore()
 
@@ -30,7 +31,7 @@ function App() {
   const pollingInterval = () =>
     setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
   useEffect(() => {
-    let pollingTimer: number
+    let pollingTimer: ReturnType<typeof setInterval>
     if (isAdmin) {
       pollingTimer = pollingInterval()
     }
@@ -64,6 +65,11 @@ function App() {
         document.removeEventListener('keydown', handleKeyDown)
       }
     }, [])
+
+  const { theme } = useTheme()
+  useEffect(() => {
+    setConfig({ theme })
+  }, [theme])
 
   return (
     <NextUIProvider navigate={navigate}>
