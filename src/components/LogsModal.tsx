@@ -12,7 +12,7 @@ import {
 import { useMemo } from 'react'
 
 import { useAppStore } from '../store/app.ts'
-import formatTimestamp from '../utils/formatDate.ts'
+import formatTimestamp from '../utils/formatters/formatDate.ts'
 
 type Props = Omit<ModalProps, 'children'>
 
@@ -26,10 +26,7 @@ function LogsModal(props: Props) {
           formattedDate: formatTimestamp(timestamp),
           content: content,
         }))
-        .filter(
-          (value, index, arr) =>
-            index === 0 || value.content !== arr[index - 1].content,
-        ),
+        .filter((value, index, arr) => index === 0 || value.content !== arr[index - 1].content),
     [logs],
   )
 
@@ -42,9 +39,7 @@ function LogsModal(props: Props) {
             <ScrollShadow className="min-h-[15vh] max-h-[40vh]" hideScrollBar>
               {formattedRecords.map(({ formattedDate, content }, index) => (
                 <div className="w-full flex text-wrap" key={index}>
-                  <div className="mr-2 text-nowrap">
-                    {formattedDate.split(' ')[1]}
-                  </div>
+                  <div className="mr-2 text-nowrap">{formattedDate.split(' ')[1]}</div>
                   <div>{content}</div>
                 </div>
               ))}

@@ -1,7 +1,7 @@
 import { mockIPC } from '@tauri-apps/api/mocks'
 import { beforeEach, expect } from 'vitest'
 
-import { invokeCommand, readTextFile, writeTextFile } from '../tauriHelpers'
+import { invokeCommand, readTextFile, writeTextFile } from '../tauriHelpers.ts'
 
 beforeEach(() => {
   mockIPC((cmd, args) => {
@@ -13,8 +13,7 @@ beforeEach(() => {
         readTextFile: 'content test',
         writeFile: undefined,
       }
-      !Object.keys(cmdMap).includes((args.message as any)?.cmd) &&
-        console.log(args)
+      !Object.keys(cmdMap).includes((args.message as any)?.cmd) && console.log(args)
       return cmdMap?.[(args.message as any)?.cmd]
     }
   })

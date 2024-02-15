@@ -1,4 +1,4 @@
-import { useAppStore } from '../store/app.ts'
+import { useAppStore } from '../../store/app.ts'
 
 export type Log = {
   timestamp: number

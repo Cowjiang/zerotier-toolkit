@@ -2,7 +2,7 @@ import { mockIPC } from '@tauri-apps/api/mocks'
 import { beforeEach, expect } from 'vitest'
 
 import { ZEROTIER_SERVICE_HOST } from '../../../constant.ts'
-import { useZeroTierStore } from '../../store/zerotier.ts'
+import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { zerotierService } from '../zerotierHelpers.ts'
 
 beforeEach(() => {
@@ -23,9 +23,7 @@ describe('Zerotier Helpers', () => {
     const test = async () => {
       await zerotierService.get('/test').catch((e) => Promise.reject(e))
     }
-    expect(test).rejects.toThrowError(
-      'Invalid port or secret for the ZeroTier service',
-    )
+    expect(test).rejects.toThrowError('Invalid port or secret for the ZeroTier service')
   })
 
   it('should make a request within port and secret', async () => {

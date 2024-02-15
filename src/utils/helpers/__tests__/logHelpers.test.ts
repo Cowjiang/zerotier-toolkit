@@ -1,5 +1,5 @@
-import { useAppStore } from '../../store/app'
-import { insertLog } from '../logHelpers'
+import { useAppStore } from '../../../store/app.ts'
+import { insertLog } from '../logHelpers.ts'
 
 describe('Log helpers', () => {
   it('should insert log', () => {

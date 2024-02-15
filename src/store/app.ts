@@ -4,8 +4,8 @@ import { createJSONStorage, persist, StateStorage, StorageValue } from 'zustand/
 
 import { InvokeEvent } from '../typings/enum.ts'
 import type { AppConfig } from '../typings/global.ts'
-import type { Log } from '../utils/logHelpers.ts'
-import { invokeCommand, readTextFile, writeTextFile } from '../utils/tauriHelpers.ts'
+import type { Log } from '../utils/helpers/logHelpers.ts'
+import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tauriHelpers.ts'
 
 export type AppState = {
   isLoading: boolean

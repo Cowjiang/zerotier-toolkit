@@ -1,7 +1,7 @@
 import { Body, HttpVerb } from '@tauri-apps/api/http'
 
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
-import { useZeroTierStore } from '../store/zerotier.ts'
+import { useZeroTierStore } from '../../store/zerotier.ts'
 import { httpRequest } from './tauriHelpers.ts'
 
 type RequestOptions = {
@@ -33,8 +33,7 @@ const request = async <T>({ path, method, ...options }: RequestOptions) => {
 export const zerotierService = {
   get: async <T>(path: string) => await request<T>({ method: 'GET', path }),
 
-  delete: async <T>(path: string) =>
-    await request<T>({ method: 'DELETE', path }),
+  delete: async <T>(path: string) => await request<T>({ method: 'DELETE', path }),
 
   post: async <P, R>(path: string, body?: P) =>
     await request<R>({
