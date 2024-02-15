@@ -1,11 +1,12 @@
 import './App.css'
 
 import { NextUIProvider } from '@nextui-org/react'
-import { useTheme } from 'next-themes'
 import { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import { SERVICE_POLLING_INTERVAL } from '../constant'
+import NotificationProvider from './components/providers/NotificationProvider.tsx'
+import ThemeProvider from './components/providers/ThemeProvider.tsx'
 import Dev from './pages/Dev'
 import Home from './pages/Home'
 import Splash from './pages/Splash'
@@ -15,7 +16,7 @@ import { useZeroTierStore } from './store/zerotier'
 function App() {
   const navigate = useNavigate()
 
-  const { isAdmin, setLoading, checkAdmin, setConfig } = useAppStore()
+  const { isAdmin, setLoading, checkAdmin } = useAppStore()
   const { getServiceState, getServiceStartType, getServerInfo } = useZeroTierStore()
 
   useEffect(() => {
@@ -61,23 +62,22 @@ function App() {
       }
     }, [])
 
-  const { theme } = useTheme()
-  useEffect(() => {
-    setConfig({ theme })
-  }, [theme])
-
   useEffect(() => {}, [])
 
   return (
     <NextUIProvider navigate={navigate}>
-      <div className="text-foreground">
-        <Routes>
-          <Route path="/" element={<Splash />} />
-          <Route path="/home" element={<Home />} />
-          {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </div>
+      <ThemeProvider>
+        <NotificationProvider>
+          <div className="text-foreground">
+            <Routes>
+              <Route path="/" element={<Splash />} />
+              <Route path="/home" element={<Home />} />
+              {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
+              <Route path="*" element={<Home />} />
+            </Routes>
+          </div>
+        </NotificationProvider>
+      </ThemeProvider>
     </NextUIProvider>
   )
 }

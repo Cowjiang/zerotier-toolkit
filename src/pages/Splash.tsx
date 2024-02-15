@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { SPLASH_SCREEN_DELAY } from '../../constant'
-import { useNotification } from '../components/NotificationBar.tsx'
+import { useNotification } from '../components/providers/NotificationProvider.tsx'
 import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { ServiceStatus } from '../typings/enum.ts'
@@ -35,8 +35,7 @@ function Splash() {
       setShowRestartButton(true)
       setNotification({
         type: 'warning',
-        children:
-          'Administrator privilege is required, please restart the app as Admin',
+        children: 'Administrator privilege is required, please restart the app as Admin',
       })
     } else if (!isLoading && !showSplash) {
       navigate('/home', { replace: true })
@@ -61,31 +60,17 @@ function Splash() {
         <div className="h-[130px]">
           <Image width={130} alt="Logo" src="/zerotier_orange.svg" />
         </div>
-        <h1 className="mt-6 text-4xl font-black text-[#ffb541]">
-          ZeroTier Toolkit
-        </h1>
+        <h1 className="mt-6 text-4xl font-black text-[#ffb541]">ZeroTier Toolkit</h1>
       </div>
       <div className="h-0 -mt-4">
         {showLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
             <Spinner size="md" color="warning" />
           </motion.div>
         )}
         {showRestartButton && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-          >
-            <Button
-              className="w-50 text-white font-semibold bg-red-800"
-              size="lg"
-              onClick={restartAsAdmin}
-            >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
+            <Button className="w-50 text-white font-semibold bg-red-800" size="lg" onClick={restartAsAdmin}>
               Restart As Admin
             </Button>
           </motion.div>

@@ -1,9 +1,9 @@
 import classNames from 'classnames'
-import { createContext, ReactNode, useContext, useMemo, useState } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { CloseIcon } from './Icon.tsx'
 
-type NotificationBarOptions = {
+export type NotificationBarOptions = {
   type?: 'success' | 'warning' | 'error' | 'primary' | 'secondary'
   className?: string
   children?: ReactNode
@@ -13,16 +13,9 @@ type NotificationBarOptions = {
   onClose?: () => void
 }
 
-type NotificationBarProps = {
+export type NotificationBarProps = {
   hidden?: boolean
 } & NotificationBarOptions
-
-type NotificationContext = {
-  setNotification: (props: NotificationBarProps) => void
-  closeNotification: () => void
-}
-
-const NotificationContext = createContext<NotificationContext | null>(null)
 
 function NotificationBar(props: NotificationBarProps) {
   const styles = useMemo(() => {
@@ -43,10 +36,7 @@ function NotificationBar(props: NotificationBarProps) {
       primary: 'bg-primary text-primary-foreground',
       secondary: 'bg-secondary text-secondary-foreground',
     }
-    return [
-      ...defaultClassNames,
-      preset?.[props?.type ?? 'primary'] ?? preset['primary'],
-    ]
+    return [...defaultClassNames, preset?.[props?.type ?? 'primary'] ?? preset['primary']]
   }, [props])
 
   const closeNotification = () => props.onClose?.()
@@ -55,9 +45,7 @@ function NotificationBar(props: NotificationBarProps) {
     <div
       className={classNames([
         ...styles,
-        props.hidden
-          ? 'opacity-0 pointer-events-none'
-          : 'opacity-100 pointer-events-auto',
+        props.hidden ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto',
       ])}
     >
       {props.children}
@@ -77,60 +65,4 @@ function NotificationBar(props: NotificationBarProps) {
   )
 }
 
-function NotificationProvider({ children }: { children: ReactNode }) {
-  const initialOptions: NotificationBarProps = {
-    type: 'primary',
-    animate: true,
-  }
-  const [options, setOptions] = useState<NotificationBarProps>(initialOptions)
-  const [hidden, setHidden] = useState(true)
-
-  const [autoCloseTimer, setAutoCloseTimer] = useState<number | undefined>(
-    undefined,
-  )
-
-  const setNotification = (options: NotificationBarOptions) => {
-    clearTimer()
-    setOptions({ ...initialOptions, ...options })
-    setTimeout(() => setHidden(false), 0)
-    options.duration &&
-      setAutoCloseTimer(setTimeout(closeNotification, options.duration))
-  }
-  const closeNotification = () => {
-    clearTimer()
-    setHidden(true)
-    setTimeout(() => setOptions(initialOptions), options.animate ? 250 : 0)
-  }
-
-  const clearTimer = () => {
-    if (autoCloseTimer) {
-      clearTimeout(autoCloseTimer)
-      setAutoCloseTimer(undefined)
-    }
-  }
-
-  return (
-    <NotificationContext.Provider
-      value={{ setNotification, closeNotification }}
-    >
-      {children}
-      <NotificationBar
-        onClose={closeNotification}
-        hidden={hidden}
-        {...options}
-      />
-    </NotificationContext.Provider>
-  )
-}
-
-export const useNotification = () => {
-  const context = useContext(NotificationContext)
-  if (!context) {
-    throw new Error(
-      'useNotification must be used within a NotificationProvider',
-    )
-  }
-  return context
-}
-
-export default NotificationProvider
+export default NotificationBar
