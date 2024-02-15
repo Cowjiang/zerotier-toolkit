@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 import NotificationProvider from '../../components/providers/NotificationProvider.tsx'
 
-vi.mock('./setupZustand')
+vi.mock('zustand')
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
