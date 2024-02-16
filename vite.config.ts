@@ -20,6 +20,9 @@ export default defineConfig(async () => ({
     include: ['**/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./utils/testUtils/setupTest.tsx']
+    setupFiles: ['./utils/testUtils/setupTest.tsx'],
+    coverage: {
+      exclude: ['**/__mocks__/**', '**/typings/**', '**/i18n/**', '**/services/**', '**/*.d.ts']
+    }
   }
 }))
