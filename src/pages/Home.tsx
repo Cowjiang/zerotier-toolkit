@@ -3,8 +3,8 @@ import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 
-import { HistoryIcon } from '../components/Icon'
-import LogsModal from '../components/LogsModal'
+import { HistoryIcon } from '../components/ui/Icon.tsx'
+import LogsModal from '../components/ui/LogsModal.tsx'
 import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier'
 import { ServiceStatus } from '../typings/enum'
@@ -13,19 +13,13 @@ function Home() {
   const { isAdmin } = useAppStore()
   const { serviceState, startService, stopService } = useZeroTierStore()
 
-  const {
-    isOpen: isModalOpen,
-    onOpen: onModalOpen,
-    onOpenChange: onModalOpenChange,
-  } = useDisclosure()
+  const { isOpen: isModalOpen, onOpen: onModalOpen, onOpenChange: onModalOpenChange } = useDisclosure()
 
   const [loading, setLoading] = useState(false)
 
   const handleServiceBtnClick = async () => {
     setLoading(true)
-    await (serviceState === ServiceStatus.RUNNING
-      ? stopService()
-      : startService())
+    await (serviceState === ServiceStatus.RUNNING ? stopService() : startService())
     setLoading(false)
   }
 
@@ -35,23 +29,15 @@ function Home() {
     <Button
       className={classNames([
         'w-40 bg-gradient-to-tr text-white shadow-lg',
-        serviceState === ServiceStatus.RUNNING
-          ? 'bg-none bg-red-800'
-          : 'from-pink-500 to-yellow-500',
-        disabled
-          ? 'bg-none bg-default-100 text-default-400 shadow-none cursor-not-allowed'
-          : '',
+        serviceState === ServiceStatus.RUNNING ? 'bg-none bg-red-800' : 'from-pink-500 to-yellow-500',
+        disabled ? 'bg-none bg-default-100 text-default-400 shadow-none cursor-not-allowed' : '',
       ])}
       size="lg"
       disabled={disabled}
       isLoading={loading}
       onClick={handleServiceBtnClick}
     >
-      {loading
-        ? ''
-        : serviceState === ServiceStatus.RUNNING
-          ? 'Stop Service'
-          : 'Start Service'}
+      {loading ? '' : serviceState === ServiceStatus.RUNNING ? 'Stop Service' : 'Start Service'}
     </Button>
   )
 
@@ -78,9 +64,7 @@ function Home() {
         </a>
       </div>
 
-      <p className="mt-4 font-bold">
-        Build with Tauri, Vite, React, Next UI and Tailwind CSS
-      </p>
+      <p className="mt-4 font-bold">Build with Tauri, Vite, React, Next UI and Tailwind CSS</p>
 
       <div className="w-full mt-5 flex justify-center items-center">
         {serviceButton}
@@ -94,11 +78,7 @@ function Home() {
         </Button>
       </div>
 
-      <LogsModal
-        isOpen={isModalOpen}
-        backdrop="blur"
-        onOpenChange={onModalOpenChange}
-      />
+      <LogsModal isOpen={isModalOpen} backdrop="blur" onOpenChange={onModalOpenChange} />
     </motion.div>
   )
 }

@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
 
-import NotificationBar, { NotificationBarOptions, NotificationBarProps } from '../NotificationBar.tsx'
+import NotificationBar, { NotificationBarOptions, NotificationBarProps } from '../ui/NotificationBar.tsx'
 
 type NotificationContext = {
   setNotification: (props: NotificationBarProps) => void

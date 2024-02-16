@@ -11,8 +11,8 @@ import {
 } from '@nextui-org/react'
 import { useMemo } from 'react'
 
-import { useAppStore } from '../store/app.ts'
-import formatTimestamp from '../utils/formatters/formatDate.ts'
+import { useAppStore } from '../../store/app.ts'
+import formatTimestamp from '../../utils/formatters/formatDate.ts'
 
 type Props = Omit<ModalProps, 'children'>
 
