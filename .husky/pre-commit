@@ -1,2 +1,2 @@
 pnpm lint-staged
-pnpm test:no-watch
+pnpm test:coverage
