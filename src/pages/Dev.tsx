@@ -1,17 +1,21 @@
 import { Button } from '@nextui-org/react'
 import { Response } from '@tauri-apps/api/http'
+import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import i18n from '../i18n/index.ts'
 import { getNetworks } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
+import { InvokeEvent } from '../typings/enum.ts'
 import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tauriHelpers.ts'
 
 function Dev() {
   const { restartAsAdmin } = useAppStore()
   const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
+  const [assList, setAssList] = useState<JSX.Element[]>([])
 
   async function readConfiguration() {
     return await readTextFile()
@@ -36,8 +40,9 @@ function Dev() {
   })
 
   const btnList = [
-    invokeCommandButton('get_config'),
-    invokeCommandButton('get_zerotier_server_info'),
+    invokeCommandButton(InvokeEvent.GET_CONFIG),
+    invokeCommandButton(InvokeEvent.GET_ZEROTIER_SERVER_INFO),
+    invokeCommandButton(InvokeEvent.HIDE_MAIN_WINDOW),
     apiButton(getNetworks),
     {
       text: '[i18n]: translation',
@@ -79,14 +84,55 @@ function Dev() {
     },
   ]
 
+  function ass(): JSX.Element {
+    return (
+      <motion.div
+        className={'absolute top-0 font-bold'}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, scale: 1.2, y: -10 }}
+        exit={{ opacity: 0 }}
+      >
+        kiss my ass!
+      </motion.div>
+    )
+  }
+
+  const kissMyAssBtn = (
+    <div className={'relative'}>
+      <Button
+        onClick={() => {
+          const newAssList = [...assList]
+          newAssList.push(ass())
+          setAssList(newAssList)
+          setTimeout(() => {
+            const newAssList = [...assList]
+            newAssList.shift()
+            setAssList(newAssList)
+          }, 1000)
+        }}
+        size="lg"
+        className="flowing-gradient bg-gradient-to-r from-[#f02fc2] to-[#6094ea]  font-bold py-2 px-4 m-1 relative"
+      >
+        🤩
+      </Button>
+      {assList.map((item, index) => (
+        <div key={index}>{item}</div>
+      ))}
+    </div>
+  )
+
   return (
     <div className="w-full min-h-[100vh] p-3">
+      <div className="flex flex-row justify-center">
+        <img src="/lab.png" className="w-40" />
+      </div>
       <div className="w-full mt-5 flex flex-wrap ">
         {btnList.map(({ text, onClick }) => (
           <Button size="lg" className="font-bold mt-2 ml-2 flex-grow" color="warning" onClick={onClick} key={text}>
             {text}
           </Button>
         ))}
+        {kissMyAssBtn}
       </div>
     </div>
   )
