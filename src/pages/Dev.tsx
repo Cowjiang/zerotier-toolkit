@@ -1,6 +1,7 @@
 import { Button } from '@nextui-org/react'
 import { Response } from '@tauri-apps/api/http'
 import { useTheme } from 'next-themes'
+import { useNavigate } from 'react-router-dom'
 
 import i18n from '../i18n/index.ts'
 import { getNetworks } from '../services/zerotierService.ts'
@@ -10,6 +11,7 @@ import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tau
 function Dev() {
   const { restartAsAdmin } = useAppStore()
   const { theme, setTheme } = useTheme()
+  const navigate = useNavigate()
 
   async function readConfiguration() {
     return await readTextFile()
@@ -70,6 +72,10 @@ function Dev() {
         const recoverContent = await readConfiguration()
         console.log('read', recoverContent)
       },
+    },
+    {
+      text: 'Setting Page',
+      onClick: () => navigate('/setting'),
     },
   ]
 

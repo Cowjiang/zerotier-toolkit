@@ -9,6 +9,7 @@ import ThemeProvider from './components/providers/ThemeProvider.tsx'
 import { SERVICE_POLLING_INTERVAL } from './constant.ts'
 import Dev from './pages/Dev'
 import Home from './pages/Home'
+import Setting from './pages/Setting.tsx'
 import Splash from './pages/Splash'
 import { useAppStore } from './store/app'
 import { useZeroTierStore } from './store/zerotier'
@@ -72,8 +73,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Splash />} />
               <Route path="/home" element={<Home />} />
-              {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
+              <Route path="/setting" element={<Setting />} />
               <Route path="*" element={<Home />} />
+              {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
             </Routes>
           </div>
         </NotificationProvider>
