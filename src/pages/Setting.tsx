@@ -106,6 +106,7 @@ function Setting() {
             <p className="mt-1 text-sm text-default-600">{currentListItem.description}</p>
           </div>
           <Button
+            aria-label="Back to homepage"
             className="ml-auto bg-danger/90 text-danger-foreground"
             isIconOnly
             radius="lg"
