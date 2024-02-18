@@ -8,6 +8,10 @@ function AppearanceSetting() {
   const { theme, setTheme } = useTheme()
   const switchTheme = (theme: Theme) => setTheme(theme)
 
+  const syncWithSystemTheme = async () => {
+    // todo
+  }
+
   return (
     <div className="flex flex-col">
       <div>
@@ -16,7 +20,12 @@ function AppearanceSetting() {
       <div className="mt-4 flex items-center">
         <p className="text-default-700">Sync with system</p>
         <div className="ml-auto flex gap-4">
-          <Switch size="sm" color="primary" aria-label="Sync with system theme" />
+          <Switch
+            aria-label="Sync with system theme"
+            size="sm"
+            color="primary"
+            onValueChange={(v) => v && syncWithSystemTheme()}
+          />
         </div>
       </div>
       <div className="mt-4 flex items-center">
