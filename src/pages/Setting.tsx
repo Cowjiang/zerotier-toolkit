@@ -109,7 +109,7 @@ function Setting() {
             className="ml-auto bg-danger/90 text-danger-foreground"
             isIconOnly
             radius="lg"
-            onClick={() => navigate('/home')}
+            onPress={() => navigate('/home')}
           >
             <CloseIcon />
           </Button>

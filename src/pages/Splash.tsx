@@ -65,7 +65,7 @@ function Splash() {
       <div className="h-0 -mt-4">
         {showLoading && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
-            <Spinner size="md" color="warning" />
+            <Spinner size="md" color="primary" />
           </motion.div>
         )}
         {showRestartButton && (

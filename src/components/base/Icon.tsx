@@ -21,32 +21,30 @@ const IconWrapper = (props: Props) => {
 
 export const DarkThemeIcon = (props: Props) => {
   return (
-    <svg width="128" height="96" viewBox="0 0 64 48" fill="none" {...props}>
+    <svg width="96" height="72" viewBox="0 0 64 48" fill="none" {...props}>
       <rect width="64" height="48" rx="4" fill="#2D2D2D"></rect>
       <path d="M0 4C0 1.79086 1.79086 0 4 0H23V48H4C1.79086 48 0 46.2091 0 44V4Z" fill="#333333"></path>
-      <path d="M0 4C0 1.79086 1.79086 0 4 0H5V48H4C1.79086 48 0 46.2091 0 44V4Z" fill="#383838"></path>
-      <rect x="30" y="6" width="26" height="6" rx="0.1" fill="#3B3B3B"></rect>
-      <rect x="30" y="16" width="16" height="6" rx="0.1" fill="#3B3B3B"></rect>
-      <rect x="30" y="26" width="22" height="6" rx="0.1" fill="#3B3B3B"></rect>
-      <rect x="8" y="6" width="13" height="1" rx="0.1" fill="#424242"></rect>
-      <rect x="8" y="11" width="6" height="1" rx="0.1" fill="#424242"></rect>
-      <rect x="8" y="16" width="10" height="1" rx="0.1" fill="#424242"></rect>
+      <rect x="30" y="6" width="26" height="6" rx="2.5" fill="#3B3B3B"></rect>
+      <rect x="30" y="16" width="16" height="6" rx="2.5" fill="#3B3B3B"></rect>
+      <rect x="30" y="26" width="22" height="6" rx="2.5" fill="#3B3B3B"></rect>
+      <rect x="8" y="6" width="13" height="1" rx="2.5" fill="#424242"></rect>
+      <rect x="8" y="11" width="6" height="1" rx="2.5" fill="#424242"></rect>
+      <rect x="8" y="16" width="10" height="1" rx="2.5" fill="#424242"></rect>
     </svg>
   )
 }
 
 export const LightThemeIcon = (props: Props) => {
   return (
-    <svg width="128" height="96" viewBox="0 0 64 48" fill="none" {...props}>
-      <rect width="64" height="48" rx="4" fill="white"></rect>
+    <svg width="96" height="72" viewBox="0 0 64 48" fill="none" {...props}>
+      <rect width="64" height="48" rx="4" fill="#f6f6f6"></rect>
       <path d="M0 4C0 1.79086 1.79086 0 4 0H23V48H4C1.79086 48 0 46.2091 0 44V4Z" fill="#D6D6D8"></path>
-      <path d="M0 4C0 1.79086 1.79086 0 4 0H5V48H4C1.79086 48 0 46.2091 0 44V4Z" fill="#919294"></path>
-      <rect x="30" y="6" width="26" height="6" rx="0.1" fill="#E6E7E9"></rect>
-      <rect x="30" y="16" width="16" height="6" rx="0.1" fill="#E6E7E9"></rect>
-      <rect x="30" y="26" width="22" height="6" rx="0.1" fill="#E6E7E9"></rect>
-      <rect x="8" y="6" width="13" height="1" rx="0.1" fill="#919294"></rect>
-      <rect x="8" y="11" width="6" height="1" rx="0.1" fill="#919294"></rect>
-      <rect x="8" y="16" width="10" height="1" rx="0.1" fill="#919294"></rect>
+      <rect x="30" y="6" width="26" height="6" rx="2.5" fill="#E6E7E9"></rect>
+      <rect x="30" y="16" width="16" height="6" rx="2.5" fill="#E6E7E9"></rect>
+      <rect x="30" y="26" width="22" height="6" rx="2.5" fill="#E6E7E9"></rect>
+      <rect x="5" y="6" width="13" height="1" rx="2.5" fill="#919294"></rect>
+      <rect x="5" y="11" width="6" height="1" rx="2.5" fill="#919294"></rect>
+      <rect x="5" y="16" width="10" height="1" rx="2.5" fill="#919294"></rect>
     </svg>
   )
 }
@@ -168,6 +166,17 @@ export const SunIcon = (props: Props) => {
       <path
         fill="currentColor"
         d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5,5-2.24,5-5-2.24-5-5-5Zm0,7c-1.1,0-2-.9-2-2s.9-2,2-2,2,.9,2,2-.9,2-2,2Zm4.95-6.95c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0,.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44ZM7.05,16.95c.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0ZM3.51,5.64c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41Zm16.97,12.73c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41Zm3.51-6.36c0,.83-.67,1.5-1.5,1.5h-2c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5h2c.83,0,1.5,.67,1.5,1.5ZM3.5,13.5H1.5c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5H3.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5ZM10.5,3.5V1.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5V3.5c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5Zm3,17v2c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5v-2c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5Z"
+      />
+    </IconWrapper>
+  )
+}
+
+export const CheckIcon = (props: Props) => {
+  return (
+    <IconWrapper {...props}>
+      <path
+        fill="currentColor"
+        d="m12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm6.2,10.512l-4.426,4.345c-.783.768-1.791,1.151-2.8,1.151-.998,0-1.996-.376-2.776-1.129l-1.899-1.867c-.394-.387-.399-1.02-.012-1.414.386-.395,1.021-.4,1.414-.012l1.893,1.861c.776.75,2.001.746,2.781-.018l4.425-4.344c.393-.388,1.024-.381,1.414.013.387.394.381,1.027-.014,1.414Z"
       />
     </IconWrapper>
   )

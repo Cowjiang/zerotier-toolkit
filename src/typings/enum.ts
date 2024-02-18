@@ -25,3 +25,8 @@ export enum InvokeEvent {
   GET_NETWORKS = 'get_networks',
   HIDE_MAIN_WINDOW = 'hide_main_window',
 }
+
+export enum Theme {
+  DARK = 'dark',
+  LIGHT = 'light',
+}

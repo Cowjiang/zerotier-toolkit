@@ -128,7 +128,7 @@ function Dev() {
       </div>
       <div className="w-full mt-5 flex flex-wrap ">
         {btnList.map(({ text, onClick }) => (
-          <Button size="lg" className="font-bold mt-2 ml-2 flex-grow" color="warning" onClick={onClick} key={text}>
+          <Button size="lg" className="font-bold mt-2 ml-2 flex-grow" color="primary" onClick={onClick} key={text}>
             {text}
           </Button>
         ))}

@@ -12,5 +12,18 @@ export default {
         extend: {},
     },
     darkMode: "class",
-    plugins: [nextui()],
+    plugins: [nextui({
+      themes: {
+        light: {
+          colors: {
+            primary: '#F5A524'
+          }
+        },
+        dark: {
+          colors: {
+            primary: '#F5A524'
+          }
+        }
+      }
+    })],
 }
