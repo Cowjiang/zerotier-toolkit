@@ -9,7 +9,7 @@ describe('ThemeProvider', () => {
         <div></div>
       </ThemeProvider>,
     )
-    const currentTheme = useAppStore.getState().config.theme
+    const currentTheme = useAppStore.getState().config.theme?.current
     expect(currentTheme).toBe('test')
   })
 })

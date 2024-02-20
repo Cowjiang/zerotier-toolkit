@@ -1,15 +1,20 @@
 import { Button, Divider, Switch } from '@nextui-org/react'
 import { useTheme } from 'next-themes'
+import { UseThemeProps } from 'next-themes/dist/types'
 
+import { useAppStore } from '../../store/app.ts'
 import { Theme } from '../../typings/enum.ts'
 import { CheckIcon, DarkThemeIcon, LightThemeIcon } from '../base/Icon.tsx'
 
 function AppearanceSetting() {
-  const { theme, setTheme } = useTheme()
-  const switchTheme = (theme: Theme) => setTheme(theme)
+  const { theme, setTheme } = useTheme() as { theme: Theme } & UseThemeProps
+  const switchTheme = (theme: Theme) => {
+    syncWithSystemTheme(false).then(() => setTheme(theme))
+  }
 
-  const syncWithSystemTheme = async () => {
-    // todo
+  const { config, setConfig } = useAppStore()
+  const syncWithSystemTheme = async (isSyncWithSystem: boolean) => {
+    setConfig({ theme: { isSyncWithSystem, current: theme } })
   }
 
   return (
@@ -24,7 +29,8 @@ function AppearanceSetting() {
             aria-label="Sync with system theme"
             size="sm"
             color="primary"
-            onValueChange={(v) => v && syncWithSystemTheme()}
+            isSelected={config.theme?.isSyncWithSystem}
+            onValueChange={(v) => syncWithSystemTheme(v)}
           />
         </div>
       </div>

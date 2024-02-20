@@ -91,7 +91,6 @@ export const useAppStore = create<AppState & AppAction>()(
     }),
     {
       name: 'appConfig',
-      // skipHydration: true,
       partialize: (state) => ({ config: state.config }),
       storage: createJSONStorage(appConfigStorage),
     },

@@ -63,8 +63,6 @@ function App() {
       }
     }, [])
 
-  useEffect(() => {}, [])
-
   return (
     <NextUIProvider navigate={navigate}>
       <ThemeProvider>
