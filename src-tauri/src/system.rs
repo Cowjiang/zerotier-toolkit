@@ -14,7 +14,12 @@ lazy_static! {
 
 #[derive(Clone, Deserialize, Debug, Serialize, Default)]
 pub struct Configuration {
-    theme: Option<String>,
+    theme: Option<ThemeConfig>,
+}
+#[derive(Clone, Serialize, Debug, Deserialize)]
+pub struct ThemeConfig {
+    current: Option<String>,
+    is_sync_with_system: Option<bool>,
 }
 impl Configuration {
     pub fn load(&mut self, config: Configuration) {
