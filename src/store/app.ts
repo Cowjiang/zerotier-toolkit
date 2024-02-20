@@ -8,6 +8,7 @@ import type { Log } from '../utils/helpers/logHelpers.ts'
 import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tauriHelpers.ts'
 
 export type AppState = {
+  hasHydrated: boolean
   isLoading: boolean
   isAdmin: boolean
   logs: Log[]
@@ -55,6 +56,7 @@ const appConfigStorage = (): StateStorage => {
 export const useAppStore = create<AppState & AppAction>()(
   persist(
     (set) => ({
+      hasHydrated: false,
       isLoading: true,
       isAdmin: false,
       logs: [],
@@ -91,6 +93,11 @@ export const useAppStore = create<AppState & AppAction>()(
     }),
     {
       name: 'appConfig',
+      onRehydrateStorage: () => {
+        return () => {
+          useAppStore.setState({ ...useAppStore.getState(), hasHydrated: true })
+        }
+      },
       partialize: (state) => ({ config: state.config }),
       storage: createJSONStorage(appConfigStorage),
     },

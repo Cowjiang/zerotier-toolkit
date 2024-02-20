@@ -1,6 +1,6 @@
 import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes'
 import { ThemeProviderProps, UseThemeProps } from 'next-themes/dist/types'
-import { ReactElement, useEffect } from 'react'
+import { ReactElement, useEffect, useMemo } from 'react'
 
 import { useAppStore } from '../../store/app.ts'
 import { Theme } from '../../typings/enum.ts'
@@ -9,10 +9,10 @@ type ContentProps = { children: ReactElement }
 
 function Content({ children }: ContentProps) {
   const { theme, setTheme } = useTheme() as { theme: Theme } & UseThemeProps
-  const { config, setConfig } = useAppStore()
+  const { config, setConfig, hasHydrated } = useAppStore()
 
   useEffect(() => {
-    setConfig({ theme: { ...config.theme, current: theme } })
+    hasHydrated && setConfig({ theme: { ...config.theme, current: theme } })
   }, [theme])
 
   useEffect(() => {
@@ -22,14 +22,19 @@ function Content({ children }: ContentProps) {
     }
   }, [config.theme?.isSyncWithSystem, theme])
 
+  const handleSystemThemeChange = useMemo(
+    () =>
+      ({ matches }: MediaQueryListEvent) => {
+        config.theme?.isSyncWithSystem && setTheme(matches ? Theme.DARK : Theme.LIGHT)
+      },
+    [config.theme?.isSyncWithSystem],
+  )
+
   useEffect(() => {
-    const handleSystemThemeChange = ({ matches }: MediaQueryListEvent) => {
-      config.theme?.isSyncWithSystem && setTheme(matches ? Theme.DARK : Theme.LIGHT)
-    }
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleSystemThemeChange)
     return () =>
       window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', handleSystemThemeChange)
-  }, [])
+  }, [config])
 
   return children
 }
