@@ -30,3 +30,8 @@ export enum Theme {
   DARK = 'dark',
   LIGHT = 'light',
 }
+
+export enum ThemeConfig {
+  CURRENT = 'Theme.Current',
+  IS_SYNC_WITH_SYSTEM = 'Theme.IsSyncWithSystem',
+}

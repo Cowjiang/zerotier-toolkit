@@ -1,4 +1,4 @@
-import { Theme } from './enum.ts'
+import { Theme, ThemeConfig } from './enum.ts'
 
 export type InvokeResponse = {
   code: number
@@ -6,11 +6,7 @@ export type InvokeResponse = {
   data: any
 }
 
-type ThemeConfig = {
-  current?: Theme
-  isSyncWithSystem?: boolean
-}
-
 export type AppConfig = {
-  theme?: ThemeConfig
+  [ThemeConfig.CURRENT]?: Theme
+  [ThemeConfig.IS_SYNC_WITH_SYSTEM]?: boolean
 }
