@@ -4,6 +4,7 @@ import { UseThemeProps } from 'next-themes/dist/types'
 
 import { useAppStore } from '../../store/app.ts'
 import { Theme } from '../../typings/enum.ts'
+import { ThemeConfig } from '../../typings/enum.ts'
 import { CheckIcon, DarkThemeIcon, LightThemeIcon } from '../base/Icon.tsx'
 
 function AppearanceSetting() {
@@ -14,7 +15,10 @@ function AppearanceSetting() {
 
   const { config, setConfig } = useAppStore()
   const syncWithSystemTheme = async (isSyncWithSystem: boolean) => {
-    setConfig({ theme: { isSyncWithSystem, current: theme } })
+    setConfig({
+      [ThemeConfig.IS_SYNC_WITH_SYSTEM]: isSyncWithSystem,
+      [ThemeConfig.CURRENT]: theme,
+    })
   }
 
   return (
@@ -29,7 +33,7 @@ function AppearanceSetting() {
             aria-label="Sync with system theme"
             size="sm"
             color="primary"
-            isSelected={config.theme?.isSyncWithSystem}
+            isSelected={config[ThemeConfig.IS_SYNC_WITH_SYSTEM]}
             onValueChange={(v) => syncWithSystemTheme(v)}
           />
         </div>

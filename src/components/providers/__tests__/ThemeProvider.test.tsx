@@ -1,6 +1,7 @@
 import { act, render } from '@testing-library/react'
 
 import { useAppStore } from '../../../store/app.ts'
+import { ThemeConfig } from '../../../typings/enum.ts'
 import ThemeProvider from '../ThemeProvider.tsx'
 
 describe('ThemeProvider', () => {
@@ -10,7 +11,7 @@ describe('ThemeProvider', () => {
         <div></div>
       </ThemeProvider>,
     )
-    const currentTheme = useAppStore.getState().config.theme?.current
+    const currentTheme = useAppStore.getState().config[ThemeConfig.CURRENT]
     expect(currentTheme).toBe('test')
   })
 
@@ -30,18 +31,18 @@ describe('ThemeProvider', () => {
         dispatchEvent: vi.fn(),
       })),
     })
-    useAppStore.setState({ hasHydrated: true, config: { theme: { isSyncWithSystem: false } } })
+    useAppStore.setState({ hasHydrated: true, config: { [ThemeConfig.IS_SYNC_WITH_SYSTEM]: false } })
     render(
       <ThemeProvider>
         <div></div>
       </ThemeProvider>,
     )
-    expect(useAppStore.getState().config.theme?.current).toBe('light')
+    expect(useAppStore.getState().config[ThemeConfig.CURRENT]).toBe('light')
 
     act(() => {
-      useAppStore.setState({ config: { theme: { ...useAppStore.getState().config.theme, isSyncWithSystem: true } } })
+      useAppStore.setState({ config: { [ThemeConfig.IS_SYNC_WITH_SYSTEM]: true } })
     })
-    expect(useAppStore.getState().config.theme?.current).toBe('dark')
+    expect(useAppStore.getState().config[ThemeConfig.CURRENT]).toBe('dark')
 
     expect(addEventListener).toHaveBeenCalled()
     expect(removeEventListener).toHaveBeenCalled()

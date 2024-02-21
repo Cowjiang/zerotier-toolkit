@@ -4,6 +4,7 @@ import { ReactElement, useEffect, useMemo } from 'react'
 
 import { useAppStore } from '../../store/app.ts'
 import { Theme } from '../../typings/enum.ts'
+import { ThemeConfig } from '../../typings/enum.ts'
 
 type ContentProps = { children: ReactElement }
 
@@ -12,22 +13,22 @@ function Content({ children }: ContentProps) {
   const { config, setConfig, hasHydrated } = useAppStore()
 
   useEffect(() => {
-    hasHydrated && setConfig({ theme: { ...config.theme, current: theme } })
+    hasHydrated && setConfig({ [ThemeConfig.CURRENT]: theme })
   }, [theme])
 
   useEffect(() => {
-    if (config.theme?.isSyncWithSystem) {
+    if (config[ThemeConfig.IS_SYNC_WITH_SYSTEM]) {
       const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT
       setTheme(theme)
     }
-  }, [config.theme?.isSyncWithSystem, theme])
+  }, [config[ThemeConfig.IS_SYNC_WITH_SYSTEM], theme])
 
   const handleSystemThemeChange = useMemo(
     () =>
       ({ matches }: MediaQueryListEvent) => {
-        config.theme?.isSyncWithSystem && setTheme(matches ? Theme.DARK : Theme.LIGHT)
+        config[ThemeConfig.IS_SYNC_WITH_SYSTEM] && setTheme(matches ? Theme.DARK : Theme.LIGHT)
       },
-    [config.theme?.isSyncWithSystem],
+    [config[ThemeConfig.IS_SYNC_WITH_SYSTEM]],
   )
 
   useEffect(() => {
