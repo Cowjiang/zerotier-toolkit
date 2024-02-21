@@ -32,6 +32,7 @@ chrono = "0.4.31"
 winapi = { version = "0.3.9", features = ["winsvc", "winbase"] }
 parking_lot = "0.12.1"
 auto-launch = "0.5.0"
+thiserror = "1.0.57"
 [dev-dependencies]
 tokio = { version = "1.36.0", features = ["full"] }
 

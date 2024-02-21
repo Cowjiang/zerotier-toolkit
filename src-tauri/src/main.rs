@@ -6,6 +6,7 @@ use std::fs::{File, OpenOptions};
 use auto_launch_manager::init_auto_launch_manager;
 use command::*;
 use log::{debug, warn, LevelFilter};
+use serde_json::{Map, Value};
 use system::*;
 use system_tray::{handle_system_tray_event, init_system_tray};
 use tauri::{AppHandle, Manager};
@@ -45,22 +46,23 @@ fn start_tauri() {
             show_main_window,
             // other handlers
             is_admin,
-            restart_as_admin,
-            get_config
+            restart_as_admin
         ])
         .setup(|app| {
             let app_handle = app.app_handle();
             init_logger(app_handle.clone());
             init_configuration(app_handle.clone());
-            let result_auto_launcher_manager = init_auto_launch_manager(
+            let _ = init_auto_launch_manager(
                 app,
                 auto_launch_manager::MacosLauncher::LaunchAgent,
-                Some(vec![]),
+                None,
             );
-            match result_auto_launcher_manager {
-                Ok(auto_launch_manager) => app.manage(auto_launch_manager),
-                Err(_) => true,
-            };
+            app.listen_global(EVENT_CONFIG_CHANGE, |event| {
+                let payload = event.payload();
+                let payload: Map<String, Value> = serde_json::from_str(payload.unwrap()).unwrap();
+                handle_config_change_event(payload);
+            });
+
             Ok(())
         })
         .run(tauri::generate_context!())
@@ -113,7 +115,7 @@ fn init_configuration(app_handle: AppHandle) {
                     let config: Configuration = serde_json::from_reader(file).unwrap();
                     let mut config_write = CONFIGURATION.write();
                     debug!("{configuration_file_path} resolve complete");
-                    config_write.load(config)
+                    *config_write = config
                 }
                 Err(error) => {
                     warn!(
