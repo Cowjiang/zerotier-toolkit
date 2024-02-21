@@ -3,6 +3,7 @@
 
 use std::fs::{File, OpenOptions};
 
+use auto_launch_manager::init_auto_launch_manager;
 use command::*;
 use log::{debug, warn, LevelFilter};
 use system::*;
@@ -15,6 +16,7 @@ mod command;
 #[cfg(test)]
 mod experiment;
 
+mod auto_launch_manager;
 mod logger;
 mod r;
 mod system;
@@ -50,7 +52,15 @@ fn start_tauri() {
             let app_handle = app.app_handle();
             init_logger(app_handle.clone());
             init_configuration(app_handle.clone());
-
+            let result_auto_launcher_manager = init_auto_launch_manager(
+                app,
+                auto_launch_manager::MacosLauncher::LaunchAgent,
+                Some(vec![]),
+            );
+            match result_auto_launcher_manager {
+                Ok(auto_launch_manager) => app.manage(auto_launch_manager),
+                Err(_) => true,
+            };
             Ok(())
         })
         .run(tauri::generate_context!())
