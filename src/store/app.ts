@@ -2,8 +2,8 @@ import { exit } from '@tauri-apps/api/process'
 import { create } from 'zustand'
 import { createJSONStorage, persist, StateStorage, StorageValue } from 'zustand/middleware'
 
+import type { AppConfig } from '../typings/config.ts'
 import { InvokeEvent } from '../typings/enum.ts'
-import type { AppConfig } from '../typings/global.ts'
 import type { Log } from '../utils/helpers/logHelpers.ts'
 import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tauriHelpers.ts'
 

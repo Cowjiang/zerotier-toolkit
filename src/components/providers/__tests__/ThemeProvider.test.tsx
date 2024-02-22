@@ -1,7 +1,7 @@
 import { act, render } from '@testing-library/react'
 
 import { useAppStore } from '../../../store/app.ts'
-import { ThemeConfig } from '../../../typings/enum.ts'
+import { ThemeConfig } from '../../../typings/config.ts'
 import ThemeProvider from '../ThemeProvider.tsx'
 
 describe('ThemeProvider', () => {

@@ -31,7 +31,7 @@ export enum Theme {
   LIGHT = 'light',
 }
 
-export enum ThemeConfig {
-  CURRENT = 'Theme.Current',
-  IS_SYNC_WITH_SYSTEM = 'Theme.IsSyncWithSystem',
+export enum Language {
+  CN = 'cn',
+  EN = 'en',
 }
