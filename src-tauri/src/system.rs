@@ -4,6 +4,7 @@ use crate::{
     r::{fail_message_json, success_json},
 };
 use lazy_static::lazy_static;
+use log::debug;
 use parking_lot::RwLock;
 use serde_json::{Map, Value};
 use std::env;
@@ -20,11 +21,13 @@ lazy_static! {
 pub type Configuration = Map<String, Value>;
 
 pub fn handle_config_change_event(config_changed: Map<String, Value>) {
+    debug!("[event]config changed");
     let keys = config_changed.keys();
     let mut configuration = CONFIGURATION.write();
     for key in keys {
         match key.as_str() {
             CONFIG_SYSTEM_AUTO_LAUNCH => {
+                debug!("[event]config [System.AutoLaunch] changed");
                 let value = config_changed.get(key);
                 match value {
                     Some(value) => {
@@ -41,7 +44,8 @@ pub fn handle_config_change_event(config_changed: Map<String, Value>) {
                             } else if !is_config_auto_launch_bool && manager.is_enabled().unwrap() {
                                 let _ = manager.disable();
                             }
-                            configuration[key] = value.clone()
+                            configuration.insert(key.to_string(), value.clone());
+                            debug!("[System.AutoLaunch]{:}", manager.is_enabled().unwrap())
                         }
                     }
                     None => {

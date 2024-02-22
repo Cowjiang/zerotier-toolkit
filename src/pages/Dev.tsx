@@ -1,4 +1,5 @@
 import { Button } from '@nextui-org/react'
+import { emit } from '@tauri-apps/api/event'
 import { Response } from '@tauri-apps/api/http'
 import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
@@ -81,6 +82,10 @@ function Dev() {
     {
       text: 'Setting Page',
       onClick: () => navigate('/setting'),
+    },
+    {
+      text: '[event] config changed',
+      onClick: () => emit('event_config_change', { 'System.AutoLaunch': true }),
     },
   ]
 
