@@ -103,7 +103,7 @@ function Setting() {
         </Listbox>
       </div>
       <div className="w-full flex flex-col px-6 py-4 mr-6">
-        <div className="w-full mt-1 mb-4 flex items-center">
+        <div className="w-full mt-1 mb-6 flex items-center">
           <div className="flex flex-col">
             <h1 className="font-bold text-2xl">{selectedKeys}</h1>
             <p className="mt-1 text-sm text-default-600">{currentListItem.description}</p>
@@ -118,7 +118,7 @@ function Setting() {
             <CloseIcon />
           </Button>
         </div>
-        <div className="w-full h-full mt-4 flex flex-col">{currentListItem.panel}</div>
+        <div className="w-full h-full flex flex-col">{currentListItem.panel}</div>
       </div>
     </div>
   )

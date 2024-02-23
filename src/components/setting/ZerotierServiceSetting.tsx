@@ -21,7 +21,7 @@ const startTypes = [
 ]
 
 function ZerotierServiceSetting() {
-  const { isAdmin } = useAppStore()
+  const { isAdmin, restartAsAdmin } = useAppStore()
   const { serviceState, serviceStartType, startService, stopService, setServiceStartType } = useZeroTierStore()
 
   const [statusBtnLoading, setStatusBtnLoading] = useState(false)
@@ -55,17 +55,23 @@ function ZerotierServiceSetting() {
 
   return (
     <div className="flex flex-col">
+      {!isAdmin && (
+        <Button className="mb-6" color="warning" variant="flat" onPress={restartAsAdmin}>
+          Administrator privilege is required, please click here to restart as Admin
+        </Button>
+      )}
       <section>
         <div className="flex items-center">
           <p className="text-default-700">Service status</p>
           <div className="ml-auto flex gap-4">
             <Button
+              aria-label="switch the state of ZeroTier service"
               className="w-32"
               variant="flat"
               color={serviceStatusButton.color}
               startContent={serviceStatusButton.startContent}
               isLoading={statusBtnLoading}
-              disabled={!isAdmin}
+              isDisabled={!isAdmin}
               onPress={handleServiceBtnClick}
             >
               {serviceStatusButton.label}
@@ -73,20 +79,21 @@ function ZerotierServiceSetting() {
           </div>
         </div>
         <div className="mt-6 flex items-center">
-          <p className="text-default-700">Start Type</p>
+          <p className="text-default-700">Start type</p>
           <div className="ml-auto flex gap-4">
             <Select
               className="w-32"
-              label="Select language"
+              label="change the start type of ZeroTier service"
               labelPlacement="outside"
               classNames={{ label: 'hidden', base: '!mt-0' }}
               selectionMode="single"
-              disabled={!isAdmin}
+              isDisabled={!isAdmin}
               selectedKeys={currentStartType}
               onSelectionChange={handleStartTypeSelect}
+              test-id="select"
             >
               {startTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>
+                <SelectItem key={type.value} value={type.value} test-id="option">
                   {type.label}
                 </SelectItem>
               ))}
