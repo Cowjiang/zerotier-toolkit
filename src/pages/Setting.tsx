@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { CloseIcon, CodeIcon, CommandIcon, PaintIcon, TerminalIcon, WindowIcon } from '../components/base/Icon.tsx'
 import AppearanceSetting from '../components/setting/AppearanceSetting.tsx'
+import ZerotierServiceSetting from '../components/setting/ZerotierServiceSetting.tsx'
 
 type ListItem = {
   title: string
@@ -44,6 +45,8 @@ const settingList: ListSection[] = [
       {
         title: 'Service',
         startContent: <TerminalIcon {...iconProps} />,
+        description: 'Manage the ZeroTier service',
+        panel: <ZerotierServiceSetting />,
       },
     ],
   },
