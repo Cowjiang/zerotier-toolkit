@@ -55,12 +55,18 @@ function ZerotierServiceSetting() {
 
   return (
     <div className="flex flex-col">
-      {!isAdmin && (
-        <Button className="mb-6" color="warning" variant="flat" onPress={restartAsAdmin}>
-          Administrator privilege is required, please click here to restart as Admin
-        </Button>
-      )}
       <section>
+        {!isAdmin && (
+          <Button
+            className="mb-6 whitespace-normal py-unit-3 h-auto"
+            fullWidth
+            color="warning"
+            variant="flat"
+            onPress={restartAsAdmin}
+          >
+            Please click here to relaunch as Administrator for management
+          </Button>
+        )}
         <div className="flex items-center">
           <p className="text-default-700">Service status</p>
           <div className="ml-auto flex gap-4">

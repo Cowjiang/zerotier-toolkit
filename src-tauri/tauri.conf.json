@@ -65,7 +65,10 @@
         "resizable": true,
         "title": "ZeroTier Toolkit - Build By Tauri",
         "width": 800,
-        "height": 500
+        "height": 500,
+        "minWidth": 800,
+        "minHeight": 500,
+        "center": true
       }
     ]
   }

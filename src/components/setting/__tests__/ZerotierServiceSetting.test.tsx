@@ -62,7 +62,7 @@ describe('ZerotierServiceSetting', () => {
       restartAsAdmin,
     })
     const { getByText } = render(<ZerotierServiceSetting />)
-    const restartButton = getByText('Administrator privilege is required, please click here to restart as Admin')
+    const restartButton = getByText('Please click here to relaunch as Administrator for management')
     fireEvent.click(restartButton)
     expect(restartAsAdmin).toBeCalled()
   })
