@@ -55,7 +55,8 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()((set) =
   },
   setServiceStartType: async (startType: ServiceStartType) => {
     const { success } = await invokeCommand(InvokeEvent.SET_SERVICE_START_TYPE, { startType })
-    insertLog(`Changed service start type to: ${startType}`)
+    success && set((state) => ({ ...state, serviceStartType: startType }))
+    insertLog(`Changed service start type to ${startType} ${success ? 'successfully' : 'failed'}`)
     return success
   },
   getServerInfo: async () => {

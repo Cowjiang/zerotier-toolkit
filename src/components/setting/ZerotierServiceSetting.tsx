@@ -50,7 +50,8 @@ function ZerotierServiceSetting() {
     if (keys === 'all') {
       return
     }
-    isAdmin && setServiceStartType(keys.values().next().value)
+    const startType = keys.values().next().value
+    isAdmin && startType && setServiceStartType(startType)
   }
 
   return (
