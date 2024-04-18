@@ -13,13 +13,14 @@ type ListItem = {
 } & Pick<ListboxItemProps, 'children' | 'startContent'>
 
 type ListSection = {
-  items?: ListItem[]
+  items: ListItem[]
 } & Partial<ListboxSectionProps<ListItem>>
 
 const iconProps = { width: 16 }
 
 const settingList: ListSection[] = [
   {
+    key: 'Application',
     title: 'Application',
     items: [
       {
@@ -39,6 +40,7 @@ const settingList: ListSection[] = [
     ],
   },
   {
+    key: 'ZeroTier',
     title: 'ZeroTier',
     showDivider: true,
     items: [
@@ -51,6 +53,7 @@ const settingList: ListSection[] = [
     ],
   },
   {
+    key: 'Others',
     items: [
       {
         title: 'Development',
@@ -85,21 +88,20 @@ function Setting() {
           hideSelectedIcon
           shouldHighlightOnFocus={false}
           onSelectionChange={setSelectedKeys}
+          items={settingList}
           itemClasses={{
             base: 'data-[selected=true]:bg-default data-[hover=true]:bg-default/60 text-default-800',
           }}
         >
-          {settingList
-            .filter((s) => s.items?.length)
-            .map((section, index) => (
-              <ListboxSection key={section.title || `section-${index}`} aria-label={section.title} {...section}>
-                {(section.items as ListItem[]).map((item) => (
-                  <ListboxItem key={item.title} aria-label={item.title} {...item} description="">
-                    {item.title || item.children}
-                  </ListboxItem>
-                ))}
-              </ListboxSection>
-            ))}
+          {(section) => (
+            <ListboxSection key={section.key} aria-label={section.title} {...section}>
+              {(section.items as ListItem[]).map((item) => (
+                <ListboxItem key={item.title} aria-label={item.title} {...item} description="">
+                  {item.title || item.children}
+                </ListboxItem>
+              ))}
+            </ListboxSection>
+          )}
         </Listbox>
       </div>
       <div className="w-full flex flex-col px-6 py-4 mr-6">

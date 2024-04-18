@@ -104,15 +104,16 @@ function AppearanceSetting() {
               classNames={{ label: 'hidden', base: '!mt-0' }}
               selectionMode="single"
               selectedKeys={currentLanguage}
+              items={languages}
               onSelectionChange={(keys) => {
                 setConfig({ [LanguageConfig.UI]: keys === 'all' ? languages[0].value : keys.values().next().value })
               }}
             >
-              {languages.map((language) => (
+              {(language) => (
                 <SelectItem key={language.value} value={language.value}>
                   {language.label}
                 </SelectItem>
-              ))}
+              )}
             </Select>
           </div>
         </div>

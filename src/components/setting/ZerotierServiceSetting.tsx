@@ -58,7 +58,7 @@ function ZerotierServiceSetting() {
       <section>
         {!isAdmin && (
           <Button
-            className="mb-6 whitespace-normal py-unit-3 h-auto"
+            className="mb-6 whitespace-normal py-2.5 h-auto"
             fullWidth
             color="warning"
             variant="flat"
@@ -97,12 +97,13 @@ function ZerotierServiceSetting() {
               selectedKeys={currentStartType}
               onSelectionChange={handleStartTypeSelect}
               test-id="select"
+              items={startTypes}
             >
-              {startTypes.map((type) => (
+              {(type) => (
                 <SelectItem key={type.value} value={type.value} test-id="option">
                   {type.label}
                 </SelectItem>
-              ))}
+              )}
             </Select>
           </div>
         </div>
