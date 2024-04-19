@@ -20,7 +20,7 @@ const startTypes = [
   },
 ]
 
-function ZerotierServiceSetting() {
+function ZerotierService() {
   const { isAdmin, restartAsAdmin } = useAppStore()
   const { serviceState, serviceStartType, startService, stopService, setServiceStartType } = useZeroTierStore()
 
@@ -113,4 +113,4 @@ function ZerotierServiceSetting() {
   )
 }
 
-export default ZerotierServiceSetting
+export default ZerotierService

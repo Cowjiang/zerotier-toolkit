@@ -4,9 +4,9 @@ import { useAppStore } from '../../../store/app.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { ServiceStartType, ServiceStatus } from '../../../typings/enum.ts'
 import { render } from '../../../utils/testUtils/setupTest.tsx'
-import ZerotierServiceSetting from '../ZerotierServiceSetting.tsx'
+import ZerotierService from '../ZerotierService.tsx'
 
-describe('ZerotierServiceSetting', () => {
+describe('ZerotierService', () => {
   it('should display the status button and be able to start service', () => {
     const startService = vi.fn()
     useAppStore.setState({
@@ -16,7 +16,7 @@ describe('ZerotierServiceSetting', () => {
       serviceState: ServiceStatus.STOPPED,
       startService,
     })
-    const { getByText } = render(<ZerotierServiceSetting />)
+    const { getByText } = render(<ZerotierService />)
     waitFor(() => {
       const statusButton = getByText(ServiceStatus.STOPPED)
       fireEvent.click(statusButton)
@@ -34,7 +34,7 @@ describe('ZerotierServiceSetting', () => {
       serviceStartType: ServiceStartType.DEMAND_START,
       setServiceStartType,
     })
-    const { getByTestId } = render(<ZerotierServiceSetting />)
+    const { getByTestId } = render(<ZerotierService />)
     const selector = getByTestId('hidden-select-container').querySelector('select') as HTMLSelectElement
     expect(selector.value).toBe(ServiceStartType.DEMAND_START)
   })
@@ -48,7 +48,7 @@ describe('ZerotierServiceSetting', () => {
       serviceState: ServiceStatus.RUNNING,
       startService,
     })
-    const { getByText } = render(<ZerotierServiceSetting />)
+    const { getByText } = render(<ZerotierService />)
     const statusButton = getByText(ServiceStatus.RUNNING) as HTMLButtonElement
     expect(statusButton.disabled).toBeTruthy()
     fireEvent.click(statusButton)
@@ -61,7 +61,7 @@ describe('ZerotierServiceSetting', () => {
       isAdmin: false,
       restartAsAdmin,
     })
-    const { getByText } = render(<ZerotierServiceSetting />)
+    const { getByText } = render(<ZerotierService />)
     const restartButton = getByText('Please click here to relaunch as Administrator for management')
     fireEvent.click(restartButton)
     expect(restartAsAdmin).toBeCalled()

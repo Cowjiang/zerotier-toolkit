@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 
+import { getNetworks } from '../services/zerotierService.ts'
 import { InvokeEvent, ServiceStartType, ServiceStatus } from '../typings/enum.ts'
 import { Network, ServerInfo } from '../typings/zerotier.ts'
 import { insertLog } from '../utils/helpers/logHelpers.ts'
@@ -65,7 +66,7 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()((set) =
     return serverInfo
   },
   getNetworks: async () => {
-    const { data: networks } = await invokeCommand(InvokeEvent.GET_NETWORKS)
+    const { data: networks } = await getNetworks()
     set((state) => ({ ...state, networks }))
     return networks
   },

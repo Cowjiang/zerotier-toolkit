@@ -2,8 +2,9 @@ import { Button, Listbox, ListboxItem, ListboxItemProps, ListboxSection, Listbox
 import { ReactElement, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { CloseIcon, CodeIcon, CommandIcon, PaintIcon, WindowIcon } from '../components/base/Icon.tsx'
-import AppearanceSetting from '../components/setting/AppearanceSetting.tsx'
+import { CloseIcon, PaintIcon, TerminalIcon, WindowIcon } from '../components/base/Icon.tsx'
+import ZerotierNetworks from '../components/zerotier/ZerotierNetworks.tsx'
+import ZerotierService from '../components/zerotier/ZerotierService.tsx'
 
 type ListItem = {
   title: string
@@ -19,41 +20,39 @@ const iconProps = { width: 16 }
 
 const settingList: ListSection[] = [
   {
-    key: 'Application',
-    title: 'Application',
-    showDivider: true,
+    key: 'Basic',
+    title: 'Basic',
     items: [
       {
-        title: 'Appearance',
-        description: 'Customize the appearance of the application',
+        title: 'Networks',
+        description: 'Manage ZeroTier networks',
         startContent: <PaintIcon {...iconProps} />,
-        panel: <AppearanceSetting />,
+        panel: <ZerotierNetworks />,
       },
       {
-        title: 'Window',
+        title: 'Status',
         startContent: <WindowIcon {...iconProps} />,
-      },
-      {
-        title: 'Hotkeys',
-        startContent: <CommandIcon {...iconProps} />,
       },
     ],
   },
   {
-    key: 'Others',
+    key: 'Advance',
+    title: 'Advance',
     items: [
       {
-        title: 'Development',
-        startContent: <CodeIcon {...iconProps} />,
+        title: 'Service',
+        startContent: <TerminalIcon {...iconProps} />,
+        description: 'Manage the ZeroTier service',
+        panel: <ZerotierService />,
       },
     ],
   },
 ]
 
-function Setting() {
+function Zerotier() {
   const navigate = useNavigate()
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>(new Set(['Appearance']))
+  const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>(new Set(['Networks']))
   const currentListItem = useMemo(
     () =>
       (selectedKeys !== 'all'
@@ -113,4 +112,4 @@ function Setting() {
   )
 }
 
-export default Setting
+export default Zerotier

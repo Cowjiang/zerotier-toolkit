@@ -44,6 +44,10 @@ function Dev() {
       onClick: restartAsAdmin,
     },
     {
+      text: 'Zerotier Page',
+      onClick: () => navigate('/zerotier'),
+    },
+    {
       text: 'Setting Page',
       onClick: () => navigate('/setting'),
     },
