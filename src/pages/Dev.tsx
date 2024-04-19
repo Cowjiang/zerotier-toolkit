@@ -2,29 +2,19 @@ import { Button } from '@nextui-org/react'
 import { emit } from '@tauri-apps/api/event'
 import { Response } from '@tauri-apps/api/http'
 import { motion } from 'framer-motion'
-import { useTheme } from 'next-themes'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import i18n from '../i18n/index.ts'
-import { getNetworks } from '../services/zerotierService.ts'
+import { getNetworks, getStatus } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
 import { InvokeEvent } from '../typings/enum.ts'
-import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tauriHelpers.ts'
+import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 function Dev() {
   const { restartAsAdmin } = useAppStore()
-  const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
   const [assList, setAssList] = useState<JSX.Element[]>([])
-
-  async function readConfiguration() {
-    return await readTextFile()
-  }
-
-  async function writeConfiguration(content: string) {
-    await writeTextFile(content)
-  }
 
   const invokeCommandButton = (command: string) => ({
     text: `[Invoke] ${command}`,
@@ -41,10 +31,10 @@ function Dev() {
   })
 
   const btnList = [
-    invokeCommandButton(InvokeEvent.GET_CONFIG),
     invokeCommandButton(InvokeEvent.GET_ZEROTIER_SERVER_INFO),
     invokeCommandButton(InvokeEvent.HIDE_MAIN_WINDOW),
     apiButton(getNetworks),
+    apiButton(getStatus),
     {
       text: '[i18n]: translation',
       onClick: () => console.log(`hello => ${i18n.t('hello')}`),
@@ -52,32 +42,6 @@ function Dev() {
     {
       text: 'Restart As Admin',
       onClick: restartAsAdmin,
-    },
-    {
-      text: 'Theme Switcher',
-      onClick: () => setTheme(theme === 'light' ? 'dark' : 'light'),
-    },
-    {
-      text: '[fs] read configuration file',
-      onClick: async () => {
-        console.log(await readConfiguration())
-      },
-    },
-    {
-      text: '[fs] write configuration file',
-      onClick: async () => {
-        const configuration = await readConfiguration()
-        console.log('read', configuration)
-        const testWriteContent = 'hello'
-        console.log('write', testWriteContent)
-        await writeConfiguration(testWriteContent)
-        const afterWriteContent = await readConfiguration()
-        console.log('read', afterWriteContent)
-        console.log('write', configuration)
-        await writeConfiguration(configuration)
-        const recoverContent = await readConfiguration()
-        console.log('read', recoverContent)
-      },
     },
     {
       text: 'Setting Page',
