@@ -25,7 +25,7 @@ const request = async <T>({ path, method, ...options }: RequestOptions) => {
     ...options,
   }
   const res = await httpRequest<T>(httpOptions)
-  console.log('[Request]', httpOptions.url, res)
+  console.log('[Request]', httpOptions, res)
   !res.ok && (await Promise.reject(res))
   return res
 }

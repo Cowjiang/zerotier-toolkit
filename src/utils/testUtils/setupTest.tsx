@@ -4,16 +4,16 @@ import { mockIPC } from '@tauri-apps/api/mocks'
 import { render, RenderOptions } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { beforeEach } from 'vitest'
 
 import { mockServer } from '../../__mocks__/zerotier.ts'
 import NotificationProvider from '../../components/providers/NotificationProvider.tsx'
+import { useZeroTierStore } from '../../store/zerotier.ts'
 
 // Zustand mocking
 vi.mock('zustand')
 
 // HTTP request mocking
-beforeEach(() => {
+beforeAll(() => {
   mockIPC(async (cmd, args) => {
     if (cmd === 'tauri' && (args.message as any)?.cmd === 'httpRequest') {
       const { url, method } = (args.message as any).options
@@ -29,6 +29,7 @@ beforeEach(() => {
     }
   })
 })
+beforeEach(() => useZeroTierStore.setState({ serverInfo: { port: 9999, secret: 'test' } }))
 beforeAll(() => mockServer.listen({ onUnhandledRequest: 'error' }))
 afterAll(() => mockServer.close())
 afterEach(() => mockServer.resetHandlers())

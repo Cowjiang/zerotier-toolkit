@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 
 const httpHandlers = [
+  http.get('*/test', () => HttpResponse.json({})),
   http.get('*/status', () =>
     HttpResponse.json({
       address: '7c087768bb',
