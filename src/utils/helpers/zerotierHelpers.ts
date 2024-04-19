@@ -1,4 +1,4 @@
-import { Body, HttpVerb } from '@tauri-apps/api/http'
+import { Body, HttpVerb, Response } from '@tauri-apps/api/http'
 
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
@@ -24,7 +24,7 @@ const request = async <T>({ path, method, ...options }: RequestOptions) => {
     },
     ...options,
   }
-  const res = await httpRequest<T>(httpOptions)
+  const res: Response<T> = await httpRequest<T>(httpOptions)
   console.log('[Request]', httpOptions, res)
   !res.ok && (await Promise.reject(res))
   return res
