@@ -1,14 +1,21 @@
 import { Network, Peer, Status } from '../typings/zerotier.ts'
 import { zerotierService } from '../utils/helpers/zerotierHelpers.ts'
 
-const getNetworks = () => zerotierService.get<Network[]>('/network')
-
 const getStatus = () => zerotierService.get<Status>('/status')
 
-const joinOrUpdateNetwork = (networkId: string) => zerotierService.post<Network, Network>(`/network/${networkId}`)
+const getNetworks = () => zerotierService.get<Network[]>('/network')
+
+const getNetworkById = (networkId: string) => zerotierService.get<Network>(`/network/${networkId}`)
+
+const joinNetwork = (networkId: string) => zerotierService.post<string, Network>(`/network/${networkId}`)
+
+const updateNetwork = (networkId: string, networkDetails: Network) =>
+  zerotierService.post<Network, Network>(`/network/${networkId}`, networkDetails)
 
 const leaveNetwork = (networkId: string) => zerotierService.delete(`/network/${networkId}`)
 
 const getPeers = () => zerotierService.get<Peer[]>('/peer')
 
-export { getNetworks, getPeers, getStatus, joinOrUpdateNetwork, leaveNetwork }
+const getPeerByAddress = (address: string) => zerotierService.get<Peer>(`/peer/${address}`)
+
+export { getNetworkById, getNetworks, getPeerByAddress, getPeers, getStatus, joinNetwork, leaveNetwork, updateNetwork }
