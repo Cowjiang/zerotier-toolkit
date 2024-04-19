@@ -3,13 +3,14 @@
 
 use std::fs::{File, OpenOptions};
 
+use log::{debug, LevelFilter, warn};
+use serde_json::{Map, Value};
+use tauri::{AppHandle, Manager};
+
 use auto_launch_manager::init_auto_launch_manager;
 use command::*;
-use log::{debug, warn, LevelFilter};
-use serde_json::{Map, Value};
 use system::*;
 use system_tray::{handle_system_tray_event, init_system_tray};
-use tauri::{AppHandle, Manager};
 
 use crate::zerotier_manage::*;
 
@@ -24,6 +25,7 @@ mod system;
 mod system_tray;
 mod windows_service_manage;
 mod zerotier_manage;
+
 fn main() {
     start_tauri();
 }
@@ -47,35 +49,32 @@ fn start_tauri() {
             // other handlers
             is_admin,
             restart_as_admin
-        ])
-        .setup(|app| {
-            let app_handle = app.app_handle();
-            init_logger(app_handle.clone());
-            init_configuration(app_handle.clone());
-            let _ = init_auto_launch_manager(
-                app,
-                auto_launch_manager::MacosLauncher::LaunchAgent,
-                None,
-            );
-            app.listen_global(EVENT_CONFIG_CHANGE, |event| {
-                let payload = event.payload();
-                let payload: Map<String, Value> = serde_json::from_str(payload.unwrap()).unwrap();
-                handle_config_change_event(payload);
-            });
+        ]).setup(|app| {
+        let app_handle = app.app_handle();
+        init_logger(app_handle.clone());
+        init_configuration(app_handle.clone());
+        let _ = init_auto_launch_manager(
+            app,
+            auto_launch_manager::MacosLauncher::LaunchAgent,
+            None,
+        );
+        app.listen_global(EVENT_CONFIG_CHANGE, |event| {
+            let payload = event.payload();
+            let payload: Map<String, Value> = serde_json::from_str(payload.unwrap()).unwrap();
+            handle_config_change_event(payload);
+        });
 
-            Ok(())
-        })
-        .setup(|app| {
-            #[cfg(debug_assertions)]
-            {
-                let window = app.get_window("main").unwrap();
-                window.open_devtools();
-            }
-            Ok(())
-        })
+        #[cfg(debug_assertions)]
+        {
+            let window = app.get_window("main").unwrap();
+            window.open_devtools();
+        }
+        Ok(())
+    })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
 fn init_logger(app_handle: AppHandle) {
     let opt_log_file = app_handle.path_resolver().resolve_resource("system.log");
     let mut opt_open_log_file: Option<File> = None;
@@ -99,15 +98,17 @@ fn init_logger(app_handle: AppHandle) {
             println!("loading log file fail:{:?}", opt_log_file)
         }
     }
-    #[cfg(debug_assertions)]
-    {
-        logger::init_logger_with_level_and_file(LevelFilter::Debug, opt_open_log_file);
-    }
-    #[cfg(not(debug_assertions))]
-    {
-        logger::init_logger_with_level_and_file(LevelFilter::Info, opt_open_log_file);
-    }
+    logger::init_logger_with_level_and_file(LevelFilter::Debug, opt_open_log_file);
+    // #[cfg(debug_assertions)]
+    // {
+    //     logger::init_logger_with_level_and_file(LevelFilter::Debug, opt_open_log_file);
+    // }
+    // #[cfg(not(debug_assertions))]
+    // {
+    //     logger::init_logger_with_level_and_file(LevelFilter::Info, opt_open_log_file);
+    // }
 }
+
 fn init_configuration(app_handle: AppHandle) {
     debug!("start to init configuration");
     let configuration_file_path = "resources/configuration.json";
