@@ -17,7 +17,7 @@ function NotificationProvider({ children }: { children: ReactNode }) {
   const [options, setOptions] = useState<NotificationBarProps>(initialOptions)
   const [hidden, setHidden] = useState(true)
 
-  const [autoCloseTimer, setAutoCloseTimer] = useState<number | undefined>(undefined)
+  const [autoCloseTimer, setAutoCloseTimer] = useState<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const setNotification = (options: NotificationBarOptions) => {
     clearTimer()
