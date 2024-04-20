@@ -90,7 +90,7 @@ function Zerotier() {
           )}
         </Listbox>
       </div>
-      <div className="w-full flex flex-col px-6 py-4 mr-6">
+      <div className="w-full flex flex-col px-6 py-4 mr-6 overflow-hidden">
         <div className="w-full mt-1 mb-6 flex items-center">
           <div className="flex flex-col">
             <h1 className="font-bold text-2xl">{selectedKeys}</h1>

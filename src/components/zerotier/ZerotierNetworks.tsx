@@ -3,18 +3,88 @@ import {
   Chip,
   ChipProps,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalProps,
   Table,
   TableBody,
   TableCell,
   TableColumn,
+  TableColumnProps,
   TableHeader,
   TableRow,
+  useDisclosure,
 } from '@nextui-org/react'
 import { Key, useCallback, useEffect, useState } from 'react'
 
+import { joinNetwork } from '../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
 import { Network } from '../../typings/zerotier.ts'
 import { PlusIcon, SearchIcon } from '../base/Icon.tsx'
+import NotificationBar from '../base/NotificationBar.tsx'
+import { useNotification } from '../providers/NotificationProvider.tsx'
+
+function JoinModal(props: Omit<ModalProps, 'children'>) {
+  const { onClose } = props
+  const [inputValue, setInputValue] = useState('')
+  const { setNotification } = useNotification()
+
+  const onModalClose = () => {
+    setInputValue('')
+    onClose?.()
+  }
+
+  const [joining, setJoining] = useState(false)
+  const onJoinBtnClick = async () => {
+    setJoining(true)
+    try {
+      await joinNetwork(inputValue)
+      onModalClose()
+    } catch (e) {
+      console.log(e)
+      setNotification({
+        type: 'warning',
+        children: 'Failed to join network, please check your Network ID',
+        duration: 3000,
+      })
+    } finally {
+      setTimeout(() => {
+        setJoining(false)
+      }, 300)
+    }
+  }
+
+  return (
+    <Modal {...props} onClose={onModalClose}>
+      <ModalContent>
+        <ModalHeader className="flex flex-col gap-1">Join New Network</ModalHeader>
+        <ModalBody>
+          <Input
+            isClearable
+            className="w-full"
+            label="Enter 16-digit Network ID"
+            value={inputValue}
+            maxLength={16}
+            onClear={() => setInputValue('')}
+            onValueChange={(value) => setInputValue(value)}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" variant="light" onPress={onModalClose}>
+            Cancel
+          </Button>
+          <Button color="warning" isLoading={joining} isDisabled={inputValue.length < 16} onPress={onJoinBtnClick}>
+            Join
+          </Button>
+        </ModalFooter>
+        <NotificationBar />
+      </ModalContent>
+    </Modal>
+  )
+}
 
 function ToolBar({
   editMode,
@@ -27,6 +97,13 @@ function ToolBar({
   filterValue: string
   onFilterValueChange?: (value: string) => void
 }) {
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onOpenChange: onModalOpenChange,
+    onClose: onModalClose,
+  } = useDisclosure()
+
   return (
     <div className="w-full flex items-center gap-2">
       <Input
@@ -46,19 +123,20 @@ function ToolBar({
       >
         {editMode ? 'Cancel' : 'Edit'}
       </Button>
-      <Button className="flex-shrink-0" color="warning" endContent={<PlusIcon />}>
+      <Button className="flex-shrink-0 " color="warning" endContent={<PlusIcon />} onPress={onModalOpen}>
         Join New
       </Button>
+      <JoinModal isOpen={isModalOpen} backdrop="blur" onOpenChange={onModalOpenChange} onClose={onModalClose} />
     </div>
   )
 }
 
 function NetworksTable({ editMode, networks }: { networks: Network[]; editMode?: boolean }) {
-  const columns = [
-    { key: 'id', label: 'NETWORK ID' },
-    { key: 'name', label: 'NAME' },
-    { key: 'status', label: 'STATUS' },
-    { key: 'action', label: 'ACTION' },
+  const columns: ({ label: string } & Omit<TableColumnProps<any>, 'children'>)[] = [
+    { key: 'id', label: 'NETWORK ID', maxWidth: '100' },
+    { key: 'name', label: 'NAME', maxWidth: '100' },
+    { key: 'status', label: 'STATUS', maxWidth: '100' },
+    { key: 'action', label: 'ACTION', maxWidth: '100' },
   ]
 
   const statusChip: Record<string, { label: string; color: ChipProps['color'] }> = {
@@ -70,8 +148,8 @@ function NetworksTable({ editMode, networks }: { networks: Network[]; editMode?:
     switch (columnKey) {
       case 'status':
         return (
-          <Chip className="capitalize" color={statusChip?.[network?.status ?? ''].color} size="sm" variant="flat">
-            {statusChip?.[network?.status ?? ''].label ?? 'UNKNOWN'}
+          <Chip className="capitalize" color={statusChip?.[network?.status ?? '']?.color} size="sm" variant="flat">
+            {statusChip?.[network?.status ?? '']?.label ?? cellValue}
           </Chip>
         )
       default:
@@ -80,10 +158,21 @@ function NetworksTable({ editMode, networks }: { networks: Network[]; editMode?:
   }, [])
 
   return (
-    <div>
-      <Table aria-label="Network List" removeWrapper selectionMode={editMode ? 'multiple' : 'single'}>
+    <div className="overflow-x-auto">
+      <Table
+        aria-label="Network List"
+        removeWrapper
+        selectionMode={editMode ? 'multiple' : 'single'}
+        classNames={{
+          td: ['whitespace-nowrap'],
+        }}
+      >
         <TableHeader columns={columns}>
-          {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+          {(column) => (
+            <TableColumn key={column.key} maxWidth={column.maxWidth}>
+              {column.label}
+            </TableColumn>
+          )}
         </TableHeader>
         <TableBody items={networks} emptyContent="No networks to display.">
           {(network) => (

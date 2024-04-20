@@ -20,7 +20,7 @@ export type NotificationBarProps = {
 function NotificationBar(props: NotificationBarProps) {
   const styles = useMemo(() => {
     const defaultClassNames = [
-      'w-full px-4 py-2 fixed top-0 z-50 flex items-center text-sm font-semibold transition-transform-all',
+      'w-full px-4 py-2 fixed top-0 z-[100] flex items-center text-sm font-semibold transition-transform-all',
       props.animate ? 'duration-250' : 'duration-0',
     ]
     if (!props.children) {
