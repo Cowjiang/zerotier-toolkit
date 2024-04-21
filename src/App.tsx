@@ -8,7 +8,6 @@ import NotificationProvider from './components/providers/NotificationProvider.ts
 import ThemeProvider from './components/providers/ThemeProvider.tsx'
 import { SERVICE_POLLING_INTERVAL } from './constant.ts'
 import Dev from './pages/Dev'
-import Home from './pages/Home'
 import Setting from './pages/Setting.tsx'
 import Splash from './pages/Splash'
 import Zerotier from './pages/Zerotier.tsx'
@@ -71,10 +70,10 @@ function App() {
           <div className="text-foreground">
             <Routes>
               <Route path="/" element={<Splash />} />
-              <Route path="/home" element={<Home />} />
+              <Route path="/home" element={<Zerotier />} />
               <Route path="/zerotier" element={<Zerotier />} />
               <Route path="/setting" element={<Setting />} />
-              <Route path="*" element={<Home />} />
+              <Route path="*" element={<Zerotier />} />
               {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
             </Routes>
           </div>

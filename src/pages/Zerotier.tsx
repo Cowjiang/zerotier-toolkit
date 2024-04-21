@@ -2,7 +2,7 @@ import { Button, Listbox, ListboxItem, ListboxItemProps, ListboxSection, Listbox
 import { ReactElement, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { CloseIcon, PaintIcon, TerminalIcon, WindowIcon } from '../components/base/Icon.tsx'
+import { PaintIcon, SettingIcon, TerminalIcon, WindowIcon } from '../components/base/Icon.tsx'
 import ZerotierNetworks from '../components/zerotier/ZerotierNetworks.tsx'
 import ZerotierService from '../components/zerotier/ZerotierService.tsx'
 
@@ -97,13 +97,14 @@ function Zerotier() {
             <p className="mt-1 text-sm text-default-600">{currentListItem.description}</p>
           </div>
           <Button
-            aria-label="Back to homepage"
-            className="ml-auto bg-danger/90 text-danger-foreground"
+            aria-label="Settings"
+            className="ml-auto"
+            variant="flat"
             isIconOnly
             radius="lg"
-            onPress={() => navigate('/home')}
+            onPress={() => navigate('/setting')}
           >
-            <CloseIcon />
+            <SettingIcon width={22} height={22} />
           </Button>
         </div>
         <div className="w-full h-full flex flex-col">{currentListItem.panel}</div>
