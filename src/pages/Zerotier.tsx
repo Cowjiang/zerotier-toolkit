@@ -2,7 +2,7 @@ import { Button, Listbox, ListboxItem, ListboxItemProps, ListboxSection, Listbox
 import { ReactElement, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { PaintIcon, SettingIcon, TerminalIcon, WindowIcon } from '../components/base/Icon.tsx'
+import { NetworkIcon, ServiceIcon, SettingIcon, StatusIcon } from '../components/base/Icon.tsx'
 import ZerotierNetworks from '../components/zerotier/ZerotierNetworks.tsx'
 import ZerotierService from '../components/zerotier/ZerotierService.tsx'
 
@@ -26,12 +26,12 @@ const settingList: ListSection[] = [
       {
         title: 'Networks',
         description: 'Manage ZeroTier networks',
-        startContent: <PaintIcon {...iconProps} />,
+        startContent: <NetworkIcon {...iconProps} />,
         panel: <ZerotierNetworks />,
       },
       {
         title: 'Status',
-        startContent: <WindowIcon {...iconProps} />,
+        startContent: <StatusIcon {...iconProps} />,
       },
     ],
   },
@@ -41,7 +41,7 @@ const settingList: ListSection[] = [
     items: [
       {
         title: 'Service',
-        startContent: <TerminalIcon {...iconProps} />,
+        startContent: <ServiceIcon {...iconProps} />,
         description: 'Manage the ZeroTier service',
         panel: <ZerotierService />,
       },
