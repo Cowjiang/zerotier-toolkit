@@ -194,7 +194,7 @@ function NetworksTable({
         selectionMode={editMode ? 'multiple' : 'single'}
         classNames={{
           td: ['whitespace-nowrap'],
-          table: ['min-h-[65vh]'],
+          table: isLoading ? ['min-h-[65vh]'] : [],
           loadingWrapper: ['h-[65vh]'],
         }}
       >
@@ -208,7 +208,11 @@ function NetworksTable({
         <TableBody
           isLoading={isLoading}
           items={networks}
-          loadingContent={<Spinner label="Loading..." color="primary" />}
+          loadingContent={
+            <div className="w-full flex flex-col justify-center items-center gap-4 h-[50vh]">
+              <Spinner label="Loading..." color="primary" />
+            </div>
+          }
           emptyContent={
             <div className="flex flex-col justify-center gap-4 h-[50vh]">
               <span>No networks to display.</span>
@@ -232,9 +236,9 @@ function NetworksTable({
 function ZerotierNetworks() {
   const { networks, getNetworks } = useZeroTierStore()
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const init = () => {
-    !isLoading && setIsLoading(true)
+    !isLoading && !networks.length && setIsLoading(true)
     getNetworks().finally(() => {
       setIsLoading(false)
     })
