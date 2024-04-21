@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonProps,
   Chip,
   ChipProps,
   Input,
@@ -9,6 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalProps,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -23,7 +25,7 @@ import { Key, useCallback, useEffect, useState } from 'react'
 import { joinNetwork } from '../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
 import { Network } from '../../typings/zerotier.ts'
-import { PlusIcon, SearchIcon } from '../base/Icon.tsx'
+import { PlusIcon, RefreshIcon, SearchIcon } from '../base/Icon.tsx'
 import NotificationBar from '../base/NotificationBar.tsx'
 import { useNotification } from '../providers/NotificationProvider.tsx'
 
@@ -44,16 +46,13 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
       await joinNetwork(inputValue)
       onModalClose()
     } catch (e) {
-      console.log(e)
       setNotification({
         type: 'warning',
         children: 'Failed to join network, please check your Network ID',
         duration: 3000,
       })
     } finally {
-      setTimeout(() => {
-        setJoining(false)
-      }, 300)
+      setTimeout(() => setJoining(false), 300)
     }
   }
 
@@ -86,9 +85,29 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
   )
 }
 
+function RefreshButton(props: ButtonProps) {
+  const { getNetworks } = useZeroTierStore()
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const onRefresh = useCallback(async () => {
+    setIsRefreshing(true)
+    try {
+      await getNetworks()
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 300)
+    }
+  }, [])
+
+  return (
+    <Button onPress={onRefresh} isLoading={isRefreshing} {...props}>
+      {props?.isIconOnly ? <RefreshIcon width="18" height="18" /> : 'Refresh'}
+    </Button>
+  )
+}
+
 function ToolBar({
-  editMode,
-  onEditChange,
+  // editMode,
+  // onEditChange,
   filterValue,
   onFilterValueChange,
 }: {
@@ -103,6 +122,7 @@ function ToolBar({
     onOpenChange: onModalOpenChange,
     onClose: onModalClose,
   } = useDisclosure()
+  const { networks } = useZeroTierStore()
 
   return (
     <div className="w-full flex items-center gap-2">
@@ -115,14 +135,15 @@ function ToolBar({
         onClear={() => onFilterValueChange?.('')}
         onValueChange={(value) => onFilterValueChange?.(value)}
       />
-      <Button
-        className="flex-shrink-0"
-        color={editMode ? 'warning' : 'default'}
-        variant="flat"
-        onPress={() => onEditChange?.()}
-      >
-        {editMode ? 'Cancel' : 'Edit'}
-      </Button>
+      {!!networks.length && <RefreshButton className="flex-shrink-0" variant="flat" />}
+      {/*<Button*/}
+      {/*  className="flex-shrink-0"*/}
+      {/*  color={editMode ? 'warning' : 'default'}*/}
+      {/*  variant="flat"*/}
+      {/*  onPress={() => onEditChange?.()}*/}
+      {/*>*/}
+      {/*  {editMode ? 'Cancel' : 'Edit'}*/}
+      {/*</Button>*/}
       <Button className="flex-shrink-0 " color="warning" endContent={<PlusIcon />} onPress={onModalOpen}>
         Join New
       </Button>
@@ -131,7 +152,15 @@ function ToolBar({
   )
 }
 
-function NetworksTable({ editMode, networks }: { networks: Network[]; editMode?: boolean }) {
+function NetworksTable({
+  editMode,
+  networks,
+  isLoading,
+}: {
+  networks: Network[]
+  editMode?: boolean
+  isLoading?: boolean
+}) {
   const columns: ({ label: string } & Omit<TableColumnProps<any>, 'children'>)[] = [
     { key: 'id', label: 'NETWORK ID', maxWidth: '100' },
     { key: 'name', label: 'NAME', maxWidth: '100' },
@@ -165,6 +194,8 @@ function NetworksTable({ editMode, networks }: { networks: Network[]; editMode?:
         selectionMode={editMode ? 'multiple' : 'single'}
         classNames={{
           td: ['whitespace-nowrap'],
+          table: ['min-h-[65vh]'],
+          loadingWrapper: ['h-[65vh]'],
         }}
       >
         <TableHeader columns={columns}>
@@ -174,7 +205,19 @@ function NetworksTable({ editMode, networks }: { networks: Network[]; editMode?:
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={networks} emptyContent="No networks to display.">
+        <TableBody
+          isLoading={isLoading}
+          items={networks}
+          loadingContent={<Spinner label="Loading..." color="primary" />}
+          emptyContent={
+            <div className="flex flex-col justify-center gap-4 h-[50vh]">
+              <span>No networks to display.</span>
+              <div>
+                <RefreshButton variant="flat" color="primary" endContent={<RefreshIcon width="16" height="16" />} />
+              </div>
+            </div>
+          }
+        >
           {(network) => (
             <TableRow key={network.id}>
               {(columnKey) => <TableCell>{renderCell(network, columnKey)}</TableCell>}
@@ -188,8 +231,17 @@ function NetworksTable({ editMode, networks }: { networks: Network[]; editMode?:
 
 function ZerotierNetworks() {
   const { networks, getNetworks } = useZeroTierStore()
-  const [editMode, setEditMode] = useState(false)
 
+  const [isLoading, setIsLoading] = useState(true)
+  const init = () => {
+    !isLoading && setIsLoading(true)
+    getNetworks().finally(() => {
+      setIsLoading(false)
+    })
+  }
+  useEffect(init, [])
+
+  const [editMode, setEditMode] = useState(false)
   const onEditChange = () => {
     setEditMode(!editMode)
   }
@@ -203,12 +255,6 @@ function ZerotierNetworks() {
     (network) => network.id?.includes(filterValue) || network.name?.includes(filterValue),
   )
 
-  useEffect(() => {
-    getNetworks().catch((e) => {
-      console.error(e)
-    })
-  }, [])
-
   return (
     <div className="flex flex-col gap-4">
       <ToolBar
@@ -217,7 +263,7 @@ function ZerotierNetworks() {
         filterValue={filterValue}
         onFilterValueChange={onFilterValueChange}
       />
-      <NetworksTable networks={filteredNetworks} editMode={editMode} />
+      <NetworksTable networks={filteredNetworks} editMode={editMode} isLoading={isLoading} />
     </div>
   )
 }
