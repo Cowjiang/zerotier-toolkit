@@ -3,6 +3,10 @@ import {
   ButtonProps,
   Chip,
   ChipProps,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Modal,
   ModalBody,
@@ -22,10 +26,10 @@ import {
 } from '@nextui-org/react'
 import { Key, useCallback, useEffect, useState } from 'react'
 
-import { joinNetwork } from '../../services/zerotierService.ts'
+import { joinNetwork, leaveNetwork } from '../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
-import { Network } from '../../typings/zerotier.ts'
-import { PlusIcon, RefreshIcon, SearchIcon } from '../base/Icon.tsx'
+import { Network, NetworkStatus } from '../../typings/zerotier.ts'
+import { DisconnectIcon, InfoIcon, PlusIcon, RefreshIcon, SearchIcon, VerticalDotIcon } from '../base/Icon.tsx'
 import NotificationBar from '../base/NotificationBar.tsx'
 import { useNotification } from '../providers/NotificationProvider.tsx'
 
@@ -161,15 +165,36 @@ function NetworksTable({
   editMode?: boolean
   isLoading?: boolean
 }) {
+  const { setNotification } = useNotification()
+
   const columns: ({ label: string } & Omit<TableColumnProps<any>, 'children'>)[] = [
     { key: 'id', label: 'NETWORK ID', maxWidth: '100' },
     { key: 'name', label: 'NAME', maxWidth: '100' },
     { key: 'status', label: 'STATUS', maxWidth: '100' },
-    { key: 'action', label: 'ACTION', maxWidth: '100' },
+    { key: 'action', label: '', maxWidth: '100' },
   ]
 
-  const statusChip: Record<string, { label: string; color: ChipProps['color'] }> = {
+  const statusChip: Record<NetworkStatus | 'UNKNOWN', { label: string; color: ChipProps['color'] }> = {
     OK: { label: 'Connected', color: 'success' },
+    REQUESTING_CONFIGURATION: { label: 'Requesting Config', color: 'default' },
+    ACCESS_DENIED: { label: 'Access Denied', color: 'warning' },
+    NOT_FOUND: { label: 'Not Found', color: 'danger' },
+    PORT_ERROR: { label: 'Port Error', color: 'danger' },
+    CLIENT_TOO_OLD: { label: 'Client Too Old', color: 'default' },
+    AUTHENTICATION_REQUIRED: { label: 'Auth Required', color: 'warning' },
+    UNKNOWN: { label: 'Unknown', color: 'default' },
+  }
+
+  const disconnect = async (networkId?: string) => {
+    try {
+      networkId && (await leaveNetwork(networkId))
+    } catch (e) {
+      setNotification({
+        type: 'warning',
+        children: 'Failed to disconnect, please try again later.',
+        duration: 3000,
+      })
+    }
   }
 
   const renderCell = useCallback((network: Network, columnKey: Key) => {
@@ -177,9 +202,40 @@ function NetworksTable({
     switch (columnKey) {
       case 'status':
         return (
-          <Chip className="capitalize" color={statusChip?.[network?.status ?? '']?.color} size="sm" variant="flat">
-            {statusChip?.[network?.status ?? '']?.label ?? cellValue}
+          <Chip
+            className="capitalize"
+            color={statusChip?.[network?.status ?? 'UNKNOWN']?.color}
+            size="sm"
+            variant="flat"
+          >
+            {statusChip?.[network?.status ?? 'UNKNOWN']?.label ?? cellValue}
           </Chip>
+        )
+      case 'action':
+        const iconProps = { width: 16, height: 16 }
+        return (
+          <div className="relative flex justify-end items-center gap-2">
+            <Dropdown backdrop="opaque" placement="bottom-end" showArrow size="sm">
+              <DropdownTrigger>
+                <Button isIconOnly size="sm" variant="light">
+                  <VerticalDotIcon className="text-default-400" />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem startContent={<InfoIcon {...iconProps} />}>Details</DropdownItem>
+                {/*<DropdownItem className="text-success" color="success" variant="flat" startContent={<ConnectIcon {...iconProps} />}>Connect</DropdownItem>*/}
+                <DropdownItem
+                  className="text-danger"
+                  color="danger"
+                  variant="flat"
+                  startContent={<DisconnectIcon {...iconProps} />}
+                  onPress={() => disconnect(network.id)}
+                >
+                  Disconnect
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         )
       default:
         return cellValue

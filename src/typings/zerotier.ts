@@ -42,14 +42,25 @@ export interface Network {
   portDeviceName?: string
   portError?: number
   routes?: Route[]
-  status?: string
-  type?: string
+  status?: NetworkStatus
+  type?: NetworkType
 }
+
+export type NetworkStatus =
+  | 'REQUESTING_CONFIGURATION'
+  | 'OK'
+  | 'ACCESS_DENIED'
+  | 'NOT_FOUND'
+  | 'PORT_ERROR'
+  | 'CLIENT_TOO_OLD'
+  | 'AUTHENTICATION_REQUIRED'
 
 export interface Dns {
   domain?: string
   servers?: string[]
 }
+
+export type NetworkType = 'PUBLIC' | 'PRIVATE'
 
 export interface MulticastSubscription {
   adi?: number
