@@ -1,9 +1,9 @@
 import { Button, ButtonProps, Select, SelectItem } from '@nextui-org/react'
 import { ReactElement, useMemo, useState } from 'react'
 
-import { useAppStore } from '../../store/app.ts'
-import { useZeroTierStore } from '../../store/zerotier.ts'
-import { ServiceStartType, ServiceStatus } from '../../typings/enum.ts'
+import { useAppStore } from '../../../store/app.ts'
+import { useZeroTierStore } from '../../../store/zerotier.ts'
+import { ServiceStartType, ServiceStatus } from '../../../typings/enum.ts'
 
 const startTypes = [
   {

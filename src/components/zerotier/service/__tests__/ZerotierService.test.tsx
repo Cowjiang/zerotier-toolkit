@@ -1,9 +1,9 @@
 import { fireEvent, waitFor } from '@testing-library/react'
 
-import { useAppStore } from '../../../store/app.ts'
-import { useZeroTierStore } from '../../../store/zerotier.ts'
-import { ServiceStartType, ServiceStatus } from '../../../typings/enum.ts'
-import { render } from '../../../utils/testUtils/setupTest.tsx'
+import { useAppStore } from '../../../../store/app.ts'
+import { useZeroTierStore } from '../../../../store/zerotier.ts'
+import { ServiceStartType, ServiceStatus } from '../../../../typings/enum.ts'
+import { render } from '../../../../utils/testUtils/setupTest.tsx'
 import ZerotierService from '../ZerotierService.tsx'
 
 describe('ZerotierService', () => {

@@ -3,8 +3,8 @@ import { ReactElement, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { NetworkIcon, ServiceIcon, SettingIcon, StatusIcon } from '../components/base/Icon.tsx'
-import ZerotierNetworks from '../components/zerotier/ZerotierNetworks.tsx'
-import ZerotierService from '../components/zerotier/ZerotierService.tsx'
+import ZerotierNetworks from '../components/zerotier/network/ZerotierNetworks.tsx'
+import ZerotierService from '../components/zerotier/service/ZerotierService.tsx'
 
 type ListItem = {
   title: string
