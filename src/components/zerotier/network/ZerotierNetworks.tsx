@@ -31,7 +31,7 @@ function ZerotierNetworks() {
   )
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="h-full flex flex-col gap-4">
       <ToolBar
         editMode={editMode}
         onEditChange={onEditChange}

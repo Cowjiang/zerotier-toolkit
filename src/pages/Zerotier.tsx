@@ -64,7 +64,7 @@ function Zerotier() {
   )
 
   return (
-    <div className="w-full h-full flex">
+    <div className="w-full h-full flex overflow-y-hidden">
       <div className="w-[220px] p-4 flex flex-col flex-shrink-0">
         <Listbox
           aria-label="Settings"
@@ -90,7 +90,7 @@ function Zerotier() {
           )}
         </Listbox>
       </div>
-      <div className="w-full flex flex-col px-6 py-4 mr-6 overflow-hidden">
+      <div className="w-full h-screen flex flex-col px-6 py-4 mr-6 overflow-hidden">
         <div className="w-full mt-1 mb-6 flex items-center">
           <div className="flex flex-col">
             <h1 className="font-bold text-2xl">{selectedKeys}</h1>
@@ -107,7 +107,7 @@ function Zerotier() {
             <SettingIcon width={22} height={22} />
           </Button>
         </div>
-        <div className="w-full h-full flex flex-col">{currentListItem.panel}</div>
+        <div className="w-full h-full flex flex-col overflow-y-hidden">{currentListItem.panel}</div>
       </div>
     </div>
   )

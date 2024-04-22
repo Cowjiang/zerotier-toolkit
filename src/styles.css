@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 5px;
+  height: 6px;
+}
+
+:hover::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  border-radius: 5px;
+  background: hsl(var(--nextui-foreground-300));
+  transition: all .2s ease;
+}
