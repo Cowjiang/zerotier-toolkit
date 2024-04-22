@@ -25,7 +25,7 @@ const settingList: ListSection[] = [
     items: [
       {
         title: 'Networks',
-        description: 'Manage ZeroTier networks',
+        description: 'Manage ZeroTier Networks',
         startContent: <NetworkIcon {...iconProps} />,
         panel: <ZerotierNetworks />,
       },
@@ -42,7 +42,7 @@ const settingList: ListSection[] = [
       {
         title: 'Service',
         startContent: <ServiceIcon {...iconProps} />,
-        description: 'Manage the ZeroTier service',
+        description: 'Manage ZeroTier Service',
         panel: <ZerotierService />,
       },
     ],

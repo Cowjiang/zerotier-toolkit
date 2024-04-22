@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react'
-import { Key, useCallback } from 'react'
+import { Key, useCallback, useEffect, useState } from 'react'
 
 import { leaveNetwork } from '../../../services/zerotierService.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
@@ -80,26 +80,34 @@ function NetworksTable({
         )
       case 'action':
         const iconProps = { width: 16, height: 16 }
+        const onOpen = () => network?.id && setSelectedKeys(new Set([network.id]))
+        const onClose = () => setSelectedKeys(new Set([]))
         return (
           <div className="relative flex justify-end items-center gap-2">
-            <Dropdown backdrop="opaque" placement="bottom-end" showArrow size="sm">
+            <Dropdown
+              backdrop="opaque"
+              placement="bottom-end"
+              showArrow
+              size="sm"
+              onOpenChange={onOpen}
+              onClose={onClose}
+            >
               <DropdownTrigger>
                 <Button isIconOnly size="sm" variant="light">
                   <VerticalDotIcon className="text-default-400" />
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem startContent={<InfoIcon {...iconProps} />}>Details</DropdownItem>
+              <DropdownMenu aria-label="Actions">
+                <DropdownItem startContent={<InfoIcon {...iconProps} />} title="Details" />
                 {/*<DropdownItem className="text-success" color="success" variant="flat" startContent={<ConnectIcon {...iconProps} />}>Connect</DropdownItem>*/}
                 <DropdownItem
                   className="text-danger"
                   color="danger"
                   variant="flat"
                   startContent={<DisconnectIcon {...iconProps} />}
+                  title="Disconnect"
                   onPress={() => disconnect(network.id)}
-                >
-                  Disconnect
-                </DropdownItem>
+                />
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -109,17 +117,24 @@ function NetworksTable({
     }
   }, [])
 
+  const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>()
+  useEffect(() => {
+    console.log(selectedKeys)
+  }, [selectedKeys])
+
   return (
     <div className="overflow-x-auto">
       <Table
         aria-label="Network List"
         removeWrapper
         selectionMode={editMode ? 'multiple' : 'single'}
+        color="primary"
         classNames={{
           td: ['whitespace-nowrap'],
           table: isLoading ? ['min-h-[65vh]'] : [],
           loadingWrapper: ['h-[65vh]'],
         }}
+        selectedKeys={selectedKeys}
       >
         <TableHeader columns={columns}>
           {(column) => (
