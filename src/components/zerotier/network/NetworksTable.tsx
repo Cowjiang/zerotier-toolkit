@@ -15,12 +15,13 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react'
-import { Key, useCallback, useEffect, useState } from 'react'
+import { Key, useCallback, useState } from 'react'
 
 import { leaveNetwork } from '../../../services/zerotierService.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
 import { DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../base/Icon.tsx'
 import { useNotification } from '../../providers/NotificationProvider.tsx'
+import DetailsModal from './DetailsModal.tsx'
 import RefreshButton from './RefreshButton.tsx'
 
 function NetworksTable({
@@ -82,6 +83,10 @@ function NetworksTable({
         const iconProps = { width: 16, height: 16 }
         const onOpen = () => network?.id && setSelectedKeys(new Set([network.id]))
         const onClose = () => setSelectedKeys(new Set([]))
+        const openDetailsModal = () => {
+          setSelectedNetwork(network)
+          setIsDetailsModalOpen(true)
+        }
         return (
           <div className="relative flex justify-end items-center gap-2">
             <Dropdown
@@ -98,7 +103,7 @@ function NetworksTable({
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Actions">
-                <DropdownItem startContent={<InfoIcon {...iconProps} />} title="Details" />
+                <DropdownItem startContent={<InfoIcon {...iconProps} />} title="Details" onPress={openDetailsModal} />
                 {/*<DropdownItem className="text-success" color="success" variant="flat" startContent={<ConnectIcon {...iconProps} />}>Connect</DropdownItem>*/}
                 <DropdownItem
                   className="text-danger"
@@ -118,9 +123,8 @@ function NetworksTable({
   }, [])
 
   const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>()
-  useEffect(() => {
-    console.log(selectedKeys)
-  }, [selectedKeys])
+  const [selectedNetwork, setSelectedNetwork] = useState<Network>()
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
 
   return (
     <div className="overflow-x-auto">
@@ -167,6 +171,14 @@ function NetworksTable({
           )}
         </TableBody>
       </Table>
+      <DetailsModal
+        networkDetails={selectedNetwork}
+        modalProps={{
+          backdrop: 'blur',
+          isOpen: isDetailsModalOpen,
+          onClose: () => setIsDetailsModalOpen(false),
+        }}
+      />
     </div>
   )
 }
