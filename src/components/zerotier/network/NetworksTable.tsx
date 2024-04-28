@@ -19,6 +19,7 @@ import { Key, useCallback, useState } from 'react'
 
 import { leaveNetwork } from '../../../services/zerotierService.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
+import CopyText from '../../base/CopyText.tsx'
 import { DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../base/Icon.tsx'
 import { useNotification } from '../../providers/NotificationProvider.tsx'
 import DetailsModal from './DetailsModal.tsx'
@@ -118,7 +119,7 @@ function NetworksTable({
           </div>
         )
       default:
-        return cellValue
+        return <CopyText copyValue={cellValue}>{cellValue}</CopyText>
     }
   }, [])
 

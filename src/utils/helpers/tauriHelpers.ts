@@ -1,3 +1,4 @@
+import { writeText } from '@tauri-apps/api/clipboard'
 import { FsOptions, readTextFile as tauriReadTextFile, writeTextFile as tauriWriteTextFile } from '@tauri-apps/api/fs'
 import { getClient, HttpOptions } from '@tauri-apps/api/http'
 import { resolveResource } from '@tauri-apps/api/path'
@@ -35,4 +36,8 @@ export const writeTextFile = async (contents: string, path = CONFIGURATION_FILE_
   const response = await tauriWriteTextFile(filePath, contents, options)
   console.log('[WriteTextFile]', filePath, contents, options)
   return response
+}
+
+export const copyToClipboard = async (text: string) => {
+  await writeText(text)
 }

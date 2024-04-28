@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { updateNetwork } from '../../../services/zerotierService.ts'
 import { Network } from '../../../typings/zerotier.ts'
+import CopyText from '../../base/CopyText.tsx'
 
 const checkboxClasses = { label: 'text-[0.8rem]' }
 
@@ -50,11 +51,15 @@ function DetailsModal({
             <div className="w-full flex flex-col gap-3">
               <div className="flex flex-col gap-0.5">
                 <p className="text-tiny font-bold uppercase">Network ID</p>
-                <small className="text-default-500">{networkDetails?.id}</small>
+                <CopyText copyValue={networkDetails?.id}>
+                  <small className="text-default-500">{networkDetails?.id}</small>
+                </CopyText>
               </div>
               <div className={classNames('flex flex-col gap-0.5', !networkDetails?.name && 'hidden')}>
                 <p className="text-tiny font-bold uppercase">Name</p>
-                <small className="text-default-500">{networkDetails?.name}</small>
+                <CopyText copyValue={networkDetails?.name}>
+                  <small className="text-default-500">{networkDetails?.name}</small>
+                </CopyText>
               </div>
               <div className="flex flex-col gap-0.5">
                 <p className="text-tiny font-bold uppercase">Status</p>
@@ -62,11 +67,15 @@ function DetailsModal({
               </div>
               <div className="flex flex-col gap-0.5">
                 <p className="text-tiny font-bold uppercase">Ethernet</p>
-                <small className="text-default-500">{networkDetails?.mac}</small>
+                <CopyText copyValue={networkDetails?.mac}>
+                  <small className="text-default-500">{networkDetails?.mac}</small>
+                </CopyText>
               </div>
               <div className="flex flex-col gap-0.5">
                 <p className="text-tiny font-bold uppercase">Device</p>
-                <small className="text-default-500">{networkDetails?.portDeviceName}</small>
+                <CopyText copyValue={networkDetails?.portDeviceName}>
+                  <small className="text-default-500">{networkDetails?.portDeviceName}</small>
+                </CopyText>
               </div>
               <div className="flex flex-col gap-0.5">
                 <p className="text-tiny font-bold uppercase">Type</p>
@@ -100,9 +109,9 @@ function DetailsModal({
                 <p className="text-tiny font-bold uppercase">Managed Addresses</p>
                 {networkDetails?.assignedAddresses?.length ? (
                   networkDetails.assignedAddresses.map((address) => (
-                    <small className="text-default-500" key={address}>
-                      {address}
-                    </small>
+                    <CopyText key={address} copyValue={address}>
+                      <small className="text-default-500">{address}</small>
+                    </CopyText>
                   ))
                 ) : (
                   <small className="text-default-500">-</small>
@@ -123,11 +132,6 @@ function DetailsModal({
             </div>
           </div>
         </ModalBody>
-        {/*<ModalFooter>*/}
-        {/*  <Button color="danger" variant="light">*/}
-        {/*    Cancel*/}
-        {/*  </Button>*/}
-        {/*</ModalFooter>*/}
       </ModalContent>
     </Modal>
   )

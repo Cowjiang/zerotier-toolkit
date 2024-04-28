@@ -30,6 +30,9 @@
         "readFile": true,
         "writeFile": true,
         "scope": ["$RESOURCE/resources/*"]
+      },
+      "clipboard": {
+        "writeText": true
       }
     },
     "bundle": {
