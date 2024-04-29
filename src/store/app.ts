@@ -9,12 +9,14 @@ import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tau
 export type AppState = {
   hasHydrated: boolean
   isLoading: boolean
+  showSplash: boolean
   isAdmin: boolean
   config: AppConfig
 }
 
 export type AppAction = {
   setLoading: (loading: boolean) => void
+  setShowSplash: (showSplash: boolean) => void
   checkAdmin: () => Promise<boolean>
   restartAsAdmin: () => Promise<void>
   setConfig: (config: Partial<AppConfig>) => void
@@ -55,10 +57,12 @@ export const useAppStore = create<AppState & AppAction>()(
     (set) => ({
       hasHydrated: false,
       isLoading: true,
+      showSplash: true,
       isAdmin: false,
       logs: [],
       config: {},
       setLoading: (loading) => set((state) => ({ ...state, isLoading: loading })),
+      setShowSplash: (showSplash) => set((state) => ({ ...state, showSplash })),
       checkAdmin: async () => {
         const { data: isAdmin } = await invokeCommand(InvokeEvent.IS_ADMIN)
         set((state) => ({ ...state, isAdmin }))

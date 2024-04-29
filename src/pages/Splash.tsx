@@ -10,10 +10,10 @@ import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { ServiceStatus } from '../typings/enum.ts'
 
-function Splash() {
+function Splash({ navigatePath }: { navigatePath?: string }) {
   const navigate = useNavigate()
 
-  const { isLoading, isAdmin, restartAsAdmin } = useAppStore()
+  const { isLoading, isAdmin, restartAsAdmin, setShowSplash: setAppShowSplash } = useAppStore()
   const { serviceState } = useZeroTierStore()
 
   const { setNotification, closeNotification } = useNotification()
@@ -23,7 +23,10 @@ function Splash() {
   const [showRestartButton, setShowRestartButton] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), SPLASH_SCREEN_DELAY)
+    const timer = setTimeout(() => {
+      setShowSplash(false)
+      setAppShowSplash(false)
+    }, SPLASH_SCREEN_DELAY)
     return () => {
       clearTimeout(timer)
       closeNotification()
@@ -38,7 +41,7 @@ function Splash() {
         children: 'Administrator privilege is required, please restart the app as Admin',
       })
     } else if (!isLoading && !showSplash) {
-      navigate('/home', { replace: true })
+      navigate(navigatePath ?? '/home', { replace: true })
     } else if (isLoading && !showSplash) {
       setShowLoading(true)
     }

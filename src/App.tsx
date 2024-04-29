@@ -4,12 +4,12 @@ import { NextUIProvider } from '@nextui-org/react'
 import { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
+import RootLayout from './components/layout/RootLayout.tsx'
 import NotificationProvider from './components/providers/NotificationProvider.tsx'
 import ThemeProvider from './components/providers/ThemeProvider.tsx'
 import { SERVICE_POLLING_INTERVAL } from './constant.ts'
 import Dev from './pages/Dev'
 import Setting from './pages/Setting.tsx'
-import Splash from './pages/Splash'
 import Zerotier from './pages/Zerotier.tsx'
 import { useAppStore } from './store/app'
 import { useZeroTierStore } from './store/zerotier'
@@ -69,12 +69,14 @@ function App() {
         <NotificationProvider>
           <div className="text-foreground">
             <Routes>
-              <Route path="/" element={<Splash />} />
-              <Route path="/networks" element={<Zerotier tab="Networks" />} />
-              <Route path="/status" element={<Zerotier tab="Status" />} />
-              <Route path="/service" element={<Zerotier tab="Service" />} />
-              <Route path="/setting/*" element={<Setting />} />
-              <Route path="*" element={<Zerotier />} />
+              <Route path="/" element={<RootLayout />}>
+                <Route path="/home" element={<Zerotier />} />
+                <Route path="/networks" element={<Zerotier tab="Networks" />} />
+                <Route path="/status" element={<Zerotier tab="Status" />} />
+                <Route path="/service" element={<Zerotier tab="Service" />} />
+                <Route path="/setting/*" element={<Setting />} />
+                <Route path="*" element={<Zerotier />} />
+              </Route>
               {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
             </Routes>
           </div>
