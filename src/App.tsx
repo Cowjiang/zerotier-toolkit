@@ -70,9 +70,10 @@ function App() {
           <div className="text-foreground">
             <Routes>
               <Route path="/" element={<Splash />} />
-              <Route path="/home" element={<Zerotier />} />
-              <Route path="/zerotier" element={<Zerotier />} />
-              <Route path="/setting" element={<Setting />} />
+              <Route path="/networks" element={<Zerotier tab="Networks" />} />
+              <Route path="/status" element={<Zerotier tab="Status" />} />
+              <Route path="/service" element={<Zerotier tab="Service" />} />
+              <Route path="/setting/*" element={<Setting />} />
               <Route path="*" element={<Zerotier />} />
               {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
             </Routes>

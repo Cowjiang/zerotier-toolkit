@@ -6,6 +6,8 @@ import { NetworkIcon, ServiceIcon, SettingIcon, StatusIcon } from '../components
 import ZerotierNetworks from '../components/zerotier/network/ZerotierNetworks.tsx'
 import ZerotierService from '../components/zerotier/service/ZerotierService.tsx'
 
+type TabId = 'Networks' | 'Status' | 'Service'
+
 type ListItem = {
   title: string
   description?: string
@@ -49,19 +51,23 @@ const settingList: ListSection[] = [
   },
 ]
 
-function Zerotier() {
+function Zerotier({ tab }: { tab?: TabId }) {
   const navigate = useNavigate()
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>(new Set(['Networks']))
+  const [selectedKeys, setSelectedKeys] = useState<Set<TabId>>(new Set([tab ?? 'Networks']))
   const currentListItem = useMemo(
     () =>
-      (selectedKeys !== 'all'
-        ? settingList
-            .flatMap(({ items }) => items)
-            .find((item) => item?.title === selectedKeys.values().next().value) ?? {}
-        : {}) as ListItem,
+      settingList.flatMap(({ items }) => items).find((item) => item?.title === selectedKeys.values().next().value) ??
+      ({} as ListItem),
     [selectedKeys],
   )
+
+  const handleSelectedKeysChange = (keys: Set<string | number> | 'all') => {
+    if (keys !== 'all') {
+      setSelectedKeys(keys as Set<TabId>)
+      navigate(`/${keys.values().next().value.toLowerCase()}`)
+    }
+  }
 
   return (
     <div className="w-full h-full flex overflow-y-hidden">
@@ -73,7 +79,7 @@ function Zerotier() {
           selectedKeys={selectedKeys}
           hideSelectedIcon
           shouldHighlightOnFocus={false}
-          onSelectionChange={setSelectedKeys}
+          onSelectionChange={handleSelectedKeysChange}
           items={settingList}
           itemClasses={{
             base: 'data-[selected=true]:bg-default data-[hover=true]:bg-default/60 text-default-800',
