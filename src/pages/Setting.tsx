@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { CloseIcon, CodeIcon, CommandIcon, PaintIcon, WindowIcon } from '../components/base/Icon.tsx'
 import AppearanceSetting from '../components/setting/AppearanceSetting.tsx'
+import GeneralSetting from '../components/setting/GeneralSetting.tsx'
 
 type ListItem = {
   title: string
@@ -30,11 +31,14 @@ const settingList: ListSection[] = [
         panel: <AppearanceSetting />,
       },
       {
-        title: 'Window',
+        title: 'General',
+        description: 'Configure general settings of the application',
         startContent: <WindowIcon {...iconProps} />,
+        panel: <GeneralSetting />,
       },
       {
         title: 'Hotkeys',
+        description: 'Set up keyboard shortcuts configuration',
         startContent: <CommandIcon {...iconProps} />,
       },
     ],
