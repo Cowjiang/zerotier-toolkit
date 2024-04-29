@@ -4,21 +4,18 @@ import { createJSONStorage, persist, StateStorage, StorageValue } from 'zustand/
 
 import type { AppConfig } from '../typings/config.ts'
 import { InvokeEvent } from '../typings/enum.ts'
-import type { Log } from '../utils/helpers/logHelpers.ts'
 import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tauriHelpers.ts'
 
 export type AppState = {
   hasHydrated: boolean
   isLoading: boolean
   isAdmin: boolean
-  logs: Log[]
   config: AppConfig
 }
 
 export type AppAction = {
   setLoading: (loading: boolean) => void
   checkAdmin: () => Promise<boolean>
-  insertLog: (content: string) => void
   restartAsAdmin: () => Promise<void>
   setConfig: (config: Partial<AppConfig>) => void
 }
@@ -67,17 +64,6 @@ export const useAppStore = create<AppState & AppAction>()(
         set((state) => ({ ...state, isAdmin }))
         return isAdmin
       },
-      insertLog: (content) =>
-        set((state) => ({
-          ...state,
-          logs: [
-            ...state.logs,
-            {
-              timestamp: Date.now(),
-              content,
-            },
-          ],
-        })),
       restartAsAdmin: async () => {
         try {
           const { success } = await invokeCommand(InvokeEvent.RESTART_AS_ADMIN)
