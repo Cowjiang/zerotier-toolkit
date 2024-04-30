@@ -1,16 +1,16 @@
 use std::process;
 
-use tauri::{AppHandle, CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
+use tauri::{AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
 
 use crate::show_main_window;
 
-const STATUS_ITEM_ID: &str = "status";
+const STATUS_ITEM_ID: &str = "/status";
 const STATUS_ITEM_TITLE: &str = "Status";
 
-const NETWORKS_ITEM_ID: &str = "networks";
+const NETWORKS_ITEM_ID: &str = "/networks";
 const NETWORKS_ITEM_TITLE: &str = "Networks";
 
-const SETTINGS_ITEM_ID: &str = "settings";
+const SETTINGS_ITEM_ID: &str = "/setting";
 const SETTINGS_ITEM_TITLE: &str = "Settings";
 
 const QUIT_ITEM_ID: &str = "quit";
@@ -40,7 +40,10 @@ pub fn handle_system_tray_event(app: &AppHandle, e: SystemTrayEvent) {
             QUIT_ITEM_ID => {
                 process::exit(0);
             }
-            _ => {}
+            _ => {
+                show_main_window(app.clone());
+                app.emit_all("NAVIGATE", id).unwrap();
+            }
         },
         _ => {}
     }

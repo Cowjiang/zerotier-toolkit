@@ -1,5 +1,5 @@
 import { Button, Listbox, ListboxItem, ListboxItemProps, ListboxSection, ListboxSectionProps } from '@nextui-org/react'
-import { ReactElement, useMemo, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { NetworkIcon, ServiceIcon, SettingIcon, StatusIcon } from '../components/base/Icon.tsx'
@@ -54,10 +54,10 @@ const settingList: ListSection[] = [
 function Zerotier({ tab }: { tab?: TabId }) {
   const navigate = useNavigate()
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<TabId>>(new Set([tab ?? 'Networks']))
+  const [selectedKeys, setSelectedKeys] = useState<Set<TabId>>()
   const currentListItem = useMemo(
     () =>
-      settingList.flatMap(({ items }) => items).find((item) => item?.title === selectedKeys.values().next().value) ??
+      settingList.flatMap(({ items }) => items).find((item) => item?.title === selectedKeys?.values().next().value) ??
       ({} as ListItem),
     [selectedKeys],
   )
@@ -68,6 +68,10 @@ function Zerotier({ tab }: { tab?: TabId }) {
       navigate(`/${keys.values().next().value.toLowerCase()}`)
     }
   }
+
+  useEffect(() => {
+    setSelectedKeys(new Set([tab ?? 'Networks']))
+  }, [tab])
 
   return (
     <div className="w-full h-full flex overflow-y-hidden">

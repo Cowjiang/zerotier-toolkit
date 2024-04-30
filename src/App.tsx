@@ -13,9 +13,11 @@ import Setting from './pages/Setting.tsx'
 import Zerotier from './pages/Zerotier.tsx'
 import { useAppStore } from './store/app'
 import { useZeroTierStore } from './store/zerotier'
+import useTauriEventListener from './utils/hooks/useTauriEventListener.ts'
 
 function App() {
   const navigate = useNavigate()
+  useTauriEventListener('NAVIGATE', (url: string) => navigate(url))
 
   const { isAdmin, setLoading, checkAdmin } = useAppStore()
   const { getServiceState, getServiceStartType, getServerInfo } = useZeroTierStore()

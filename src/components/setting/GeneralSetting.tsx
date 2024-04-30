@@ -28,7 +28,7 @@ function GeneralSetting() {
           <div className="flex-col">
             <p className="text-default-700">Enable the tray icon</p>
             <small className="text-tiny text-default-600">
-              When disabled, the application will exit when closing the window
+              If disabled, the application will exit when closing the window
             </small>
           </div>
           <div className="ml-auto flex gap-4">
