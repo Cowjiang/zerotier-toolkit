@@ -30,6 +30,16 @@ function ZerotierNetworks() {
     (network) => network.id?.includes(filterValue) || network.name?.includes(filterValue),
   )
 
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const onRefresh = useCallback(async () => {
+    setIsRefreshing(true)
+    try {
+      await getNetworks()
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 300)
+    }
+  }, [])
+
   return (
     <div className="h-full flex flex-col gap-4">
       <ToolBar
@@ -37,8 +47,16 @@ function ZerotierNetworks() {
         onEditChange={onEditChange}
         filterValue={filterValue}
         onFilterValueChange={onFilterValueChange}
+        isLoading={isRefreshing}
+        onRefresh={onRefresh}
       />
-      <NetworksTable networks={filteredNetworks} editMode={editMode} isLoading={isLoading} />
+      <NetworksTable
+        networks={filteredNetworks}
+        editMode={editMode}
+        isLoading={isLoading}
+        isRefreshing={isRefreshing}
+        onRefresh={onRefresh}
+      />
     </div>
   )
 }

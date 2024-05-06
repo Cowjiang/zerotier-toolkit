@@ -21,18 +21,22 @@ import { leaveNetwork } from '../../../services/zerotierService.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
 import CopyText from '../../base/CopyText.tsx'
 import { DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../base/Icon.tsx'
+import RefreshButton from '../../base/RefreshButton.tsx'
 import { useNotification } from '../../providers/NotificationProvider.tsx'
 import DetailsModal from './DetailsModal.tsx'
-import RefreshButton from './RefreshButton.tsx'
 
 function NetworksTable({
   editMode,
   networks,
   isLoading,
+  isRefreshing,
+  onRefresh,
 }: {
   networks: Network[]
   editMode?: boolean
   isLoading?: boolean
+  isRefreshing?: boolean
+  onRefresh?: () => void
 }) {
   const { setNotification } = useNotification()
 
@@ -160,7 +164,15 @@ function NetworksTable({
             <div className="flex flex-col justify-center gap-4 h-[50vh]">
               <span>No networks to display.</span>
               <div>
-                <RefreshButton variant="flat" color="primary" endContent={<RefreshIcon width="16" height="16" />} />
+                <RefreshButton
+                  buttonProps={{
+                    color: 'primary',
+                    variant: 'flat',
+                    endContent: <RefreshIcon width="16" height="16" />,
+                  }}
+                  isLoading={isRefreshing}
+                  onRefresh={onRefresh}
+                />
               </div>
             </div>
           }

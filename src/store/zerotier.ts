@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 
-import { getNetworks } from '../services/zerotierService.ts'
+import { getNetworks, getStatus } from '../services/zerotierService.ts'
 import { InvokeEvent, ServiceStartType, ServiceStatus } from '../typings/enum.ts'
-import { Network, ServerInfo } from '../typings/zerotier.ts'
+import { Network, ServerInfo, Status } from '../typings/zerotier.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 export type ZeroTierState = {
@@ -10,6 +10,7 @@ export type ZeroTierState = {
   serviceStartType: ServiceStartType
   serverInfo: ServerInfo
   networks: Network[]
+  status: Status
 }
 
 export type ZeroTierAction = {
@@ -20,6 +21,7 @@ export type ZeroTierAction = {
   setServiceStartType: (serviceStartType: ServiceStartType) => Promise<boolean>
   getServerInfo: () => Promise<ServerInfo>
   getNetworks: () => Promise<Network[]>
+  getStatus: () => Promise<Status>
 }
 
 export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()((set) => ({
@@ -27,6 +29,7 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()((set) =
   serviceStartType: ServiceStartType.DEMAND_START,
   serverInfo: {},
   networks: [],
+  status: {},
   getServiceState: async () => {
     const { data: serviceState } = await invokeCommand(InvokeEvent.GET_SERVICE_STATE)
     set((state) => ({ ...state, serviceState }))
@@ -63,5 +66,10 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()((set) =
     const { data: networks } = await getNetworks()
     set((state) => ({ ...state, networks }))
     return networks
+  },
+  getStatus: async () => {
+    const { data: status } = await getStatus()
+    set((state) => ({ ...state, status }))
+    return status
   },
 }))

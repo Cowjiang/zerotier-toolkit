@@ -2,19 +2,21 @@ import { Button, Input, useDisclosure } from '@nextui-org/react'
 
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { PlusIcon, SearchIcon } from '../../base/Icon.tsx'
+import RefreshButton from '../../base/RefreshButton.tsx'
 import JoinModal from './JoinModal.tsx'
-import RefreshButton from './RefreshButton.tsx'
 
 function ToolBar({
-  // editMode,
-  // onEditChange,
   filterValue,
   onFilterValueChange,
+  isLoading,
+  onRefresh,
 }: {
   editMode?: boolean
   onEditChange?: () => void
   filterValue: string
   onFilterValueChange?: (value: string) => void
+  isLoading?: boolean
+  onRefresh?: () => void
 }) {
   const {
     isOpen: isModalOpen,
@@ -35,15 +37,13 @@ function ToolBar({
         onClear={() => onFilterValueChange?.('')}
         onValueChange={(value) => onFilterValueChange?.(value)}
       />
-      {!!networks.length && <RefreshButton className="flex-shrink-0" variant="flat" />}
-      {/*<Button*/}
-      {/*  className="flex-shrink-0"*/}
-      {/*  color={editMode ? 'warning' : 'default'}*/}
-      {/*  variant="flat"*/}
-      {/*  onPress={() => onEditChange?.()}*/}
-      {/*>*/}
-      {/*  {editMode ? 'Cancel' : 'Edit'}*/}
-      {/*</Button>*/}
+      {!!networks.length && (
+        <RefreshButton
+          buttonProps={{ className: 'flex-shrink-0', variant: 'flat' }}
+          isLoading={isLoading}
+          onRefresh={onRefresh}
+        />
+      )}
       <Button className="flex-shrink-0 " color="warning" endContent={<PlusIcon />} onPress={onModalOpen}>
         Join New
       </Button>

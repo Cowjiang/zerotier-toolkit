@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { NetworkIcon, ServiceIcon, SettingIcon, StatusIcon } from '../components/base/Icon.tsx'
 import ZerotierNetworks from '../components/zerotier/network/ZerotierNetworks.tsx'
 import ZerotierService from '../components/zerotier/service/ZerotierService.tsx'
+import ZerotierStatus from '../components/zerotier/status/ZerotierStatus.tsx'
 
 type TabId = 'Networks' | 'Status' | 'Service'
 
@@ -34,6 +35,8 @@ const settingList: ListSection[] = [
       {
         title: 'Status',
         startContent: <StatusIcon {...iconProps} />,
+        description: 'My status of ZeroTier',
+        panel: <ZerotierStatus />,
       },
     ],
   },
