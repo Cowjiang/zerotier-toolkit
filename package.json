@@ -27,7 +27,7 @@
   },
   "packageManager": "^pnpm@8.10.0",
   "dependencies": {
-    "@nextui-org/react": "^2.3.3",
+    "@nextui-org/react": "^2.3.6",
     "@tauri-apps/api": "^1.5.3",
     "classnames": "^2.5.1",
     "framer-motion": "^10.18.0",
