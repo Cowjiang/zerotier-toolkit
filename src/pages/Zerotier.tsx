@@ -6,6 +6,7 @@ import { NetworkIcon, ServiceIcon, SettingIcon, StatusIcon } from '../components
 import ZerotierNetworks from '../components/zerotier/network/ZerotierNetworks.tsx'
 import ZerotierService from '../components/zerotier/service/ZerotierService.tsx'
 import ZerotierStatus from '../components/zerotier/status/ZerotierStatus.tsx'
+import { TAURI_DRAG_REGION } from '../constant.ts'
 
 type TabId = 'Networks' | 'Status' | 'Service'
 
@@ -103,8 +104,8 @@ function Zerotier({ tab }: { tab?: TabId }) {
           )}
         </Listbox>
       </div>
-      <div className="w-full h-screen flex flex-col px-6 py-4 mr-6 overflow-hidden">
-        <div className="w-full mt-1 mb-6 flex items-center">
+      <div className="w-full h-screen flex flex-col px-6 py-4 mr-6 overflow-hidden" {...TAURI_DRAG_REGION}>
+        <div className="w-full mt-1 mb-6 flex items-center" {...TAURI_DRAG_REGION}>
           <div className="flex flex-col">
             <h1 className="font-bold text-2xl">{selectedKeys}</h1>
             <p className="mt-1 text-sm text-default-600">{currentListItem.description}</p>

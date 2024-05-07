@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background: transparent !important;
+}
+
+#root {
+  min-width: 800px;
+  min-height: 500px;
+  background-color: hsl(var(--nextui-background));
+  border-radius: var(--nextui-radius-large);
+}
+
 ::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 0;

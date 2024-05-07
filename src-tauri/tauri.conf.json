@@ -33,6 +33,12 @@
       },
       "clipboard": {
         "writeText": true
+      },
+      "window": {
+        "all": false,
+        "close": true,
+        "minimize": true,
+        "startDragging": true
       }
     },
     "bundle": {
@@ -65,13 +71,15 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
+        "resizable": false,
         "title": "ZeroTier Toolkit - Build By Tauri",
         "width": 800,
         "height": 500,
         "minWidth": 800,
         "minHeight": 500,
-        "center": true
+        "center": true,
+        "decorations": false,
+        "transparent": true
       }
     ]
   }
