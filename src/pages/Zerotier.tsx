@@ -1,16 +1,17 @@
-import { Button, Listbox, ListboxItem, ListboxItemProps, ListboxSection, ListboxSectionProps } from '@nextui-org/react'
+import { Listbox, ListboxItem, ListboxItemProps, ListboxSection, ListboxSectionProps } from '@nextui-org/react'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { NetworkIcon, ServiceIcon, SettingIcon, StatusIcon } from '../components/base/Icon.tsx'
+import { CommandIcon, NetworkIcon, PaintIcon, ServiceIcon, StatusIcon, WindowIcon } from '../components/base/Icon.tsx'
+import AppearanceSetting from '../components/setting/AppearanceSetting.tsx'
+import GeneralSetting from '../components/setting/GeneralSetting.tsx'
 import ZerotierNetworks from '../components/zerotier/network/ZerotierNetworks.tsx'
 import ZerotierService from '../components/zerotier/service/ZerotierService.tsx'
 import ZerotierStatus from '../components/zerotier/status/ZerotierStatus.tsx'
 import { TAURI_DRAG_REGION } from '../constant.ts'
 
-type TabId = 'Networks' | 'Status' | 'Service'
-
 type ListItem = {
+  path: string
   title: string
   description?: string
   panel?: ReactElement
@@ -24,28 +25,25 @@ const iconProps = { width: 16 }
 
 const settingList: ListSection[] = [
   {
-    key: 'Basic',
-    title: 'Basic',
+    key: 'ZeroTier',
+    title: 'ZeroTier',
     items: [
       {
+        path: '/networks',
         title: 'Networks',
         description: 'Manage ZeroTier Networks',
         startContent: <NetworkIcon {...iconProps} />,
         panel: <ZerotierNetworks />,
       },
       {
+        path: '/status',
         title: 'Status',
         startContent: <StatusIcon {...iconProps} />,
         description: 'My status of ZeroTier',
         panel: <ZerotierStatus />,
       },
-    ],
-  },
-  {
-    key: 'Advance',
-    title: 'Advance',
-    items: [
       {
+        path: '/service',
         title: 'Service',
         startContent: <ServiceIcon {...iconProps} />,
         description: 'Manage ZeroTier Service',
@@ -53,32 +51,65 @@ const settingList: ListSection[] = [
       },
     ],
   },
+  {
+    key: 'Settings',
+    title: 'Settings',
+    showDivider: true,
+    items: [
+      {
+        path: '/setting/appearance',
+        title: 'Appearance',
+        description: 'Customize the appearance of the application',
+        startContent: <PaintIcon {...iconProps} />,
+        panel: <AppearanceSetting />,
+      },
+      {
+        path: '/setting/general',
+        title: 'General',
+        description: 'Configure general settings of the application',
+        startContent: <WindowIcon {...iconProps} />,
+        panel: <GeneralSetting />,
+      },
+    ],
+  },
+  {
+    key: 'Others',
+    title: '',
+    items: [
+      {
+        path: '/about',
+        title: 'About',
+        description: '',
+        startContent: <CommandIcon {...iconProps} />,
+      },
+    ],
+  },
 ]
 
-function Zerotier({ tab }: { tab?: TabId }) {
+function Zerotier({ tabPath }: { tabPath?: string }) {
   const navigate = useNavigate()
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<TabId>>()
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>()
   const currentListItem = useMemo(
     () =>
-      settingList.flatMap(({ items }) => items).find((item) => item?.title === selectedKeys?.values().next().value) ??
+      settingList.flatMap(({ items }) => items).find((item) => item?.path === selectedKeys?.values().next().value) ??
       ({} as ListItem),
     [selectedKeys],
   )
 
   const handleSelectedKeysChange = (keys: Set<string | number> | 'all') => {
     if (keys !== 'all') {
-      setSelectedKeys(keys as Set<TabId>)
-      navigate(`/${keys.values().next().value.toLowerCase()}`)
+      setSelectedKeys(keys as Set<string>)
+      navigate(`${keys.values().next().value}`)
     }
   }
 
   useEffect(() => {
-    setSelectedKeys(new Set([tab ?? 'Networks']))
-  }, [tab])
+    setSelectedKeys(new Set([tabPath ?? '/networks']))
+  }, [tabPath])
 
   return (
-    <div className="w-full h-full flex overflow-y-hidden">
+    <div className="w-full h-screen flex overflow-y-hidden pt-2">
       <div className="w-[220px] p-4 flex flex-col flex-shrink-0">
         <Listbox
           aria-label="Settings"
@@ -96,7 +127,7 @@ function Zerotier({ tab }: { tab?: TabId }) {
           {(section) => (
             <ListboxSection key={section.key} aria-label={section.title} {...section}>
               {(section.items as ListItem[]).map((item) => (
-                <ListboxItem key={item.title} aria-label={item.title} {...item} description="">
+                <ListboxItem key={item.path} aria-label={item.title} {...item} description="">
                   {item.title || item.children}
                 </ListboxItem>
               ))}
@@ -104,22 +135,12 @@ function Zerotier({ tab }: { tab?: TabId }) {
           )}
         </Listbox>
       </div>
-      <div className="w-full h-screen flex flex-col px-6 py-4 mr-6 overflow-hidden" {...TAURI_DRAG_REGION}>
-        <div className="w-full mt-1 mb-6 flex items-center" {...TAURI_DRAG_REGION}>
+      <div className="w-full h-full flex flex-col px-6 py-4 mr-4 overflow-hidden" {...TAURI_DRAG_REGION}>
+        <div className="w-full mt-1 mb-6 flex" {...TAURI_DRAG_REGION}>
           <div className="flex flex-col">
-            <h1 className="font-bold text-2xl">{selectedKeys}</h1>
+            <h1 className="font-bold text-2xl">{currentListItem.title}</h1>
             <p className="mt-1 text-sm text-default-600">{currentListItem.description}</p>
           </div>
-          <Button
-            aria-label="Settings"
-            className="ml-auto"
-            variant="flat"
-            isIconOnly
-            radius="lg"
-            onPress={() => navigate('/setting')}
-          >
-            <SettingIcon width={22} height={22} />
-          </Button>
         </div>
         <div className="w-full h-full flex flex-col overflow-y-hidden">{currentListItem.panel}</div>
       </div>
