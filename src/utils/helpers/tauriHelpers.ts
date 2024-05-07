@@ -3,6 +3,7 @@ import { FsOptions, readTextFile as tauriReadTextFile, writeTextFile as tauriWri
 import { getClient, HttpOptions } from '@tauri-apps/api/http'
 import { resolveResource } from '@tauri-apps/api/path'
 import { invoke, InvokeArgs } from '@tauri-apps/api/tauri'
+import { appWindow } from '@tauri-apps/api/window'
 
 import { CONFIGURATION_FILE_PATH } from '../../constant.ts'
 import { InvokeResponse } from '../../typings/global.ts'
@@ -40,4 +41,12 @@ export const writeTextFile = async (contents: string, path = CONFIGURATION_FILE_
 
 export const copyToClipboard = async (text: string) => {
   await writeText(text)
+}
+
+export const minimizeWindow = async () => {
+  await appWindow.minimize()
+}
+
+export const closeWindow = async () => {
+  await appWindow.close()
 }
