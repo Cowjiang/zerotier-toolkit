@@ -11,6 +11,7 @@ use auto_launch_manager::init_auto_launch_manager;
 use command::*;
 use system::*;
 use system_tray::{handle_system_tray_event, init_system_tray};
+use window::{set_window_shadow};
 
 use crate::zerotier_manage::*;
 
@@ -25,6 +26,7 @@ mod system;
 mod system_tray;
 mod windows_service_manage;
 mod zerotier_manage;
+mod window;
 
 fn main() {
     start_tauri();
@@ -63,6 +65,9 @@ fn start_tauri() {
             let payload: Map<String, Value> = serde_json::from_str(payload.unwrap()).unwrap();
             handle_config_change_event(payload);
         });
+
+        let window = app.get_window("main").unwrap();
+        set_window_shadow(window);
 
         #[cfg(debug_assertions)]
         {

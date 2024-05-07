@@ -10,7 +10,7 @@ html {
   min-width: 800px;
   min-height: 500px;
   background-color: hsl(var(--nextui-background));
-  border-radius: var(--nextui-radius-large);
+  border-radius: var(--nextui-radius-medium);
 }
 
 ::-webkit-scrollbar-track {
