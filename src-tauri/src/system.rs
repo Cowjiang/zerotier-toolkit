@@ -49,7 +49,7 @@ pub fn handle_config_change_event(config_changed: Map<String, Value>) {
                         }
                     }
                     None => {
-                        return;
+                        continue;
                     }
                 }
             }

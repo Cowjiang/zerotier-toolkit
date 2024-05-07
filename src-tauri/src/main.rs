@@ -12,6 +12,7 @@ use command::*;
 use system::*;
 use system_tray::{handle_system_tray_event, init_system_tray};
 use window::{set_window_shadow};
+use crate::configuration::init_config;
 
 use crate::zerotier_manage::*;
 
@@ -26,6 +27,7 @@ mod system;
 mod system_tray;
 mod windows_service_manage;
 mod zerotier_manage;
+mod configuration;
 mod window;
 
 fn main() {
@@ -54,12 +56,14 @@ fn start_tauri() {
         ]).setup(|app| {
         let app_handle = app.app_handle();
         init_logger(app_handle.clone());
-        init_configuration(app_handle.clone());
         let _ = init_auto_launch_manager(
             app,
             auto_launch_manager::MacosLauncher::LaunchAgent,
             None,
         );
+
+        init_config(app_handle.clone());
+        // listen config change
         app.listen_global(EVENT_CONFIG_CHANGE, |event| {
             let payload = event.payload();
             let payload: Map<String, Value> = serde_json::from_str(payload.unwrap()).unwrap();
@@ -103,45 +107,14 @@ fn init_logger(app_handle: AppHandle) {
             println!("loading log file fail:{:?}", opt_log_file)
         }
     }
-    logger::init_logger_with_level_and_file(LevelFilter::Debug, opt_open_log_file);
-    // #[cfg(debug_assertions)]
-    // {
-    //     logger::init_logger_with_level_and_file(LevelFilter::Debug, opt_open_log_file);
-    // }
-    // #[cfg(not(debug_assertions))]
-    // {
-    //     logger::init_logger_with_level_and_file(LevelFilter::Info, opt_open_log_file);
-    // }
-}
-
-fn init_configuration(app_handle: AppHandle) {
-    debug!("start to init configuration");
-    let configuration_file_path = "resources/configuration.json";
-    let opt_configuration_json_file = app_handle
-        .path_resolver()
-        .resolve_resource(configuration_file_path);
-    match opt_configuration_json_file {
-        Some(value) => {
-            let file = std::fs::File::open(&value);
-            match file {
-                Ok(file) => {
-                    debug!("{configuration_file_path} is exist. start to resolve");
-                    let config: Configuration = serde_json::from_reader(file).unwrap();
-                    let mut config_write = CONFIGURATION.write();
-                    debug!("{configuration_file_path} resolve complete");
-                    *config_write = config
-                }
-                Err(error) => {
-                    warn!(
-                        "{configuration_file_path} open fail with execption {}.init configuration with [default]",
-                        error.to_string()
-                    );
-                    return;
-                }
-            }
-        }
-        None => {
-            debug!("{configuration_file_path} is not found.init configuration with [default]");
-        }
+    #[cfg(debug_assertions)]
+    {
+        logger::init_logger_with_level_and_file(LevelFilter::Debug, opt_open_log_file);
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        logger::init_logger_with_level_and_file(LevelFilter::Info, opt_open_log_file);
     }
 }
+
+
