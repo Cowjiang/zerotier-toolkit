@@ -75,6 +75,7 @@ function App() {
                 <Route path="/networks" element={<Zerotier tabPath="/networks" />} />
                 <Route path="/status" element={<Zerotier tabPath="/status" />} />
                 <Route path="/service" element={<Zerotier tabPath="/service" />} />
+                <Route path="/setting" element={<Zerotier tabPath="/setting/appearance" />} />
                 <Route path="/setting/appearance" element={<Zerotier tabPath="/setting/appearance" />} />
                 <Route path="/setting/general" element={<Zerotier tabPath="/setting/general" />} />
                 <Route path="*" element={<Zerotier />} />
