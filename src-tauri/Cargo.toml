@@ -13,10 +13,7 @@ edition = "2021"
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = [
-    "window-close",
-    "window-start-dragging",
-    "window-minimize",
+tauri = { version = "1.5", features = [ "window-minimize", "window-hide", "window-start-dragging", "window-close", "window-unminimize", "window-show",
     "clipboard-write-text",
     "system-tray",
     "fs-write-file",
