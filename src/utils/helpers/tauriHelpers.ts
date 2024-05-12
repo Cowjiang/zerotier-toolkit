@@ -50,3 +50,8 @@ export const minimizeWindow = async () => {
 export const closeWindow = async () => {
   await appWindow.close()
 }
+
+export const showWindow = async () => {
+  ;(await appWindow.isMinimized()) && (await appWindow.unminimize())
+  await appWindow.show()
+}

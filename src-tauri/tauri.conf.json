@@ -37,8 +37,11 @@
       "window": {
         "all": false,
         "close": true,
+        "unminimize": true,
         "minimize": true,
-        "startDragging": true
+        "startDragging": true,
+        "show": true,
+        "hide": true
       }
     },
     "bundle": {
