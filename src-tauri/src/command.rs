@@ -39,7 +39,6 @@ pub(crate) fn is_admin() -> String {
 
 #[cfg(test)]
 mod tests {
-
     use log::info;
 
     use crate::{

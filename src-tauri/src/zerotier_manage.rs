@@ -4,13 +4,13 @@ use std::io::Error;
 use std::path::Path;
 use std::string::ToString;
 
+use lazy_static::lazy_static;
+use log::error;
 use serde::Serialize;
 
 use crate::r::{fail_message_json, success_json};
 use crate::windows_service_manage::{StartType, WindowsServiceManage};
-use log::error;
 
-use lazy_static::lazy_static;
 lazy_static! {
     static ref GLOBAL_TRY_PROT_FILES: [String; 2] = {
         #[cfg(windows)]

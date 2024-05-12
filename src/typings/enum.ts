@@ -22,6 +22,7 @@ export enum InvokeEvent {
   SET_SERVICE_START_TYPE = 'set_zerotier_start_type',
   GET_ZEROTIER_SERVER_INFO = 'get_zerotier_server_info',
   GET_CONFIG = 'get_config',
+  PUT_CONFIG_COMMAND = 'put_config_command',
   GET_NETWORKS = 'get_networks',
   HIDE_MAIN_WINDOW = 'hide_main_window',
 }

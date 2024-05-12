@@ -1,62 +1,12 @@
+use std::env;
+
+use tauri::{AppHandle, Manager};
+
 use crate::{
-    auto_launch_manager::{AutoLaunchManager, Result, AUTO_LAUNCH_MANAGER},
     execute_cmd,
     r::{fail_message_json, success_json},
 };
-use lazy_static::lazy_static;
-use log::debug;
-use parking_lot::RwLock;
-use serde_json::{Map, Value};
-use std::env;
-use tauri::{AppHandle, Manager, State};
 
-pub const EVENT_CONFIG_CHANGE: &str = "event_config_change";
-
-pub const CONFIG_SYSTEM_AUTO_LAUNCH: &str = "System.AutoLaunch";
-
-lazy_static! {
-    pub static ref CONFIGURATION: RwLock<Configuration> = RwLock::new(Configuration::default());
-}
-
-pub type Configuration = Map<String, Value>;
-
-pub fn handle_config_change_event(config_changed: Map<String, Value>) {
-    debug!("[event]config changed");
-    let keys = config_changed.keys();
-    let mut configuration = CONFIGURATION.write();
-    for key in keys {
-        match key.as_str() {
-            CONFIG_SYSTEM_AUTO_LAUNCH => {
-                debug!("[event]config [System.AutoLaunch] changed");
-                let value = config_changed.get(key);
-                match value {
-                    Some(value) => {
-                        let is_config_auto_launch = value.as_bool();
-                        if is_config_auto_launch.is_some() {
-                            let is_config_auto_launch_bool = is_config_auto_launch.unwrap();
-                            let manager = AUTO_LAUNCH_MANAGER.read().unwrap();
-                            if manager.is_none() {
-                                return;
-                            }
-                            let manager = manager.as_ref().unwrap();
-                            if is_config_auto_launch_bool && !manager.is_enabled().unwrap() {
-                                let _ = manager.enable();
-                            } else if !is_config_auto_launch_bool && manager.is_enabled().unwrap() {
-                                let _ = manager.disable();
-                            }
-                            configuration.insert(key.to_string(), value.clone());
-                            debug!("[System.AutoLaunch]{:}", manager.is_enabled().unwrap())
-                        }
-                    }
-                    None => {
-                        continue;
-                    }
-                }
-            }
-            _ => {}
-        }
-    }
-}
 
 #[tauri::command]
 pub(crate) fn restart_as_admin() -> String {
@@ -118,28 +68,6 @@ pub(crate) fn show_main_window(app_handler: AppHandle) -> String {
     return success_json("success");
 }
 
-pub(crate) async fn is_auto_launch_enabled(
-    manager: State<'_, AutoLaunchManager>,
-) -> Result<String> {
-    match manager.is_enabled() {
-        Ok(is_enabled) => Ok(success_json(is_enabled)),
-        Err(err) => Err(err),
-    }
-}
-
-pub async fn enable_auto_launch(manager: State<'_, AutoLaunchManager>) -> Result<String> {
-    match manager.enable() {
-        Ok(_) => Ok(success_json(())),
-        Err(err) => Err(err),
-    }
-}
-
-pub async fn disable_auto_launch(manager: State<'_, AutoLaunchManager>) -> Result<String> {
-    match manager.enable() {
-        Ok(_) => Ok(success_json(())),
-        Err(err) => Err(err),
-    }
-}
 
 #[cfg(test)]
 mod tests {

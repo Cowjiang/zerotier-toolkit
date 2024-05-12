@@ -1,26 +1,22 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::fs::{File, OpenOptions};
+use tauri::{App, Manager};
 
-use log::{debug, LevelFilter, warn};
-use serde_json::{Map, Value};
-use tauri::{AppHandle, Manager};
-
-use auto_launch_manager::init_auto_launch_manager;
 use command::*;
 use system::*;
 use system_tray::{handle_system_tray_event, init_system_tray};
-use window::{set_window_shadow};
-use crate::configuration::init_config;
+use window::set_window_shadow;
 
+use crate::configuration::{get_config, init_config, put_config_command};
+use crate::logger::init_logger_main;
 use crate::zerotier_manage::*;
 
 mod command;
 #[cfg(test)]
 mod experiment;
 
-mod auto_launch_manager;
+
 mod logger;
 mod r;
 mod system;
@@ -52,31 +48,17 @@ fn start_tauri() {
             show_main_window,
             // other handlers
             is_admin,
-            restart_as_admin
+            restart_as_admin,
+            put_config_command,
+            get_config
         ]).setup(|app| {
         let app_handle = app.app_handle();
-        init_logger(app_handle.clone());
-        let _ = init_auto_launch_manager(
-            app,
-            auto_launch_manager::MacosLauncher::LaunchAgent,
-            None,
-        );
-
+        init_logger_main(app_handle.clone());
         init_config(app_handle.clone());
-        // listen config change
-        app.listen_global(EVENT_CONFIG_CHANGE, |event| {
-            let payload = event.payload();
-            let payload: Map<String, Value> = serde_json::from_str(payload.unwrap()).unwrap();
-            handle_config_change_event(payload);
-        });
-
-        let window = app.get_window("main").unwrap();
-        set_window_shadow(window);
-
+        init_window_shadow(app);
         #[cfg(debug_assertions)]
         {
-            let window = app.get_window("main").unwrap();
-            window.open_devtools();
+            open_dev_tools(app);
         }
         Ok(())
     })
@@ -84,37 +66,16 @@ fn start_tauri() {
         .expect("error while running tauri application");
 }
 
-fn init_logger(app_handle: AppHandle) {
-    let opt_log_file = app_handle.path_resolver().resolve_resource("system.log");
-    let mut opt_open_log_file: Option<File> = None;
-    match opt_log_file {
-        Some(value) => {
-            let file = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .write(true)
-                .open(value);
-            match file {
-                Ok(file) => {
-                    let _ = opt_open_log_file.insert(file);
-                }
-                Err(error) => {
-                    println!("loading log file fail:{}", error.to_string())
-                }
-            }
-        }
-        None => {
-            println!("loading log file fail:{:?}", opt_log_file)
-        }
-    }
-    #[cfg(debug_assertions)]
-    {
-        logger::init_logger_with_level_and_file(LevelFilter::Debug, opt_open_log_file);
-    }
-    #[cfg(not(debug_assertions))]
-    {
-        logger::init_logger_with_level_and_file(LevelFilter::Info, opt_open_log_file);
-    }
+fn open_dev_tools(app: &mut App) {
+    let window = app.get_window("main").unwrap();
+    window.open_devtools();
 }
+
+fn init_window_shadow(app: &mut App) {
+    let window = app.get_window("main").unwrap();
+    set_window_shadow(window);
+}
+
+
 
 

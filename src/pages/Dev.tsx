@@ -1,6 +1,7 @@
 import { Button } from '@nextui-org/react'
 import { emit } from '@tauri-apps/api/event'
 import { Response } from '@tauri-apps/api/http'
+import { InvokeArgs } from '@tauri-apps/api/tauri'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -16,10 +17,10 @@ function Dev() {
   const navigate = useNavigate()
   const [assList, setAssList] = useState<JSX.Element[]>([])
 
-  const invokeCommandButton = (command: string) => ({
+  const invokeCommandButton = (command: string, args?: InvokeArgs) => ({
     text: `[Invoke] ${command}`,
     onClick: () => {
-      invokeCommand(command)
+      invokeCommand(command, args)
         .then((res) => console.log(res))
         .catch((err) => console.error(err))
     },
@@ -55,6 +56,8 @@ function Dev() {
       text: '[event] config changed',
       onClick: () => emit('event_config_change', { 'System.AutoLaunch': true }),
     },
+    invokeCommandButton(InvokeEvent.GET_CONFIG),
+    invokeCommandButton(InvokeEvent.PUT_CONFIG_COMMAND, { payload: JSON.stringify({ 'System.Theme': 'light' }) }),
   ]
 
   function ass(): JSX.Element {

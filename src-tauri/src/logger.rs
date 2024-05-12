@@ -1,21 +1,25 @@
 extern crate env_logger;
 
+use std::{env, io};
 use std::collections::LinkedList;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::Write;
 use std::sync::Once;
-use std::{env, io};
 
 use chrono::Local;
 use env_logger::Builder;
-use log::LevelFilter::Info;
 use log::{info, LevelFilter};
+use log::LevelFilter::Info;
+use tauri::AppHandle;
+
+use crate::logger;
 
 static INIT: Once = Once::new();
 
 struct LogWriter {
     writers: LinkedList<Box<dyn std::io::Write + Send + 'static>>,
 }
+
 impl Write for LogWriter {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         for ele in self.writers.iter_mut() {
@@ -31,6 +35,7 @@ impl Write for LogWriter {
         io::stdout().flush()
     }
 }
+
 impl LogWriter {
     fn append(&mut self, writer: Box<dyn std::io::Write + Send + 'static>) {
         self.writers.push_back(writer);
@@ -67,13 +72,48 @@ pub(crate) fn init_logger_with_level_and_file(level: LevelFilter, file: Option<F
         info!("init logger success. level {:?}", level);
     });
 }
+
 #[allow(unused)]
 pub fn init_logger_with_level(level: LevelFilter) {
     init_logger_with_level_and_file(level, None)
 }
+
 #[allow(unused)]
 pub fn init_logger() {
     init_logger_with_level(Info)
+}
+
+pub fn init_logger_main(app_handle: AppHandle) {
+    let opt_log_file = app_handle.path_resolver().resolve_resource("system.log");
+    let mut opt_open_log_file: Option<File> = None;
+    match opt_log_file {
+        Some(value) => {
+            let file = OpenOptions::new()
+                .create(true)
+                .append(true)
+                .write(true)
+                .open(value);
+            match file {
+                Ok(file) => {
+                    let _ = opt_open_log_file.insert(file);
+                }
+                Err(error) => {
+                    println!("loading log file fail:{}", error.to_string())
+                }
+            }
+        }
+        None => {
+            println!("loading log file fail:{:?}", opt_log_file)
+        }
+    }
+    #[cfg(debug_assertions)]
+    {
+        logger::init_logger_with_level_and_file(LevelFilter::Debug, opt_open_log_file);
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        logger::init_logger_with_level_and_file(LevelFilter::Info, opt_open_log_file);
+    }
 }
 
 #[cfg(test)]
