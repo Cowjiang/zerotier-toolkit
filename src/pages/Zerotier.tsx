@@ -124,8 +124,8 @@ function Zerotier({ tabPath }: { tabPath?: string }) {
             base: 'data-[selected=true]:bg-default data-[hover=true]:bg-default/60 text-default-800',
           }}
         >
-          {(section) => (
-            <ListboxSection key={section.key} aria-label={section.title} {...section}>
+          {({ key, title, ...section }) => (
+            <ListboxSection key={key} aria-label={title} title={title} {...section}>
               {(section.items as ListItem[]).map((item) => (
                 <ListboxItem key={item.path} aria-label={item.title} {...item} description="">
                   {item.title || item.children}
