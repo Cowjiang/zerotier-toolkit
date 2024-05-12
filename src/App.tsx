@@ -9,7 +9,6 @@ import NotificationProvider from './components/providers/NotificationProvider.ts
 import ThemeProvider from './components/providers/ThemeProvider.tsx'
 import { SERVICE_POLLING_INTERVAL } from './constant.ts'
 import Dev from './pages/Dev'
-import Setting from './pages/Setting.tsx'
 import Zerotier from './pages/Zerotier.tsx'
 import { useAppStore } from './store/app'
 import { useZeroTierStore } from './store/zerotier'
@@ -73,10 +72,12 @@ function App() {
             <Routes>
               <Route path="/" element={<RootLayout />}>
                 <Route path="/home" element={<Zerotier />} />
-                <Route path="/networks" element={<Zerotier tab="Networks" />} />
-                <Route path="/status" element={<Zerotier tab="Status" />} />
-                <Route path="/service" element={<Zerotier tab="Service" />} />
-                <Route path="/setting/*" element={<Setting />} />
+                <Route path="/networks" element={<Zerotier tabPath="/networks" />} />
+                <Route path="/status" element={<Zerotier tabPath="/status" />} />
+                <Route path="/service" element={<Zerotier tabPath="/service" />} />
+                <Route path="/setting" element={<Zerotier tabPath="/setting/appearance" />} />
+                <Route path="/setting/appearance" element={<Zerotier tabPath="/setting/appearance" />} />
+                <Route path="/setting/general" element={<Zerotier tabPath="/setting/general" />} />
                 <Route path="*" element={<Zerotier />} />
               </Route>
               {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}

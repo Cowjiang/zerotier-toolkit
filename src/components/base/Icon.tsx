@@ -61,6 +61,19 @@ export const HistoryIcon = (props: Props) => {
   )
 }
 
+export const MinusIcon = (props: Props) => {
+  return (
+    <IconWrapper viewBox="0 0 512 512" {...props}>
+      <g>
+        <path
+          fill="currentColor"
+          d="M480,288H32c-17.673,0-32-14.327-32-32s14.327-32,32-32h448c17.673,0,32,14.327,32,32S497.673,288,480,288z"
+        />
+      </g>
+    </IconWrapper>
+  )
+}
+
 export const CloseIcon = (props: Props) => {
   return (
     <IconWrapper {...props}>
