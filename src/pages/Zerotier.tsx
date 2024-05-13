@@ -109,7 +109,7 @@ function Zerotier({ tabPath }: { tabPath?: string }) {
   }, [tabPath])
 
   return (
-    <div className="w-full h-screen flex overflow-y-hidden pt-2">
+    <div className="w-full h-screen flex overflow-y-hidden pt-1">
       <div className="w-[220px] p-4 flex flex-col flex-shrink-0">
         <Listbox
           aria-label="Settings"
