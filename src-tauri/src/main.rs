@@ -31,6 +31,7 @@ fn main() {
 }
 
 fn start_tauri() {
+    std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
     tauri::Builder::default()
         .system_tray(init_system_tray())
         .on_system_tray_event(handle_system_tray_event)
