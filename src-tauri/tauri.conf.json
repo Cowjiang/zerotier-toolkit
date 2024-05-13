@@ -21,15 +21,19 @@
       },
       "http": {
         "request": true,
-        "scope": ["http://127.0.0.1*"]
+        "scope": [
+          "http://127.0.0.1*"
+        ]
       },
-      "path":{
+      "path": {
         "all": true
       },
       "fs": {
         "readFile": true,
         "writeFile": true,
-        "scope": ["$RESOURCE/resources/*"]
+        "scope": [
+          "$RESOURCE/resources/*"
+        ]
       },
       "clipboard": {
         "writeText": true
@@ -70,20 +74,6 @@
     "systemTray": {
       "iconPath": "icons/icon.ico",
       "menuOnLeftClick": true
-    },
-    "windows": [
-      {
-        "fullscreen": false,
-        "resizable": false,
-        "title": "ZeroTier Toolkit - Build By Tauri",
-        "width": 800,
-        "height": 500,
-        "minWidth": 800,
-        "minHeight": 500,
-        "center": true,
-        "decorations": false,
-        "transparent": true
-      }
-    ]
+    }
   }
 }

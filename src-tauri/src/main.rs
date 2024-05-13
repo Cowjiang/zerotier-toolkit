@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{App, Manager};
+use tauri::{App, Manager, WindowBuilder};
 
 use command::*;
 use system::*;
@@ -56,7 +56,7 @@ fn start_tauri() {
         let app_handle = app.app_handle();
         init_logger_main(app_handle.clone());
         init_config(app_handle.clone());
-        init_window_shadow(app);
+        init_window(app);
         #[cfg(debug_assertions)]
         {
             open_dev_tools(app);
@@ -72,8 +72,20 @@ fn open_dev_tools(app: &mut App) {
     window.open_devtools();
 }
 
-fn init_window_shadow(app: &mut App) {
-    let window = app.get_window("main").unwrap();
+fn init_window(app: &mut App) {
+    let window = WindowBuilder::new(app, "main", tauri::WindowUrl::App("index.html".into()))
+        .title("ZeroTier Toolkit - Build By Tauri")
+        .resizable(false)
+        .maximized(false)
+        .fullscreen(false)
+        .transparent(true)
+        .decorations(false)
+        .center()
+        .min_inner_size(800.0, 500.0)
+        .inner_size(800.0, 500.0)
+        .build()
+        .unwrap();
+    window.show().unwrap();
     set_window_shadow(window);
 }
 
