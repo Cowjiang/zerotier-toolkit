@@ -7,7 +7,6 @@ const writeFile = vi.fn()
 
 beforeEach(() => {
   mockIPC((cmd, args) => {
-    console.log(args)
     if (cmd === 'invokeCommandTest') {
       return JSON.stringify({ code: 0, data: args.data })
     } else if (cmd === 'invokeCommandFailureTest') {
