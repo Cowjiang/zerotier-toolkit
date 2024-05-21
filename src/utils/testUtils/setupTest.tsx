@@ -29,10 +29,14 @@ beforeAll(() => {
     }
   })
 })
+
 beforeEach(() => useZeroTierStore.setState({ serverInfo: { port: 9999, secret: 'test' } }))
 beforeAll(() => mockServer.listen({ onUnhandledRequest: 'error' }))
 afterAll(() => mockServer.close())
-afterEach(() => mockServer.resetHandlers())
+afterEach(() => {
+  mockServer.resetHandlers()
+  vi.clearAllMocks()
+})
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

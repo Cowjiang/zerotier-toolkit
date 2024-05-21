@@ -1,8 +1,9 @@
 import { mockIPC } from '@tauri-apps/api/mocks'
-import { describe, expect } from 'vitest'
+import { beforeEach, describe, expect, vi } from 'vitest'
 
-import { invokeCommand, readTextFile, writeTextFile } from '../tauriHelpers.ts'
+import { copyToClipboard, invokeCommand, readTextFile, writeTextFile } from '../tauriHelpers.ts'
 
+const copyTest = vi.fn()
 beforeEach(() => {
   mockIPC((cmd, args) => {
     if (cmd === 'invokeCommandTest') {
@@ -14,9 +15,12 @@ beforeEach(() => {
         resolvePath: '\\debug\\resources\\configuration.json',
         readTextFile: 'content test',
         writeFile: undefined,
+        writeText: () => copyTest((args.message as any).data),
       }
       !Object.keys(cmdMap).includes((args.message as any)?.cmd) && console.log(args)
-      return cmdMap?.[(args.message as any)?.cmd]
+      const action = cmdMap?.[(args.message as any)?.cmd]
+      typeof action === 'function' && action?.()
+      return action
     }
   })
 })
@@ -47,5 +51,11 @@ describe('Tauri helpers', () => {
   it('should write text file', async () => {
     const writeTest = async () => await writeTextFile('write test')
     expect(writeTest).not.toThrowError()
+  })
+
+  it('should copy text to clipboard', async () => {
+    const writeTest = async () => await copyToClipboard('write test')
+    expect(writeTest).not.toThrowError()
+    expect(copyTest).toBeCalledWith('write test')
   })
 })

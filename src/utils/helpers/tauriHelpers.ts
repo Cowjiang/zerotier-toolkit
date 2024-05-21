@@ -15,7 +15,6 @@ export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<Inv
     const res = JSON.parse(result)
     return { ...res, success: res.code === 0 }
   } catch (e) {
-    console.error(e)
     return { code: -1, data: result, message: result, success: false }
   }
 }
