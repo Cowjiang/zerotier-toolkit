@@ -1,4 +1,5 @@
-import { act, render } from '@testing-library/react'
+import { render } from '@testing-library/react'
+import { act } from 'react'
 
 import { useAppStore } from '../../../store/app.ts'
 import { ThemeConfig } from '../../../typings/config.ts'
