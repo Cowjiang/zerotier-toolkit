@@ -29,10 +29,6 @@ beforeEach(() => {
   })
 })
 
-afterEach(() => {
-  vi.clearAllMocks()
-})
-
 describe('useTauriEventListener', () => {
   it('should call the event listener', () => {
     const handler = vi.fn()

@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react'
+import { act } from 'react'
 import * as zustand from 'zustand'
 
 const { create: actualCreate } = await vi.importActual<typeof zustand>('zustand')

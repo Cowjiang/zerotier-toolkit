@@ -1,10 +1,15 @@
 import { mockIPC } from '@tauri-apps/api/mocks'
-import { describe, expect } from 'vitest'
+import { expect } from 'vitest'
 
-import { invokeCommand, readTextFile, writeTextFile } from '../tauriHelpers.ts'
+import { copyToClipboard, invokeCommand, readTextFile, showWindow, writeTextFile } from '../tauriHelpers.ts'
+
+const copyTextMock = vi.fn()
+const writeFileMock = vi.fn()
+const unminimizeMock = vi.fn()
+const showWindowMock = vi.fn()
 
 beforeEach(() => {
-  mockIPC((cmd, args) => {
+  mockIPC(async (cmd, args) => {
     if (cmd === 'invokeCommandTest') {
       return JSON.stringify({ code: 0, data: args.data })
     } else if (cmd === 'invokeCommandFailureTest') {
@@ -13,10 +18,22 @@ beforeEach(() => {
       const cmdMap: { [key: string]: any } = {
         resolvePath: '\\debug\\resources\\configuration.json',
         readTextFile: 'content test',
-        writeFile: undefined,
+        writeFile: () => writeFileMock(),
+        writeText: () => copyTextMock((args.message as any).data),
+        manage: () => {
+          const { cmd } = (args.message as any).data
+          if (cmd?.type === 'isMinimized') {
+            return true
+          } else if (cmd?.type === 'unminimize') {
+            unminimizeMock()
+          } else if (cmd?.type === 'show') {
+            showWindowMock()
+          }
+        },
       }
       !Object.keys(cmdMap).includes((args.message as any)?.cmd) && console.log(args)
-      return cmdMap?.[(args.message as any)?.cmd]
+      const action = cmdMap?.[(args.message as any)?.cmd]
+      return typeof action !== 'function' ? action : action?.()
     }
   })
 })
@@ -45,7 +62,19 @@ describe('Tauri helpers', () => {
   })
 
   it('should write text file', async () => {
-    const writeTest = async () => await writeTextFile('write test')
+    await writeTextFile('write test')
+    expect(writeFileMock).toBeCalled()
+  })
+
+  it('should copy text to clipboard', async () => {
+    const writeTest = async () => await copyToClipboard('write test')
     expect(writeTest).not.toThrowError()
+    expect(copyTextMock).toBeCalledWith('write test')
+  })
+
+  it('should unminimize and show window', async () => {
+    await showWindow()
+    expect(unminimizeMock).toBeCalled()
+    expect(showWindowMock).toBeCalled()
   })
 })

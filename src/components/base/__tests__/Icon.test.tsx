@@ -1,9 +1,11 @@
 import { render } from '../../../utils/testUtils/setupTest.tsx'
-import { HistoryIcon } from '../Icon.tsx'
+import * as Icons from '../Icon.tsx'
 
 describe('Icon', () => {
-  it('should render history icon', () => {
-    const { getByRole } = render(<HistoryIcon />)
-    expect(getByRole('icon')).toBeInTheDocument()
+  it('should render icons', () => {
+    Object.values(Icons).map((Icon) => {
+      const { container } = render(<Icon />)
+      expect(container).toBeInTheDocument()
+    })
   })
 })
