@@ -4,7 +4,7 @@ import { createJSONStorage, persist, StateStorage, StorageValue } from 'zustand/
 
 import type { AppConfig } from '../typings/config.ts'
 import { InvokeEvent } from '../typings/enum.ts'
-import { invokeCommand, readTextFile, writeTextFile } from '../utils/helpers/tauriHelpers.ts'
+import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 export type AppState = {
   hasHydrated: boolean
@@ -34,7 +34,7 @@ const appConfigStorage = (): StateStorage => {
         version: 0,
       }
       if (isTauri) {
-        value.state.config = JSON.parse((await readTextFile()) || '{}')
+        value.state.config = (await invokeCommand(InvokeEvent.GET_CONFIG))?.data || {}
       }
       return JSON.stringify(value)
     },
@@ -45,7 +45,8 @@ const appConfigStorage = (): StateStorage => {
       const appConfig = JSON.stringify(config)
       if (configTemp !== appConfig && isTauri) {
         configTemp = appConfig
-        await writeTextFile(appConfig)
+        console.log('设置配置', appConfig)
+        await invokeCommand(InvokeEvent.PUT_CONFIG_COMMAND, { payload: appConfig })
       }
     },
     removeItem: (): void | Promise<void> => undefined,

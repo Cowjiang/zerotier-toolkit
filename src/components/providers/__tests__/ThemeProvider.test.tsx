@@ -2,7 +2,8 @@ import { render } from '@testing-library/react'
 import { act } from 'react'
 
 import { useAppStore } from '../../../store/app.ts'
-import { ThemeConfig } from '../../../typings/config.ts'
+import { StrBool, ThemeConfig } from '../../../typings/config.ts'
+import { Theme } from '../../../typings/enum.ts'
 import ThemeProvider from '../ThemeProvider.tsx'
 
 describe('ThemeProvider', () => {
@@ -32,7 +33,9 @@ describe('ThemeProvider', () => {
         dispatchEvent: vi.fn(),
       })),
     })
-    useAppStore.setState({ hasHydrated: true, config: { [ThemeConfig.IS_SYNC_WITH_SYSTEM]: false } })
+    useAppStore.setState({ hasHydrated: true, config: { [ThemeConfig.IS_SYNC_WITH_SYSTEM]: StrBool.TRUE } })
+    useAppStore.setState({ hasHydrated: true, config: { [ThemeConfig.CURRENT]: Theme.LIGHT } })
+
     render(
       <ThemeProvider>
         <div></div>
@@ -41,7 +44,7 @@ describe('ThemeProvider', () => {
     expect(useAppStore.getState().config[ThemeConfig.CURRENT]).toBe('light')
 
     act(() => {
-      useAppStore.setState({ config: { [ThemeConfig.IS_SYNC_WITH_SYSTEM]: true } })
+      useAppStore.setState({ config: { [ThemeConfig.IS_SYNC_WITH_SYSTEM]: StrBool.TRUE } })
     })
     expect(useAppStore.getState().config[ThemeConfig.CURRENT]).toBe('dark')
 
