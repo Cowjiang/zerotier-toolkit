@@ -13,32 +13,69 @@ use crate::r::{fail_message_json, success_json};
 use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
 
 lazy_static! {
-    static ref GLOBAL_TRY_PROT_FILES: [String; 2] = {
+    static ref GLOBAL_TRY_PROT_FILES: Vec<String> = {
         #[cfg(target_os = "windows")]
         {
-            [
+            vec![
                 String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier-one.port"),
                 String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier.port"),
+                String::from("C:\\ProgramData\\ZeroTier\\zerotier-one.port"),
+                String::from("C:\\ProgramData\\ZeroTier\\zerotier.port")
             ]
         }
         // TODO: this is an demo for conditional compile => fill real path
         #[cfg(target_os = "macos")]
         {
-            []
+            vec![
+                String::from("/Library/Application Support/ZeroTier/zerotier-one.port"),
+                String::from("/Library/Application Support/ZeroTier/zerotier.port"),
+                String::from("/Library/Application Support/ZeroTier/One/zerotier-one.port"),
+                String::from("/Library/Application Support/ZeroTier/One/zerotier.port"),
+            ]
+        }
+        #[cfg(target_os = "linux")]
+        {
+            vec![
+                String::from("/var/lib/zerotier/zerotier-one.port"),
+                String::from("/var/lib/zerotier/zerotier.port"),
+                String::from("/var/lib/zerotier-one/zerotier-one.port"),
+                String::from("/var/lib/zerotier-one/zerotier.port"),
+            ]
         }
     };
-    static ref GLOBAL_TRY_SECRET_FILES: [String; 2] = {
+    static ref GLOBAL_TRY_SECRET_FILES: Vec<String> = {
         #[cfg(windows)]
         {
-            [
-                String::from("C:\\ProgramData\\ZeroTier\\One\\authtoken.secret"),
+            vec![
                 from_home_dir("AppData\\Local\\ZeroTier\\authtoken.secret"),
+                from_home_dir("AppData\\Local\\ZeroTier\\One\\authtoken.secret"),
+                String::from("C:\\ProgramData\\ZeroTier\\One\\authtoken.secret"),
+                String::from("C:\\ProgramData\\ZeroTier\\One\\authtoken.secret"),
+                String::from("C:\\ProgramData\\ZeroTier\\authtoken.secret"),
+                String::from("C:\\ProgramData\\ZeroTier\\authtoken.secret")
             ]
         }
         // TODO: this is an demo for conditional compile => fill real path
         #[cfg(target_os = "macos")]
         {
-            []
+            vec![
+                String::from("/Library/Application Support/ZeroTier/authtoken.secret"),
+                String::from("/Library/Application Support/ZeroTier/authtoken.secret"),
+                String::from("/Library/Application Support/ZeroTier/One/authtoken.secret"),
+                String::from("/Library/Application Support/ZeroTier/One/authtoken.secret"),
+
+            ]
+        }
+        #[cfg(target_os = "linux")]
+        {
+            vec![
+                String::from("/.zeroTierOneAuthToken"),
+                String::from("/.zerotier-local-auth"),
+                String::from("/var/lib/zerotier/authtoken.secret"),
+                String::from("/var/lib/zerotier/authtoken.secret"),
+                String::from("/var/lib/zerotier-one/authtoken.secret"),
+                String::from("/var/lib/zerotier-one/authtoken.secret"),
+            ]
         }
 
     };
