@@ -13,18 +13,33 @@ use crate::windows_service_manage::{StartType, WindowsServiceManage};
 
 lazy_static! {
     static ref GLOBAL_TRY_PROT_FILES: [String; 2] = {
-        #[cfg(windows)]
-        [
-            String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier-one.port"),
-            String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier.port"),
-        ]
+        #[cfg(target_os = "windows")]
+        {
+            [
+                String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier-one.port"),
+                String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier.port"),
+            ]
+        }
+        // TODO: this is an demo for conditional compile => fill real path
+        #[cfg(target_os = "macos")]
+        {
+            []
+        }
     };
     static ref GLOBAL_TRY_SECRET_FILES: [String; 2] = {
         #[cfg(windows)]
-        [
-            String::from("C:\\ProgramData\\ZeroTier\\One\\authtoken.secret"),
-            from_home_dir("AppData\\Local\\ZeroTier\\authtoken.secret"),
-        ]
+        {
+            [
+                String::from("C:\\ProgramData\\ZeroTier\\One\\authtoken.secret"),
+                from_home_dir("AppData\\Local\\ZeroTier\\authtoken.secret"),
+            ]
+        }
+        // TODO: this is an demo for conditional compile => fill real path
+        #[cfg(target_os = "macos")]
+        {
+            []
+        }
+
     };
 }
 
