@@ -113,7 +113,7 @@ pub fn init_config(app_handle: AppHandle) {
     debug!("start to init configuration");
     // == area for put configuration ande register the on-change-callback
     let mut system_theme = SYSTEM_THEME.write().unwrap();
-    init_item(&mut system_theme, app_handle.clone());
+    init_item(&mut system_theme);
     system_theme.register_on_change(|_this, _app_handle, _changed| {
         //  this is demo for config change handle
     });
@@ -175,7 +175,7 @@ fn store_config(app_handle: AppHandle) {
     file.write_all(config_json.as_bytes()).expect("fail to write config to config file");
 }
 
-fn init_item(config: &mut RwLockWriteGuard<ConfigurationDef>, app_handle: AppHandle) {
+fn init_item(config: &mut RwLockWriteGuard<ConfigurationDef>) {
     let key = config.key.clone();
     debug!("init item:{key}");
     let default_value = config.default_value().to_string();
@@ -197,6 +197,15 @@ pub fn put_config(app_handle: AppHandle, key: String, value: String) {
     }
 }
 
+
+
+fn get_config_map() -> HashMap<String, String> {
+    let configuration_context = CONFIGURATION_CONTEXT.lock();
+    let data = configuration_context.get_configs();
+    data.clone()
+}
+
+
 #[tauri::command]
 pub fn put_config_command(app_handle: AppHandle, payload: String) -> String {
     debug!("accept command:payload[{payload}]");
@@ -209,16 +218,9 @@ pub fn put_config_command(app_handle: AppHandle, payload: String) -> String {
     success_json("")
 }
 
-fn get_config_map() -> HashMap<String, String> {
-    let configuration_context = CONFIGURATION_CONTEXT.lock();
-    let data = configuration_context.get_configs();
-    data.clone()
-}
-
 
 #[tauri::command]
 pub fn get_config() -> String {
     let data = get_config_map();
     return success_json(data);
 }
-
