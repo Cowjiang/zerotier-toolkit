@@ -16,15 +16,15 @@ mod command;
 #[cfg(test)]
 mod experiment;
 
-
+mod configuration;
 mod logger;
 mod r;
 mod system;
 mod system_tray;
+mod window;
+#[cfg(windows)]
 mod windows_service_manage;
 mod zerotier_manage;
-mod configuration;
-mod window;
 
 fn main() {
     start_tauri();
@@ -52,17 +52,18 @@ fn start_tauri() {
             restart_as_admin,
             put_config_command,
             get_config
-        ]).setup(|app| {
-        let app_handle = app.app_handle();
-        init_logger_main(app_handle.clone());
-        init_config(app_handle.clone());
-        init_window(app);
-        #[cfg(debug_assertions)]
-        {
-            open_dev_tools(app);
-        }
-        Ok(())
-    })
+        ])
+        .setup(|app| {
+            let app_handle = app.app_handle();
+            init_logger_main(app_handle.clone());
+            init_config(app_handle.clone());
+            init_window(app);
+            #[cfg(debug_assertions)]
+            {
+                open_dev_tools(app);
+            }
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -88,7 +89,3 @@ fn init_window(app: &mut App) {
     window.show().unwrap();
     set_window_shadow(window);
 }
-
-
-
-
