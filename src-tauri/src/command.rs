@@ -2,6 +2,7 @@ use std::io;
 use std::os::windows::process::CommandExt;
 use std::process::{Command, Output};
 
+#[cfg(windows)]
 use winapi::um::winbase::CREATE_NO_WINDOW;
 
 use crate::r::{self};
@@ -9,19 +10,19 @@ use crate::r::{self};
 pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
     let cmd_str: Vec<&str> = cmds.iter().map(|s| s.as_str()).collect();
     let final_cmd = std::iter::once("/C").chain(cmd_str);
-    let output = Command::new("cmd")
-        .creation_flags(CREATE_NO_WINDOW)
-        .args(final_cmd)
-        .output();
-    
-    output
+    let mut command = Command::new("cmd");
+
+    #[cfg(windows)]
+    command.creation_flags(CREATE_NO_WINDOW);
+
+    command.args(final_cmd).output()
 }
 
 pub(crate) fn parse_output(output: Vec<u8>) -> String {
     let result = String::from_utf8_lossy(&*output);
     return result.to_string();
 }
-
+#[cfg(windows)]
 #[tauri::command]
 pub(crate) fn is_admin() -> String {
     let output = execute_cmd(vec![String::from("net session")]);
@@ -35,6 +36,12 @@ pub(crate) fn is_admin() -> String {
         }
         Err(_error) => r::success_json(false),
     }
+}
+
+#[cfg(not(windows))]
+#[tauri::command]
+pub(crate) fn is_admin() -> String {
+    r::fail_message("api not support")
 }
 
 #[cfg(test)]
@@ -56,7 +63,8 @@ mod tests {
             Ok(value) => {
                 let output = parse_output(value.stdout);
                 println!("{}", output);
-                assert_eq!(output, "hello\r\n");
+                // do not use equals, the output \n or \r\n is different on windows and linux
+                assert!(output.starts_with("hello"));
             }
             _ => {}
         }

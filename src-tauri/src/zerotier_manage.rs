@@ -9,7 +9,8 @@ use log::error;
 use serde::Serialize;
 
 use crate::r::{fail_message_json, success_json};
-use crate::windows_service_manage::{StartType, WindowsServiceManage};
+#[cfg(target_os = "windows")]
+use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
 
 lazy_static! {
     static ref GLOBAL_TRY_PROT_FILES: [String; 2] = {
@@ -50,62 +51,84 @@ pub struct ZerotierServerInfo {
 }
 lazy_static! {
     static ref ZEROTIER_SERVICE_NAME: String = String::from("ZeroTierOneService");
+    #[cfg(target_os = "windows")]
     static ref ZEROTIER_SERVICE_MANAGE: WindowsServiceManage =
         WindowsServiceManage::new(ZEROTIER_SERVICE_NAME.to_string());
 }
 
 #[tauri::command]
 pub(crate) fn get_zerotier_services() -> String {
-    return match ZEROTIER_SERVICE_MANAGE.get_service_info() {
+    #[cfg(windows)]
+    match ZEROTIER_SERVICE_MANAGE.get_service_info() {
         Ok(value) => success_json(value),
         Err(err) => fail_message_json(err.to_string()),
-    };
+    }
+    #[cfg(not(windows))]
+    fail_message_json("this is an windows only command")
 }
 
 #[tauri::command]
 pub(crate) fn get_zerotier_start_type() -> String {
-    return match ZEROTIER_SERVICE_MANAGE.get_start_type() {
+    #[cfg(windows)]
+    match ZEROTIER_SERVICE_MANAGE.get_start_type() {
         Ok(value) => success_json(value),
         Err(err) => fail_message_json(err.to_string()),
-    };
+    }
+    #[cfg(not(windows))]
+    fail_message_json("this is an windows only command")
 }
 
 #[tauri::command]
 pub(crate) fn set_zerotier_start_type(start_type: String) -> String {
-    let resl_start_type = match start_type.as_str() {
-        "AutoStart" => StartType::AutoStart,
-        "DemandStart" => StartType::DemandStart,
-        "Disabled" => StartType::Disabled,
-        _ => StartType::DemandStart,
-    };
-    return match ZEROTIER_SERVICE_MANAGE.set_start_type(resl_start_type) {
-        Ok(value) => success_json(value),
-        Err(err) => fail_message_json(err.to_string()),
-    };
+    #[cfg(windows)]
+    {
+        let resl_start_type = match start_type.as_str() {
+            "AutoStart" => StartType::AutoStart,
+            "DemandStart" => StartType::DemandStart,
+            "Disabled" => StartType::Disabled,
+            _ => StartType::DemandStart,
+        };
+        match ZEROTIER_SERVICE_MANAGE.set_start_type(resl_start_type) {
+            Ok(value) => success_json(value),
+            Err(err) => fail_message_json(err.to_string()),
+        }
+    }
+
+    #[cfg(not(windows))]
+    fail_message_json("this is an windows only command")
 }
 
 #[tauri::command]
 pub(crate) async fn start_zerotier() -> String {
-    return match ZEROTIER_SERVICE_MANAGE.start() {
+    #[cfg(windows)]
+    match ZEROTIER_SERVICE_MANAGE.start() {
         Ok(value) => success_json(value),
         Err(err) => fail_message_json(err.to_string()),
-    };
+    }
+    #[cfg(not(windows))]
+    fail_message_json("this is an windows only command")
 }
 
 #[tauri::command]
 pub(crate) async fn stop_zerotier() -> String {
-    return match ZEROTIER_SERVICE_MANAGE.stop() {
+    #[cfg(windows)]
+    match ZEROTIER_SERVICE_MANAGE.stop() {
         Ok(value) => success_json(value),
         Err(err) => fail_message_json(err.to_string()),
-    };
+    }
+    #[cfg(not(windows))]
+    fail_message_json("this is an windows only command")
 }
 
 #[tauri::command]
 pub(crate) fn get_zerotier_state() -> String {
-    return match ZEROTIER_SERVICE_MANAGE.get_state() {
+    #[cfg(windows)]
+    match ZEROTIER_SERVICE_MANAGE.get_state() {
         Ok(value) => success_json(format!("{:?}", value)),
         Err(err) => fail_message_json(err.to_string()),
-    };
+    }
+    #[cfg(not(windows))]
+    fail_message_json("this is an windows only command")
 }
 
 #[tauri::command]
