@@ -45,7 +45,6 @@ const appConfigStorage = (): StateStorage => {
       const appConfig = JSON.stringify(config)
       if (configTemp !== appConfig && isTauri) {
         configTemp = appConfig
-        console.log('设置配置', appConfig)
         await invokeCommand(InvokeEvent.PUT_CONFIG_COMMAND, { payload: appConfig })
       }
     },
