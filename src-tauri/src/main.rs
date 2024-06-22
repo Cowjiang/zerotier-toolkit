@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use auto_launch::set_auto_launch;
 use configuration::try_store_bak;
 use log::debug;
 use tauri::{App, Manager, WindowBuilder, WindowEvent};
@@ -18,6 +19,7 @@ mod command;
 #[cfg(test)]
 mod experiment;
 
+mod auto_launch;
 mod configuration;
 mod logger;
 mod r;
@@ -27,7 +29,6 @@ mod window;
 #[cfg(windows)]
 mod windows_service_manage;
 mod zerotier_manage;
-
 fn main() {
     start_tauri();
 }
@@ -53,7 +54,8 @@ fn start_tauri() {
             is_admin,
             restart_as_admin,
             put_config_command,
-            get_config
+            get_config,
+            set_auto_launch
         ])
         .setup(|app| {
             let app_handle = app.app_handle();

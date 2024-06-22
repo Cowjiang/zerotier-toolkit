@@ -25,6 +25,7 @@ export enum InvokeEvent {
   PUT_CONFIG_COMMAND = 'put_config_command',
   GET_NETWORKS = 'get_networks',
   HIDE_MAIN_WINDOW = 'hide_main_window',
+  SET_AUTO_LAUNCH = 'set_auto_launch',
 }
 
 export enum Theme {
