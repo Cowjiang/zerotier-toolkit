@@ -3,7 +3,7 @@ import { ThemeProviderProps, UseThemeProps } from 'next-themes/dist/types'
 import { ReactElement, useEffect, useMemo } from 'react'
 
 import { useAppStore } from '../../store/app.ts'
-import { StrBool, ThemeConfig } from '../../typings/config.ts'
+import { ThemeConfig } from '../../typings/config.ts'
 import { Theme } from '../../typings/enum.ts'
 
 type ContentProps = { children: ReactElement }
@@ -17,7 +17,7 @@ function Content({ children }: ContentProps) {
   }, [theme])
 
   useEffect(() => {
-    if (config[ThemeConfig.IS_SYNC_WITH_SYSTEM] === StrBool.TRUE) {
+    if (!!config[ThemeConfig.IS_SYNC_WITH_SYSTEM]) {
       const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT
       setTheme(theme)
     }

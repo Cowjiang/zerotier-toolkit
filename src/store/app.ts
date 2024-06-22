@@ -4,6 +4,7 @@ import { createJSONStorage, persist, StateStorage, StorageValue } from 'zustand/
 
 import type { AppConfig } from '../typings/config.ts'
 import { InvokeEvent } from '../typings/enum.ts'
+import { getConfig, updateConfig } from '../utils/helpers/configHelpers.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 export type AppState = {
@@ -34,7 +35,7 @@ const appConfigStorage = (): StateStorage => {
         version: 0,
       }
       if (isTauri) {
-        value.state.config = (await invokeCommand(InvokeEvent.GET_CONFIG))?.data || {}
+        value.state.config = await getConfig()
       }
       return JSON.stringify(value)
     },
@@ -45,7 +46,7 @@ const appConfigStorage = (): StateStorage => {
       const appConfig = JSON.stringify(config)
       if (configTemp !== appConfig && isTauri) {
         configTemp = appConfig
-        await invokeCommand(InvokeEvent.PUT_CONFIG_COMMAND, { payload: appConfig })
+        await updateConfig(config)
       }
     },
     removeItem: (): void | Promise<void> => undefined,

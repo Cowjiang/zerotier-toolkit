@@ -4,7 +4,7 @@ import { UseThemeProps } from 'next-themes/dist/types'
 import { useMemo } from 'react'
 
 import { useAppStore } from '../../store/app.ts'
-import { LanguageConfig, StrBool, ThemeConfig, toStrBool } from '../../typings/config.ts'
+import { LanguageConfig, ThemeConfig } from '../../typings/config.ts'
 import { Language, Theme } from '../../typings/enum.ts'
 import { CheckIcon, DarkThemeIcon, LightThemeIcon } from '../base/Icon.tsx'
 
@@ -22,11 +22,11 @@ const languages = [
 function AppearanceSetting() {
   const { theme, setTheme } = useTheme() as { theme: Theme } & UseThemeProps
   const switchTheme = (theme: Theme) => {
-    syncWithSystemTheme(StrBool.FALSE).then(() => setTheme(theme))
+    syncWithSystemTheme(false).then(() => setTheme(theme))
   }
 
   const { config, setConfig } = useAppStore()
-  const syncWithSystemTheme = async (isSyncWithSystem: StrBool) => {
+  const syncWithSystemTheme = async (isSyncWithSystem: boolean) => {
     setConfig({
       [ThemeConfig.IS_SYNC_WITH_SYSTEM]: isSyncWithSystem,
       [ThemeConfig.CURRENT]: theme,
@@ -54,8 +54,8 @@ function AppearanceSetting() {
               aria-label="Sync with system theme"
               size="sm"
               color="primary"
-              isSelected={config[ThemeConfig.IS_SYNC_WITH_SYSTEM] === StrBool.TRUE}
-              onValueChange={(v) => syncWithSystemTheme(toStrBool(v))}
+              isSelected={!!config[ThemeConfig.IS_SYNC_WITH_SYSTEM]}
+              onValueChange={(v) => syncWithSystemTheme(v)}
             />
           </div>
         </div>

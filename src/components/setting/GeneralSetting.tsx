@@ -1,7 +1,7 @@
 import { Switch } from '@nextui-org/react'
 
 import { useAppStore } from '../../store/app.ts'
-import { GeneralConfig, StrBool, toStrBool } from '../../typings/config.ts'
+import { GeneralConfig } from '../../typings/config.ts'
 
 function GeneralSetting() {
   const { config, setConfig } = useAppStore()
@@ -19,8 +19,8 @@ function GeneralSetting() {
               aria-label="Launch ZeroTier Toolkit when start-up"
               size="sm"
               color="primary"
-              isSelected={config[GeneralConfig.AUTO_START] === StrBool.TRUE}
-              onValueChange={(v) => setConfig({ [GeneralConfig.AUTO_START]: toStrBool(v) })}
+              isSelected={!!config[GeneralConfig.AUTO_START]}
+              onValueChange={(v) => setConfig({ [GeneralConfig.AUTO_START]: v })}
             />
           </div>
         </div>
@@ -36,7 +36,7 @@ function GeneralSetting() {
               aria-label="Enable the tray icon"
               size="sm"
               color="primary"
-              isSelected={config[GeneralConfig.ENABLE_TRAY]}
+              isSelected={!!config[GeneralConfig.ENABLE_TRAY]}
               onValueChange={(v) => setConfig({ [GeneralConfig.ENABLE_TRAY]: v })}
             />
           </div>
@@ -48,7 +48,7 @@ function GeneralSetting() {
               aria-label="Minimize to system tray on launching"
               size="sm"
               color="primary"
-              isSelected={config[GeneralConfig.MINIMIZE_TO_TRAY]}
+              isSelected={!!config[GeneralConfig.MINIMIZE_TO_TRAY]}
               onValueChange={(v) => setConfig({ [GeneralConfig.MINIMIZE_TO_TRAY]: v })}
             />
           </div>
