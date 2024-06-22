@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use auto_launch::set_auto_launch;
+use auto_launch::{set_auto_launch, unset_auto_launch};
 use configuration::try_store_bak;
 use log::debug;
 use tauri::{App, Manager, WindowBuilder, WindowEvent};
@@ -55,7 +55,8 @@ fn start_tauri() {
             restart_as_admin,
             put_config_command,
             get_config,
-            set_auto_launch
+            set_auto_launch,
+            unset_auto_launch
         ])
         .setup(|app| {
             let app_handle = app.app_handle();

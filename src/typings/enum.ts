@@ -26,6 +26,7 @@ export enum InvokeEvent {
   GET_NETWORKS = 'get_networks',
   HIDE_MAIN_WINDOW = 'hide_main_window',
   SET_AUTO_LAUNCH = 'set_auto_launch',
+  UNSET_AUTO_LAUNCH = 'unset_auto_launch',
 }
 
 export enum Theme {
