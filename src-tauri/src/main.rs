@@ -1,7 +1,9 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{App, Manager, WindowBuilder};
+use configuration::try_store_bak;
+use log::debug;
+use tauri::{App, Manager, WindowBuilder, WindowEvent};
 
 use command::*;
 use system::*;
@@ -63,6 +65,17 @@ fn start_tauri() {
                 open_dev_tools(app);
             }
             Ok(())
+        })
+        .on_window_event(|global_window_event| {
+            debug!("listen window event:{:?}", global_window_event.event());
+            let app_handle = global_window_event.window().app_handle();
+            match global_window_event.event() {
+                WindowEvent::Destroyed { .. } => {
+                    debug!("listen window destoryed event");
+                    try_store_bak(app_handle.clone());
+                }
+                _ => {}
+            }
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,5 +1,6 @@
 use lazy_static::lazy_static;
 use std::collections::HashMap;
+use std::error::Error;
 use std::fs::OpenOptions;
 use std::io::Write;
 use std::string::ToString;
@@ -120,6 +121,7 @@ impl ConfigurationDef {
 }
 
 const FILE: &str = "resources/configuration.json";
+const FILE_BAK: &str = "resources/configuration.bak.json";
 
 lazy_static! {
     static ref CONFIGURATION_CONTEXT: Mutex<ConfigurationContext> =
@@ -143,50 +145,75 @@ pub fn init_config(app_handle: AppHandle) {
     init_item(&mut THEME_SYNC_WITCH_SYSTEM.write().unwrap());
     // ==
     debug!("read configuration from file");
-    let config_from_file: HashMap<String, String> = read_config_from_file(app_handle.clone());
+    let config_from_file: HashMap<String, String> = try_read_config_from_file(app_handle.clone());
     for (key, value) in config_from_file {
         put_config(app_handle.clone(), key, value)
     }
-    store_config(app_handle.clone());
+    store_config(app_handle.clone(), FILE);
 }
 
-fn open_config_file(app_handle: AppHandle) -> Result<std::fs::File, std::io::Error> {
-    let opt_configuration_json_file = app_handle.path_resolver().resolve_resource(FILE);
+fn open_config_file(
+    app_handle: AppHandle,
+    file: &str,
+    truncate: bool,
+) -> Result<std::fs::File, std::io::Error> {
+    let opt_configuration_json_file = app_handle.path_resolver().resolve_resource(file);
     if opt_configuration_json_file.is_none() {
-        debug!("{FILE} is not exist. init by default");
+        debug!("{file} is not exist.");
         return Err(std::io::Error::new(
             std::io::ErrorKind::NotFound,
             "file not found",
         ));
     }
     let json_file_path = opt_configuration_json_file.unwrap();
-    OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .open(json_file_path)
+    let mut open_options = OpenOptions::new();
+    open_options.read(true).write(true).create(true);
+    if truncate {
+        open_options.truncate(true);
+    }
+    open_options.open(json_file_path)
+}
+fn open_config_file_truncate(
+    app_handle: AppHandle,
+    file: &str,
+) -> Result<std::fs::File, std::io::Error> {
+    open_config_file(app_handle, file, true)
+}
+fn open_config_file_default(
+    app_handle: AppHandle,
+    file: &str,
+) -> Result<std::fs::File, std::io::Error> {
+    open_config_file(app_handle, file, false)
 }
 
-fn read_config_from_file(app_handle: AppHandle) -> HashMap<String, String> {
-    let opt_file = open_config_file(app_handle);
+fn read_config_from_file(
+    app_handle: AppHandle,
+    file: &str,
+) -> Result<HashMap<String, String>, Box<dyn Error>> {
+    let opt_file = open_config_file_default(app_handle, file);
     if opt_file.is_err() {
         let opt_err = opt_file.err().unwrap();
-        debug!("{FILE} open fail {opt_err}. init by default");
-        return HashMap::new();
+        debug!("{file} open fail {opt_err}. ");
+        return Err(opt_err.into());
     }
-    let file = opt_file.unwrap();
-    debug!("{FILE} is exist. start to resolve");
-    return match serde_json::from_reader(file) {
-        Ok(result) => result,
-        Err(err) => {
-            debug!("{FILE} serde fail {err}. init by default");
-            HashMap::new()
-        }
-    };
+    debug!("{file} is exist. start to resolve");
+    let confg: HashMap<String, String> = serde_json::from_reader(opt_file.unwrap())?;
+    Ok(confg)
+}
+fn try_read_config_from_file(app_handle: AppHandle) -> HashMap<String, String> {
+    let mut config_file = read_config_from_file(app_handle.clone(), FILE);
+    if config_file.is_err() {
+        config_file = read_config_from_file(app_handle.clone(), FILE_BAK);
+    }
+    if config_file.is_ok() {
+        return config_file.unwrap();
+    }
+    debug!("can not read config from file.init by default!");
+    HashMap::new()
 }
 
-fn store_config(app_handle: AppHandle) {
-    let opt_file = open_config_file(app_handle);
+fn store_config(app_handle: AppHandle, file: &str) {
+    let opt_file = open_config_file_truncate(app_handle, file);
     if opt_file.is_err() {
         let opt_err = opt_file.err().unwrap();
         debug!("{FILE} open fail {opt_err}. fail to store config");
@@ -228,6 +255,10 @@ fn get_config_map() -> HashMap<String, String> {
     data.clone()
 }
 
+pub fn try_store_bak(app_handle: AppHandle) {
+    store_config(app_handle.clone(), FILE_BAK);
+}
+
 #[tauri::command]
 pub fn put_config_command(app_handle: AppHandle, payload: String) -> String {
     debug!("accept command:payload[{payload}]");
@@ -236,7 +267,7 @@ pub fn put_config_command(app_handle: AppHandle, payload: String) -> String {
     for (key, value) in &config {
         put_config(app_handle.clone(), key.clone(), value.clone());
     }
-    store_config(app_handle.clone());
+    store_config(app_handle.clone(), FILE);
     success_json("")
 }
 
