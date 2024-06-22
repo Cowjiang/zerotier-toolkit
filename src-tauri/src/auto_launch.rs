@@ -6,7 +6,7 @@ use tauri::AppHandle;
 fn init_auto(app_handle: AppHandle) -> AutoLaunch {
     let config = app_handle.config();
     let package = &config.package;
-    let default = ("".to_string());
+    let default = "".to_string();
     let product_name = package.product_name.as_ref().unwrap_or(&default);
     let version = package.version.as_ref().unwrap_or(&default);
     let app_name = format!("{}@{}", product_name, version);

@@ -26,7 +26,7 @@ export type AppConfig = {
   [ThemeConfig.CURRENT]?: Theme
   [ThemeConfig.IS_SYNC_WITH_SYSTEM]?: StrBool
   [LanguageConfig.UI]?: Language
-  [GeneralConfig.AUTO_START]?: boolean
+  [GeneralConfig.AUTO_START]?: StrBool
   [GeneralConfig.ENABLE_TRAY]?: boolean
   [GeneralConfig.MINIMIZE_TO_TRAY]?: boolean
 }

@@ -1,7 +1,7 @@
 import { Switch } from '@nextui-org/react'
 
 import { useAppStore } from '../../store/app.ts'
-import { GeneralConfig } from '../../typings/config.ts'
+import { GeneralConfig, StrBool, toStrBool } from '../../typings/config.ts'
 
 function GeneralSetting() {
   const { config, setConfig } = useAppStore()
@@ -19,8 +19,8 @@ function GeneralSetting() {
               aria-label="Launch ZeroTier Toolkit when start-up"
               size="sm"
               color="primary"
-              isSelected={config[GeneralConfig.AUTO_START]}
-              onValueChange={(v) => setConfig({ [GeneralConfig.AUTO_START]: v })}
+              isSelected={config[GeneralConfig.AUTO_START] === StrBool.TRUE}
+              onValueChange={(v) => setConfig({ [GeneralConfig.AUTO_START]: toStrBool(v) })}
             />
           </div>
         </div>

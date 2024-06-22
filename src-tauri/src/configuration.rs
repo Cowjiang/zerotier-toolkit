@@ -13,6 +13,7 @@ use serde::Serialize;
 
 use tauri::{AppHandle, Manager};
 
+use crate::auto_launch::{set_auto_launch, unset_auto_launch};
 use crate::r::success_json;
 
 pub const EVENT_CONFIG_CHANGE: &str = "event_config_change";
@@ -100,6 +101,11 @@ impl ConfigurationDef {
                 }),
             )
             .expect("event publish fail");
+        debug!(
+            "on_change:{}->{:?}",
+            self.key,
+            self.on_change_callback.is_some()
+        );
         if self.on_change_callback.is_some() {
             self.on_change_callback.unwrap()(self, app_handle, changed.clone())
         }
@@ -133,16 +139,36 @@ lazy_static! {
     static ref THEME_SYNC_WITCH_SYSTEM: RwLock<ConfigurationDef> = RwLock::new(
         ConfigurationDef::new("Theme.IsSyncWithSystem".to_string(), "true".to_string())
     );
+    static ref GENERAL_AUTO_START: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
+        "General.AutoStart".to_string(),
+        "false".to_string()
+    ));
 }
 pub fn init_config(app_handle: AppHandle) {
     debug!("start to init configuration");
     // == area for put configuration ande register the on-change-callback
+    // ==== demo for set an configuration item
     let mut system_theme = SYSTEM_THEME.write().unwrap();
-    init_item(&mut system_theme);
     system_theme.register_on_change(|_this, _app_handle, _changed| {
         //  this is demo for config change handle
     });
+    // init must be called after register the on-change-callback
+    init_item(&mut system_theme);
+    // ==== end demo
+    // == init THEME_SYNC_WITCH_SYSTEM
     init_item(&mut THEME_SYNC_WITCH_SYSTEM.write().unwrap());
+    // == init GENERAL_AUTO_START
+    let mut general_auto_start = GENERAL_AUTO_START.write().unwrap();
+    general_auto_start.register_on_change(|_this, app_handle, changed| {
+        debug!("auto start change to {}", changed);
+        if changed == "true" {
+            set_auto_launch(app_handle.clone())
+        } else {
+            unset_auto_launch(app_handle.clone())
+        }
+    });
+    init_item(&mut general_auto_start);
+
     // ==
     debug!("read configuration from file");
     let config_from_file: HashMap<String, String> = try_read_config_from_file(app_handle.clone());
@@ -230,7 +256,7 @@ fn init_item(config: &mut RwLockWriteGuard<ConfigurationDef>) {
     debug!("init item:{key}");
     let default_value = config.default_value().to_string();
     let mut configuration_context = CONFIGURATION_CONTEXT.lock();
-    configuration_context.put_config_def(key.clone(), config.clone());
+    configuration_context.put_config_def(key.clone(), config.to_owned());
     configuration_context.put_config(key, default_value);
 }
 
