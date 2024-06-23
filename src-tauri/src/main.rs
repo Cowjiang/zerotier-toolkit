@@ -1,12 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use auto_launch::{set_auto_launch, unset_auto_launch};
-use configuration::try_store_bak;
 use log::debug;
 use tauri::{App, Manager, WindowBuilder, WindowEvent};
 
+use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
+use configuration::try_store_bak;
 use system::*;
 use system_tray::{handle_system_tray_event, init_system_tray};
 use window::set_window_shadow;
@@ -29,6 +29,7 @@ mod window;
 #[cfg(windows)]
 mod windows_service_manage;
 mod zerotier_manage;
+
 fn main() {
     start_tauri();
 }
@@ -39,7 +40,7 @@ fn start_tauri() {
         .system_tray(init_system_tray())
         .on_system_tray_event(handle_system_tray_event)
         .invoke_handler(tauri::generate_handler![
-            // zerotier handler
+            // zerotier handlers
             get_zerotier_services,
             get_zerotier_start_type,
             set_zerotier_start_type,
@@ -63,10 +64,10 @@ fn start_tauri() {
             init_logger_main(app_handle.clone());
             init_config(app_handle.clone());
             init_window(app);
+
             #[cfg(debug_assertions)]
-            {
-                open_dev_tools(app);
-            }
+            open_dev_tools(app);
+
             Ok(())
         })
         .on_window_event(|global_window_event| {
@@ -84,6 +85,7 @@ fn start_tauri() {
         .expect("error while running tauri application");
 }
 
+#[cfg(debug_assertions)]
 fn open_dev_tools(app: &mut App) {
     let window = app.get_window("main").unwrap();
     window.open_devtools();
