@@ -1,11 +1,12 @@
 use std::io;
+#[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::process::{Command, Output};
 
 #[cfg(windows)]
 use winapi::um::winbase::CREATE_NO_WINDOW;
 
-use crate::r::{self};
+use crate::r::{self, R};
 
 pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
     let cmd_str: Vec<&str> = cmds.iter().map(|s| s.as_str()).collect();
@@ -40,7 +41,7 @@ pub(crate) fn is_admin() -> String {
 
 #[cfg(not(windows))]
 #[tauri::command]
-pub(crate) fn is_admin() -> String {
+pub(crate) fn is_admin() -> R<Option<String>> {
     r::fail_message("api not support")
 }
 

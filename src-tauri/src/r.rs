@@ -41,18 +41,18 @@ where
     serde_json::to_string(&result).unwrap()
 }
 
-pub(crate) fn fail_message_json(message: String) -> String {
+pub(crate) fn fail_message_json(message: &str) -> String {
     let result = fail_message(message);
     serde_json::to_string(&result).unwrap()
 }
 
 #[allow(unused)]
 pub(crate) fn fail_json() -> String {
-    let result = fail_message(String::from("fail"));
+    let result = fail_message("fail");
     serde_json::to_string(&result).unwrap()
 }
 
-pub(crate) fn fail_message(message: String) -> R<Option<String>> {
+pub(crate) fn fail_message(message: &str) -> R<Option<String>> {
     R {
         code: -1,
         message: String::from(message),

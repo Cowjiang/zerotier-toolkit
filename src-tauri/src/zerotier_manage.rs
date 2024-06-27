@@ -98,7 +98,7 @@ pub(crate) fn get_zerotier_services() -> String {
     #[cfg(windows)]
     match ZEROTIER_SERVICE_MANAGE.get_service_info() {
         Ok(value) => success_json(value),
-        Err(err) => fail_message_json(err.to_string()),
+        Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
     fail_message_json("this is an windows only command")
@@ -109,7 +109,7 @@ pub(crate) fn get_zerotier_start_type() -> String {
     #[cfg(windows)]
     match ZEROTIER_SERVICE_MANAGE.get_start_type() {
         Ok(value) => success_json(value),
-        Err(err) => fail_message_json(err.to_string()),
+        Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
     fail_message_json("this is an windows only command")
@@ -127,7 +127,7 @@ pub(crate) fn set_zerotier_start_type(start_type: String) -> String {
         };
         match ZEROTIER_SERVICE_MANAGE.set_start_type(resl_start_type) {
             Ok(value) => success_json(value),
-            Err(err) => fail_message_json(err.to_string()),
+            Err(err) => fail_message_json(&err.to_string()),
         }
     }
 
@@ -140,7 +140,7 @@ pub(crate) async fn start_zerotier() -> String {
     #[cfg(windows)]
     match ZEROTIER_SERVICE_MANAGE.start() {
         Ok(value) => success_json(value),
-        Err(err) => fail_message_json(err.to_string()),
+        Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
     fail_message_json("this is an windows only command")
@@ -151,7 +151,7 @@ pub(crate) async fn stop_zerotier() -> String {
     #[cfg(windows)]
     match ZEROTIER_SERVICE_MANAGE.stop() {
         Ok(value) => success_json(value),
-        Err(err) => fail_message_json(err.to_string()),
+        Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
     fail_message_json("this is an windows only command")
@@ -162,7 +162,7 @@ pub(crate) fn get_zerotier_state() -> String {
     #[cfg(windows)]
     match ZEROTIER_SERVICE_MANAGE.get_state() {
         Ok(value) => success_json(format!("{:?}", value)),
-        Err(err) => fail_message_json(err.to_string()),
+        Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
     fail_message_json("this is an windows only command")
@@ -173,7 +173,7 @@ pub(crate) fn get_zerotier_server_info() -> String {
     let res_port = try_read_files(&GLOBAL_TRY_PROT_FILES.clone());
     let res_secret = try_read_files(&GLOBAL_TRY_SECRET_FILES.clone());
     if res_port.is_err() || res_secret.is_err() {
-        return fail_message_json(String::from("resolve port and secret fail"));
+        return fail_message_json("resolve port and secret fail");
     }
     success_json(ZerotierServerInfo {
         port: res_port.unwrap(),

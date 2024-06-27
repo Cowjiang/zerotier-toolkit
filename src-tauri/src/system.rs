@@ -14,7 +14,7 @@ pub(crate) fn restart_as_admin() -> String {
         let current = env::current_exe().unwrap();
         let exec_path = current.to_str();
         if exec_path.is_none() {
-            return fail_message_json(String::from("can't not get current exe path"));
+            return fail_message_json("can't not get current exe path");
         }
         let exec_path = exec_path.unwrap();
         let output = execute_cmd(vec![
@@ -32,15 +32,15 @@ pub(crate) fn restart_as_admin() -> String {
             Ok(value) => {
                 let status = value.status;
                 if !status.success() {
-                    return fail_message_json(String::from("resater fail.please restart manually"));
+                    return fail_message_json("resater fail.please restart manually");
                 }
                 return success_json("success");
             }
-            Err(err) => fail_message_json(err.to_string()),
+            Err(err) => fail_message_json(&err.to_string()),
         }
     }
     #[cfg(not(windows))]
-    fail_message_json(String::from("not support"));
+    fail_message_json("not support")
 }
 
 #[tauri::command]
@@ -51,7 +51,7 @@ pub(crate) fn hide_main_window(app_handler: AppHandle) -> String {
             let _ = window.hide();
         }
         None => {
-            return fail_message_json(String::from("no window found"));
+            return fail_message_json("no window found");
         }
     }
     return success_json("success");
@@ -66,7 +66,7 @@ pub(crate) fn show_main_window(app_handler: AppHandle) -> String {
             let _ = window.set_focus();
         }
         None => {
-            return fail_message_json(String::from("no window found"));
+            return fail_message_json("no window found");
         }
     }
     return success_json("success");
