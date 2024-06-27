@@ -74,6 +74,7 @@
     "systemTray": {
       "iconPath": "icons/icon.ico",
       "menuOnLeftClick": true
-    }
+    },
+    "macOSPrivateApi": true
   }
 }
