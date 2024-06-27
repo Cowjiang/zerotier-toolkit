@@ -12,14 +12,14 @@ fn init_auto(app_handle: AppHandle) -> AutoLaunch {
     let app_name = format!("{}@{}", product_name, version);
     let mut current_exe = current_exe().unwrap();
     let app_path = current_exe.as_mut_os_string();
-    #[cfg(not(macos))]
+    #[cfg(not(target_os = "macos"))]
     let auto = AutoLaunch::new(
         app_name.as_str(),
         app_path.to_str().unwrap(),
         &[] as &[&str],
     );
-    #[cfg(macos)]
-    let auto = AutoLaunch::new(app_name, app_path.to_str().unwrap(), false, &[] as &[&str]);
+    #[cfg(target_os = "macos")]
+    let auto = AutoLaunch::new(&*app_name, app_path.to_str().unwrap(), false, &[] as &[&str]);
     auto
 }
 

@@ -86,11 +86,11 @@ pub struct ZerotierServerInfo {
     port: String,
     secret: String,
 }
+
+#[cfg(target_os = "windows")]
 lazy_static! {
     static ref ZEROTIER_SERVICE_NAME: String = String::from("ZeroTierOneService");
-    #[cfg(target_os = "windows")]
-    static ref ZEROTIER_SERVICE_MANAGE: WindowsServiceManage =
-        WindowsServiceManage::new(ZEROTIER_SERVICE_NAME.to_string());
+    static ref ZEROTIER_SERVICE_MANAGE: WindowsServiceManage = WindowsServiceManage::new(ZEROTIER_SERVICE_NAME.to_string());
 }
 
 #[tauri::command]
