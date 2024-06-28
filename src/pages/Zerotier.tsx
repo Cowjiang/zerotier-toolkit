@@ -137,7 +137,7 @@ function Zerotier({ tabPath }: { tabPath?: string }) {
       </div>
       <div className="w-full h-full flex flex-col px-6 py-4 mr-4 overflow-hidden" {...TAURI_DRAG_REGION}>
         <div className="w-full mt-1 mb-6 flex" {...TAURI_DRAG_REGION}>
-          <div className="flex flex-col">
+          <div className="flex flex-col pointer-events-none">
             <h1 className="font-bold text-2xl">{currentListItem.title}</h1>
             <p className="mt-1 text-sm text-default-600">{currentListItem.description}</p>
           </div>
