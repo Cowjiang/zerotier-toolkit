@@ -102,9 +102,10 @@ impl ConfigurationDef {
             )
             .expect("event publish fail");
         debug!(
-            "on_change:{}->{:?}",
+            "on_change:{}->has callback:{:?} change to {:?}",
             self.key,
-            self.on_change_callback.is_some()
+            self.on_change_callback.is_some(),
+            changed
         );
         if self.on_change_callback.is_some() {
             self.on_change_callback.unwrap()(self, app_handle, changed.clone())
@@ -151,7 +152,7 @@ lazy_static! {
 pub fn init_config(app_handle: AppHandle) {
     debug!("start to init configuration");
     // == area for put configuration ande register the on-change-callback
-    // ==== demo for set an configuration item
+    // ==== demo for set a configuration item
     let mut system_theme = SYSTEM_THEME.write().unwrap();
     system_theme.register_on_change(|_this, _app_handle, _changed| {
         //  this is demo for config change handle
