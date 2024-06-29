@@ -4,7 +4,7 @@ use std::error::Error;
 use std::fs::OpenOptions;
 use std::io::Write;
 use std::string::ToString;
-use std::sync::{RwLock, RwLockWriteGuard};
+use std::sync::{LockResult, RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 use log::debug;
 use parking_lot::lock_api::MutexGuard;
@@ -143,6 +143,10 @@ lazy_static! {
         "General.AutoStart".to_string(),
         "false".to_string()
     ));
+    pub static ref GENERAL_MINIMIZE_TO_TRAY: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
+        "General.MinimizeToTray".to_string(),
+        "false".to_string()
+    ));
 }
 pub fn init_config(app_handle: AppHandle) {
     debug!("start to init configuration");
@@ -156,7 +160,7 @@ pub fn init_config(app_handle: AppHandle) {
     init_item(&mut system_theme);
     // ==== end demo
     // == init THEME_SYNC_WITCH_SYSTEM
-    init_item(&mut THEME_SYNC_WITCH_SYSTEM.write().unwrap());
+
     // == init GENERAL_AUTO_START
     let mut general_auto_start = GENERAL_AUTO_START.write().unwrap();
     general_auto_start.register_on_change(|_this, app_handle, changed| {
@@ -168,6 +172,8 @@ pub fn init_config(app_handle: AppHandle) {
         }
     });
     init_item(&mut general_auto_start);
+    // == INIT GENERAL_MINIMIZE_TO_TRAY
+    init_item(&mut GENERAL_MINIMIZE_TO_TRAY.write().unwrap());
 
     // ==
     debug!("read configuration from file");
@@ -199,12 +205,14 @@ fn open_config_file(
     }
     open_options.open(json_file_path)
 }
+
 fn open_config_file_truncate(
     app_handle: AppHandle,
     file: &str,
 ) -> Result<std::fs::File, std::io::Error> {
     open_config_file(app_handle, file, true)
 }
+
 fn open_config_file_default(
     app_handle: AppHandle,
     file: &str,
@@ -226,6 +234,7 @@ fn read_config_from_file(
     let confg: HashMap<String, String> = serde_json::from_reader(opt_file.unwrap())?;
     Ok(confg)
 }
+
 fn try_read_config_from_file(app_handle: AppHandle) -> HashMap<String, String> {
     let mut config_file = read_config_from_file(app_handle.clone(), FILE);
     if config_file.is_err() {
@@ -279,6 +288,13 @@ fn get_config_map() -> HashMap<String, String> {
     let configuration_context = CONFIGURATION_CONTEXT.lock();
     let data = configuration_context.get_configs();
     data.clone()
+}
+
+pub fn get_config_dy_def(config_def: LockResult<RwLockReadGuard<ConfigurationDef>>) -> String {
+    let config_def = config_def.unwrap();
+    let config_map = get_config_map();
+    let option = config_map.get(config_def.key());
+    option.unwrap_or(&config_def.default_value().to_string()).into()
 }
 
 pub fn try_store_bak(app_handle: AppHandle) {

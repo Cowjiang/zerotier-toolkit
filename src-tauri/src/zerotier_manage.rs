@@ -55,7 +55,6 @@ lazy_static! {
                 String::from("C:\\ProgramData\\ZeroTier\\authtoken.secret")
             ]
         }
-        // TODO: this is an demo for conditional compile => fill real path
         #[cfg(target_os = "macos")]
         {
             vec![
@@ -207,6 +206,7 @@ fn try_read_file(file_url: String) -> Result<String, Error> {
         Err(error) => Err(error),
     }
 }
+
 fn from_home_dir<'a>(path: &str) -> String {
     let home_dir = get_user_home_dir().unwrap();
     let home_dir = Path::new(&home_dir);
@@ -217,10 +217,10 @@ fn from_home_dir<'a>(path: &str) -> String {
 
 pub fn get_user_home_dir() -> Result<String, VarError> {
     #[cfg(windows)]
-    let home = std::env::var("USERPROFILE");
+        let home = std::env::var("USERPROFILE");
 
     #[cfg(not(windows))]
-    let home = std::env::var("HOME");
+        let home = std::env::var("HOME");
 
     home
 }
@@ -260,6 +260,7 @@ mod tests {
             get_zerotier_start_type()
         )
     }
+
     #[test]
     fn test_set_zerotier_start_type() {
         setup();

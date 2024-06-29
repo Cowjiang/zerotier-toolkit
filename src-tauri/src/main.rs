@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use log::debug;
-use tauri::{App, Manager, WindowBuilder, WindowEvent};
+use tauri::{App, Manager, Window, WindowBuilder, WindowEvent};
 
 use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
@@ -11,7 +11,7 @@ use system::*;
 use system_tray::{handle_system_tray_event, init_system_tray};
 use window::set_window_shadow;
 
-use crate::configuration::{get_config, init_config, put_config_command};
+use crate::configuration::{GENERAL_MINIMIZE_TO_TRAY, get_config, get_config_dy_def, init_config, put_config_command};
 use crate::logger::init_logger_main;
 use crate::zerotier_manage::*;
 
@@ -105,5 +105,8 @@ fn init_window(app: &mut App) {
         .build()
         .unwrap();
     window.show().unwrap();
-    set_window_shadow(window);
+    if get_config_dy_def(GENERAL_MINIMIZE_TO_TRAY.read()).eq("true") {
+        window.hide().unwrap();
+    }
+    set_window_shadow(window)
 }
