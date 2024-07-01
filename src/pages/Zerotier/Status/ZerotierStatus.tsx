@@ -1,9 +1,9 @@
 import { Code, Snippet, Spinner } from '@nextui-org/react'
 import { useCallback, useEffect, useState } from 'react'
 
+import { RefreshIcon } from '../../../components/base/Icon.tsx'
+import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
-import { RefreshIcon } from '../../base/Icon.tsx'
-import RefreshButton from '../../base/RefreshButton.tsx'
 
 function ZerotierStatus() {
   const { status, getStatus } = useZeroTierStore()

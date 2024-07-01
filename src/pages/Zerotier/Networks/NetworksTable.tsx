@@ -17,12 +17,12 @@ import {
 } from '@nextui-org/react'
 import { Key, useCallback, useState } from 'react'
 
+import CopyText from '../../../components/base/CopyText.tsx'
+import { DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../../components/base/Icon.tsx'
+import RefreshButton from '../../../components/base/RefreshButton.tsx'
+import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
 import { leaveNetwork } from '../../../services/zerotierService.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
-import CopyText from '../../base/CopyText.tsx'
-import { DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../base/Icon.tsx'
-import RefreshButton from '../../base/RefreshButton.tsx'
-import { useNotification } from '../../providers/NotificationProvider.tsx'
 import DetailsModal from './DetailsModal.tsx'
 
 function NetworksTable({

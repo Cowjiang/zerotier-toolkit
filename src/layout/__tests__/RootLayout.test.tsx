@@ -1,8 +1,8 @@
 import { describe, expect } from 'vitest'
 
-import Splash from '../../../pages/Splash.tsx'
-import { useAppStore } from '../../../store/app.ts'
-import { render } from '../../../utils/testUtils/setupTest.tsx'
+import Splash from '../../pages/Splash.tsx'
+import { useAppStore } from '../../store/app.ts'
+import { render } from '../../utils/testUtils/setupTest.tsx'
 import RootLayout from '../RootLayout.tsx'
 
 describe('RootLayout', () => {

@@ -2,9 +2,9 @@ import { Checkbox, CheckboxGroup, Divider, Modal, ModalBody, ModalContent, Modal
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 
+import CopyText from '../../../components/base/CopyText.tsx'
 import { updateNetwork } from '../../../services/zerotierService.ts'
 import { Network } from '../../../typings/zerotier.ts'
-import CopyText from '../../base/CopyText.tsx'
 
 const checkboxClasses = { label: 'text-[0.8rem]' }
 

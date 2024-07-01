@@ -10,7 +10,7 @@ const STATUS_ITEM_TITLE: &str = "Status";
 const NETWORKS_ITEM_ID: &str = "/networks";
 const NETWORKS_ITEM_TITLE: &str = "Networks";
 
-const SETTINGS_ITEM_ID: &str = "/setting";
+const SETTINGS_ITEM_ID: &str = "/settings";
 const SETTINGS_ITEM_TITLE: &str = "Settings";
 
 const QUIT_ITEM_ID: &str = "quit";

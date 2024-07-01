@@ -3,10 +3,10 @@ import { useTheme } from 'next-themes'
 import { UseThemeProps } from 'next-themes/dist/types'
 import { useMemo } from 'react'
 
+import { CheckIcon, DarkThemeIcon, LightThemeIcon } from '../../components/base/Icon.tsx'
 import { useAppStore } from '../../store/app.ts'
 import { LanguageConfig, ThemeConfig } from '../../typings/config.ts'
 import { Language, Theme } from '../../typings/enum.ts'
-import { CheckIcon, DarkThemeIcon, LightThemeIcon } from '../base/Icon.tsx'
 
 const languages = [
   {

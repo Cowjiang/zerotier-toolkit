@@ -1,8 +1,8 @@
 import { Button, Input, useDisclosure } from '@nextui-org/react'
 
+import { PlusIcon, SearchIcon } from '../../../components/base/Icon.tsx'
+import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
-import { PlusIcon, SearchIcon } from '../../base/Icon.tsx'
-import RefreshButton from '../../base/RefreshButton.tsx'
 import JoinModal from './JoinModal.tsx'
 
 function ToolBar({

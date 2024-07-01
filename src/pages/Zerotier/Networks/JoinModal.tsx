@@ -1,9 +1,9 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalProps } from '@nextui-org/react'
 import { useState } from 'react'
 
+import NotificationBar from '../../../components/base/NotificationBar.tsx'
+import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
 import { joinNetwork } from '../../../services/zerotierService.ts'
-import NotificationBar from '../../base/NotificationBar.tsx'
-import { useNotification } from '../../providers/NotificationProvider.tsx'
 
 function JoinModal(props: Omit<ModalProps, 'children'>) {
   const { onClose } = props
