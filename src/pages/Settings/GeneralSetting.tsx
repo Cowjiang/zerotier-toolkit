@@ -1,10 +1,23 @@
 import { Switch } from '@nextui-org/react'
+import { useEffect } from 'react'
 
 import { useAppStore } from '../../store/app.ts'
 import { GeneralConfig } from '../../typings/config.ts'
 
 function GeneralSetting() {
   const { config, setConfig } = useAppStore()
+
+  useEffect(() => {
+    if (!config[GeneralConfig.ENABLE_TRAY] && config[GeneralConfig.MINIMIZE_TO_TRAY]) {
+      setConfig({ [GeneralConfig.MINIMIZE_TO_TRAY]: false })
+    }
+  }, [config[GeneralConfig.ENABLE_TRAY]])
+
+  useEffect(() => {
+    if (config[GeneralConfig.MINIMIZE_TO_TRAY] && !config[GeneralConfig.ENABLE_TRAY]) {
+      setConfig({ [GeneralConfig.ENABLE_TRAY]: true })
+    }
+  }, [config[GeneralConfig.MINIMIZE_TO_TRAY]])
 
   return (
     <div className="flex flex-col">
