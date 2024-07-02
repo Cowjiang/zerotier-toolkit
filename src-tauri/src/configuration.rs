@@ -1,4 +1,3 @@
-use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs::OpenOptions;
@@ -6,15 +5,16 @@ use std::io::Write;
 use std::string::ToString;
 use std::sync::{LockResult, RwLock, RwLockReadGuard, RwLockWriteGuard};
 
+use lazy_static::lazy_static;
 use log::debug;
-use parking_lot::lock_api::MutexGuard;
 use parking_lot::{Mutex, RawMutex};
+use parking_lot::lock_api::MutexGuard;
 use serde::Serialize;
-
-use tauri::{AppHandle, Manager};
+use tauri::{App, AppHandle, Manager};
 
 use crate::auto_launch::{set_auto_launch, unset_auto_launch};
 use crate::r::success_json;
+use crate::system_tray::{destroy_system_tray, init_system_tray};
 
 pub const EVENT_CONFIG_CHANGE: &str = "event_config_change";
 
@@ -144,6 +144,10 @@ lazy_static! {
         "General.AutoStart".to_string(),
         "false".to_string()
     ));
+    pub static ref GENERAL_ENABLE_TRAY: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
+        "General.EnableTray".to_string(),
+        "false".to_string()
+    ));
     pub static ref GENERAL_MINIMIZE_TO_TRAY: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
         "General.MinimizeToTray".to_string(),
         "false".to_string()
@@ -175,6 +179,17 @@ pub fn init_config(app_handle: AppHandle) {
     init_item(&mut general_auto_start);
     // == INIT GENERAL_MINIMIZE_TO_TRAY
     init_item(&mut GENERAL_MINIMIZE_TO_TRAY.write().unwrap());
+    // == INIT GENERAL_ENABLE_TRAY
+    let mut enable_tray = GENERAL_ENABLE_TRAY.write().unwrap();
+    enable_tray.register_on_change(|_this, app_handle, changed| {
+        debug!("enable tray change to {}", changed);
+        if changed == "true" {
+            init_system_tray(app_handle);
+        } else {
+            destroy_system_tray(app_handle);
+        }
+    });
+    init_item(&mut enable_tray);
 
     // ==
     debug!("read configuration from file");

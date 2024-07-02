@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use log::debug;
-use tauri::{App, Manager, Window, WindowBuilder, WindowEvent};
+use tauri::{App, AppHandle, Manager, Window, WindowBuilder, WindowEvent};
 
 use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
@@ -37,8 +37,6 @@ fn main() {
 fn start_tauri() {
     std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
     tauri::Builder::default()
-        .system_tray(init_system_tray())
-        .on_system_tray_event(handle_system_tray_event)
         .invoke_handler(tauri::generate_handler![
             // zerotier handlers
             get_zerotier_services,
@@ -60,16 +58,18 @@ fn start_tauri() {
             unset_auto_launch
         ])
         .setup(|app| {
-            let app_handle = app.app_handle();
+            let app_handle = app.handle();
             init_logger_main(app_handle.clone());
+            init_system_tray(app_handle.clone());
             init_config(app_handle.clone());
-            init_window(app);
+            init_window(app_handle.clone());
 
             #[cfg(debug_assertions)]
-            open_dev_tools(app);
+            open_dev_tools(app_handle.clone());
 
             Ok(())
         })
+        .on_system_tray_event(handle_system_tray_event)
         .on_window_event(|global_window_event| {
             debug!("listen window event:{:?}", global_window_event.event());
             let app_handle = global_window_event.window().app_handle();
@@ -86,13 +86,13 @@ fn start_tauri() {
 }
 
 #[cfg(debug_assertions)]
-fn open_dev_tools(app: &mut App) {
-    let window = app.get_window("main").unwrap();
+fn open_dev_tools(app_handle: AppHandle) {
+    let window = app_handle.get_window("main").unwrap();
     window.open_devtools();
 }
 
-fn init_window(app: &mut App) {
-    let window = WindowBuilder::new(app, "main", tauri::WindowUrl::App("index.html".into()))
+fn init_window(app_handle: AppHandle) {
+    let window = WindowBuilder::new(&app_handle, "main", tauri::WindowUrl::App("index.html".into()))
         .title("ZeroTier Toolkit - Build By Tauri")
         .resizable(false)
         .maximized(false)
