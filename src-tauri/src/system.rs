@@ -43,35 +43,6 @@ pub(crate) fn restart_as_admin() -> String {
     fail_message_json("not support")
 }
 
-#[tauri::command]
-pub(crate) fn hide_main_window(app_handler: AppHandle) -> String {
-    let main_window = app_handler.get_window("main");
-    match main_window {
-        Some(window) => {
-            let _ = window.hide();
-        }
-        None => {
-            return fail_message_json("no window found");
-        }
-    }
-    return success_json("success");
-}
-
-#[tauri::command]
-pub(crate) fn show_main_window(app_handler: AppHandle) -> String {
-    let main_window = app_handler.get_window("main");
-    match main_window {
-        Some(window) => {
-            let _ = window.show();
-            let _ = window.set_focus();
-        }
-        None => {
-            return fail_message_json("no window found");
-        }
-    }
-    return success_json("success");
-}
-
 #[cfg(test)]
 mod tests {
     use super::restart_as_admin;

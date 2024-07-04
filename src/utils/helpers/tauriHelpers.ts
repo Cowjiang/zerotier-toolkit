@@ -6,6 +6,7 @@ import { invoke, InvokeArgs } from '@tauri-apps/api/tauri'
 import { appWindow } from '@tauri-apps/api/window'
 
 import { CONFIGURATION_FILE_PATH } from '../../constant.ts'
+import { InvokeEvent } from '../../typings/enum.ts'
 import { InvokeResponse } from '../../typings/global.ts'
 
 export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<InvokeResponse & { success: boolean }> => {
@@ -47,7 +48,7 @@ export const minimizeWindow = async () => {
 }
 
 export const closeWindow = async () => {
-  await appWindow.close()
+  await invokeCommand(InvokeEvent.CLOSE_MAIN_WINDOW)
 }
 
 export const showWindow = async () => {

@@ -24,6 +24,7 @@ export enum InvokeEvent {
   GET_CONFIG = 'get_config',
   PUT_CONFIG_COMMAND = 'put_config_command',
   GET_NETWORKS = 'get_networks',
+  CLOSE_MAIN_WINDOW = 'close_main_window',
   HIDE_MAIN_WINDOW = 'hide_main_window',
   SET_AUTO_LAUNCH = 'set_auto_launch',
   UNSET_AUTO_LAUNCH = 'unset_auto_launch',

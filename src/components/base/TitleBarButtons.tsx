@@ -4,7 +4,7 @@ import { closeWindow, minimizeWindow } from '../../utils/helpers/tauriHelpers.ts
 import { CloseIcon, MinusIcon } from './Icon.tsx'
 
 const TitleBarButtons = () => (
-  <div className="w-full h-0 sticky top-7 flex gap-2">
+  <div className="w-full h-0 sticky top-4 flex gap-2">
     <Button
       aria-label="Minimize window"
       className="ml-auto"
@@ -14,17 +14,17 @@ const TitleBarButtons = () => (
       size="sm"
       onPress={minimizeWindow}
     >
-      <MinusIcon width={16} />
+      <MinusIcon width={14} />
     </Button>
     <Button
       aria-label="Close window"
-      className="mr-10 bg-danger/90 text-danger-foreground"
+      className="mr-4 bg-danger/90 text-danger-foreground"
       isIconOnly
       radius="md"
       size="sm"
       onPress={closeWindow}
     >
-      <CloseIcon />
+      <CloseIcon width={22} />
     </Button>
   </div>
 )

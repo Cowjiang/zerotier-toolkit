@@ -7,13 +7,13 @@ import TitleBarButtons from '../TitleBarButtons.tsx'
 const minimizeWindow = vi.fn()
 const closeWindow = vi.fn()
 beforeEach(() => {
-  mockIPC((_, args) => {
-    if (args.__tauriModule === 'Window' && (args.message as any)?.cmd === 'manage') {
+  mockIPC((command, args) => {
+    if (command === 'close_main_window') {
+      closeWindow()
+    } else if (args.__tauriModule === 'Window' && (args.message as any)?.cmd === 'manage') {
       const { cmd } = (args.message as any).data
       if (cmd.type === 'minimize') {
         minimizeWindow()
-      } else if (cmd.type === 'close') {
-        closeWindow()
       }
     }
   })
