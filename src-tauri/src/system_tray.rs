@@ -23,10 +23,6 @@ lazy_static! {
 }
 
 pub fn init_system_tray(app_handle: AppHandle) {
-    let mut system_tray_status = SYSTEM_TRAY_STATUS.write();
-    if *system_tray_status {
-        return;
-    }
     let status_item = CustomMenuItem::new(String::from(STATUS_ITEM_ID), STATUS_ITEM_TITLE);
     let networks_item = CustomMenuItem::new(String::from(NETWORKS_ITEM_ID), NETWORKS_ITEM_TITLE);
     let settings_item = CustomMenuItem::new(String::from(SETTINGS_ITEM_ID), SETTINGS_ITEM_TITLE);
@@ -38,14 +34,11 @@ pub fn init_system_tray(app_handle: AppHandle) {
         .add_item(settings_item)
         .add_item(quit_item);
     let system_tray = SystemTray::new().with_menu(tray_menu);
-    system_tray.build(&app_handle).unwrap();
-    *system_tray_status = true
+    system_tray.with_id("tray").build(&app_handle).unwrap();
 }
 
 pub fn destroy_system_tray(app_handle: AppHandle) {
-    let mut system_tray_status = SYSTEM_TRAY_STATUS.write();
     app_handle.tray_handle().destroy().unwrap();
-    *system_tray_status = false;
 }
 
 pub fn handle_system_tray_event(app: &AppHandle, e: SystemTrayEvent) {
