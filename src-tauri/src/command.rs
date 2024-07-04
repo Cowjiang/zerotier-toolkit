@@ -41,8 +41,8 @@ pub(crate) fn is_admin() -> String {
 
 #[cfg(not(windows))]
 #[tauri::command]
-pub(crate) fn is_admin() -> R<Option<String>> {
-    r::fail_message("api not support")
+pub(crate) fn is_admin() -> String {
+    r::fail_message_json("api not support")
 }
 
 #[cfg(test)]
