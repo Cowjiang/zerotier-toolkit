@@ -6,7 +6,7 @@ use std::process::{Command, Output};
 #[cfg(windows)]
 use winapi::um::winbase::CREATE_NO_WINDOW;
 
-use crate::r::{self, R};
+use crate::r::{self};
 
 pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
     let cmd_str: Vec<&str> = cmds.iter().map(|s| s.as_str()).collect();

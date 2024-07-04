@@ -1,7 +1,5 @@
 use std::env;
 
-use tauri::{AppHandle, Manager};
-
 use crate::{
     execute_cmd,
     r::{fail_message_json, success_json},

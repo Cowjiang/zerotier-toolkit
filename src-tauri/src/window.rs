@@ -3,7 +3,7 @@ use std::process;
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
 
-use crate::configuration::{GENERAL_ENABLE_TRAY, get_config_dy_def};
+use crate::configuration::{get_config_dy_def, GENERAL_ENABLE_TRAY};
 use crate::r::{fail_message_json, success_json};
 
 pub fn set_window_shadow(app_handle: AppHandle) {
@@ -25,12 +25,9 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
             }
             success_json("success")
         }
-        None => {
-            fail_message_json("failed to close window")
-        }
+        None => fail_message_json("failed to close window"),
     };
 }
-
 
 #[tauri::command]
 pub fn hide_main_window(app_handle: AppHandle) -> String {
@@ -40,9 +37,7 @@ pub fn hide_main_window(app_handle: AppHandle) -> String {
             let _ = window.hide();
             success_json("success")
         }
-        None => {
-            fail_message_json("failed to hide window")
-        }
+        None => fail_message_json("failed to hide window"),
     };
 }
 
@@ -55,8 +50,6 @@ pub fn show_main_window(app_handle: AppHandle) -> String {
             let _ = window.set_focus();
             success_json("success")
         }
-        None => {
-            fail_message_json("failed to show window")
-        }
+        None => fail_message_json("failed to show window"),
     };
 }

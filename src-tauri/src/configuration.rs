@@ -10,7 +10,7 @@ use log::debug;
 use parking_lot::lock_api::MutexGuard;
 use parking_lot::{Mutex, RawMutex};
 use serde::Serialize;
-use tauri::{App, AppHandle, Manager};
+use tauri::{AppHandle, Manager};
 
 use crate::auto_launch::{set_auto_launch, unset_auto_launch};
 use crate::r::success_json;
@@ -169,6 +169,8 @@ pub fn init_config(app_handle: AppHandle) {
     system_theme.register_on_change(|_this, _app_handle, _changed| {
         //  this is demo for config change handle
     });
+    // callback func will allways trigger if true
+    system_theme.callback_anyway(false);
     // init must be called after register the on-change-callback
     init_item(&mut system_theme);
     // ==== end demo
