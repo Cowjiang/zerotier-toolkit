@@ -7,8 +7,8 @@ use std::sync::{LockResult, RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 use lazy_static::lazy_static;
 use log::debug;
-use parking_lot::{Mutex, RawMutex};
 use parking_lot::lock_api::MutexGuard;
+use parking_lot::{Mutex, RawMutex};
 use serde::Serialize;
 use tauri::{App, AppHandle, Manager};
 
@@ -29,6 +29,7 @@ pub struct ConfigurationDef {
     key: String,
     default_value: String,
     on_change_callback: Option<fn(&mut ConfigurationDef, AppHandle, String)>,
+    callback_anyway: bool,
 }
 
 #[derive(Serialize)]
@@ -78,6 +79,7 @@ impl ConfigurationDef {
             key,
             default_value,
             on_change_callback: None,
+            callback_anyway: false,
         }
     }
     pub fn on_change(
@@ -86,17 +88,20 @@ impl ConfigurationDef {
         app_handle: AppHandle,
         changed: String,
     ) {
+        let before = match configuration.get_config(self.key()) {
+            None => "".to_string(),
+            Some(value) => (*value).clone(),
+        };
+        let has_changed = before.eq(&changed);
+        if has_changed && !self.callback_anyway {
+            return;
+        }
         app_handle
             .emit_all(
                 EVENT_CONFIG_CHANGE,
                 success_json(ConfigurationChangeEvent {
                     key: self.key.clone(),
-                    before: {
-                        match configuration.get_config(self.key()) {
-                            None => "".to_string(),
-                            Some(value) => (*value).clone(),
-                        }
-                    },
+                    before: before,
                     after: changed.clone(),
                 }),
             )
@@ -107,9 +112,11 @@ impl ConfigurationDef {
             self.on_change_callback.is_some(),
             changed
         );
-        if self.on_change_callback.is_some() {
-            self.on_change_callback.unwrap()(self, app_handle, changed.clone())
-        }
+        let _ = self.on_change_callback.is_some_and(|callback| {
+            callback(self, app_handle, changed.clone());
+            true
+        });
+
         configuration.put_config(self.key.clone(), changed);
     }
 
@@ -124,6 +131,9 @@ impl ConfigurationDef {
         value: String,
     ) {
         self.on_change(configuration, app_handle, value);
+    }
+    fn callback_anyway(&mut self, value: bool) {
+        self.callback_anyway = value;
     }
 }
 
@@ -144,14 +154,12 @@ lazy_static! {
         "General.AutoStart".to_string(),
         "false".to_string()
     ));
-    pub static ref GENERAL_ENABLE_TRAY: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
-        "General.EnableTray".to_string(),
-        "false".to_string()
-    ));
-    pub static ref GENERAL_MINIMIZE_TO_TRAY: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
-        "General.MinimizeToTray".to_string(),
-        "false".to_string()
-    ));
+    pub static ref GENERAL_ENABLE_TRAY: RwLock<ConfigurationDef> = RwLock::new(
+        ConfigurationDef::new("General.EnableTray".to_string(), "false".to_string())
+    );
+    pub static ref GENERAL_MINIMIZE_TO_TRAY: RwLock<ConfigurationDef> = RwLock::new(
+        ConfigurationDef::new("General.MinimizeToTray".to_string(), "false".to_string())
+    );
 }
 pub fn init_config(app_handle: AppHandle) {
     debug!("start to init configuration");
@@ -310,7 +318,9 @@ pub fn get_config_dy_def(config_def: LockResult<RwLockReadGuard<ConfigurationDef
     let config_def = config_def.unwrap();
     let config_map = get_config_map();
     let option = config_map.get(config_def.key());
-    option.unwrap_or(&config_def.default_value().to_string()).into()
+    option
+        .unwrap_or(&config_def.default_value().to_string())
+        .into()
 }
 
 pub fn try_store_bak(app_handle: AppHandle) {
