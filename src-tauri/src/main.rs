@@ -2,16 +2,18 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use log::debug;
-use tauri::{App, AppHandle, Manager, Window, WindowBuilder, WindowEvent};
+use tauri::{AppHandle, Manager, WindowBuilder, WindowEvent};
 
 use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
 use configuration::try_store_bak;
 use system::*;
-use system_tray::{handle_system_tray_event, init_system_tray};
+use system_tray::init_system_tray;
 use window::set_window_shadow;
 
-use crate::configuration::{GENERAL_MINIMIZE_TO_TRAY, get_config, get_config_dy_def, init_config, put_config_command};
+use crate::configuration::{
+    get_config, get_config_dy_def, init_config, put_config_command, GENERAL_MINIMIZE_TO_TRAY,
+};
 use crate::logger::init_logger_main;
 use crate::zerotier_manage::*;
 
@@ -69,7 +71,6 @@ fn start_tauri() {
 
             Ok(())
         })
-        .on_system_tray_event(handle_system_tray_event)
         .on_window_event(|global_window_event| {
             debug!("listen window event:{:?}", global_window_event.event());
             let app_handle = global_window_event.window().app_handle();
@@ -92,18 +93,22 @@ fn open_dev_tools(app_handle: AppHandle) {
 }
 
 fn init_window(app_handle: AppHandle) {
-    let window = WindowBuilder::new(&app_handle, "main", tauri::WindowUrl::App("index.html".into()))
-        .title("ZeroTier Toolkit - Build By Tauri")
-        .resizable(false)
-        .maximized(false)
-        .fullscreen(false)
-        .transparent(true)
-        .decorations(false)
-        .center()
-        .min_inner_size(800.0, 500.0)
-        .inner_size(800.0, 500.0)
-        .build()
-        .unwrap();
+    let window = WindowBuilder::new(
+        &app_handle,
+        "main",
+        tauri::WindowUrl::App("index.html".into()),
+    )
+    .title("ZeroTier Toolkit - Build By Tauri")
+    .resizable(false)
+    .maximized(false)
+    .fullscreen(false)
+    .transparent(true)
+    .decorations(false)
+    .center()
+    .min_inner_size(800.0, 500.0)
+    .inner_size(800.0, 500.0)
+    .build()
+    .unwrap();
     window.show().unwrap();
     if get_config_dy_def(GENERAL_MINIMIZE_TO_TRAY.read()).eq("true") {
         window.hide().unwrap();
