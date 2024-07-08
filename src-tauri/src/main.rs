@@ -62,7 +62,6 @@ fn start_tauri() {
         .setup(|app| {
             let app_handle = app.handle();
             init_logger_main(app_handle.clone());
-            init_system_tray(app_handle.clone());
             init_config(app_handle.clone());
             init_window(app_handle.clone());
 
