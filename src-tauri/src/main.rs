@@ -19,8 +19,6 @@ use crate::window::{close_main_window, hide_main_window, show_main_window};
 use crate::zerotier_manage::*;
 
 mod command;
-#[cfg(test)]
-mod experiment;
 
 mod auto_launch;
 mod configuration;
