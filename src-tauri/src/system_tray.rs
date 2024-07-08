@@ -11,10 +11,10 @@ use crate::show_main_window;
 
 const TRAY_ID: &str = "TRAY";
 
-const STATUS_ITEM_ID: &str = "/status";
+const STATUS_ITEM_ID: &str = "/zerotier/status";
 const STATUS_ITEM_TITLE: &str = "Status";
 
-const NETWORKS_ITEM_ID: &str = "/networks";
+const NETWORKS_ITEM_ID: &str = "/zerotier/networks";
 const NETWORKS_ITEM_TITLE: &str = "Networks";
 
 const SETTINGS_ITEM_ID: &str = "/settings";
@@ -27,10 +27,7 @@ lazy_static! {
     static ref SYSTEM_TRAY_STATUS: RwLock<bool> = RwLock::new(false);
 }
 
-pub fn init_system_tray(app_handle: AppHandle) {
-    // TODO: check  is tray exists
-
-    let status_item = CustomMenuItem::new(String::from(STATUS_ITEM_ID), STATUS_ITEM_TITLE);
+pub fn init_system_tray(app_handle: AppHandle) {let status_item = CustomMenuItem::new(String::from(STATUS_ITEM_ID), STATUS_ITEM_TITLE);
     let networks_item = CustomMenuItem::new(String::from(NETWORKS_ITEM_ID), NETWORKS_ITEM_TITLE);
     let settings_item = CustomMenuItem::new(String::from(SETTINGS_ITEM_ID), SETTINGS_ITEM_TITLE);
     let quit_item = CustomMenuItem::new(String::from(QUIT_ITEM_ID), QUIT_ITEM_TITLE);
