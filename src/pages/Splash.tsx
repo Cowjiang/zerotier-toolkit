@@ -4,48 +4,43 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useNotification } from '../components/providers/NotificationProvider.tsx'
 import { SPLASH_SCREEN_DELAY } from '../constant.ts'
 import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { ServiceStatus } from '../typings/enum.ts'
 
-function Splash({ navigatePath }: { navigatePath?: string }) {
+function Splash() {
   const navigate = useNavigate()
-
-  const { isLoading, isAdmin, restartAsAdmin, setShowSplash: setAppShowSplash } = useAppStore()
+  const { isLoading, isAdmin, setShowSplash: setAppShowSplash } = useAppStore()
   const { serviceState } = useZeroTierStore()
-
-  const { setNotification, closeNotification } = useNotification()
 
   const [showSplash, setShowSplash] = useState(true)
   const [showLoading, setShowLoading] = useState(false)
-  const [showRestartButton, setShowRestartButton] = useState(false)
+  const [showSetupButton, setShowSetupButton] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false)
-      setAppShowSplash(false)
     }, SPLASH_SCREEN_DELAY)
     return () => {
       clearTimeout(timer)
-      closeNotification()
     }
   }, [])
 
   useEffect(() => {
     if (!showSplash && !isAdmin && serviceState !== ServiceStatus.RUNNING) {
-      setShowRestartButton(true)
-      setNotification({
-        type: 'warning',
-        children: 'Administrator privilege is required, please restart the app as Admin',
-      })
+      setShowSetupButton(true)
     } else if (!isLoading && !showSplash) {
-      navigate(navigatePath ?? '/home', { replace: true })
+      setAppShowSplash(false)
     } else if (isLoading && !showSplash) {
       setShowLoading(true)
     }
   }, [isLoading, showSplash])
+
+  const setupZeroTier = () => {
+    navigate('/troubleshooting')
+    setAppShowSplash(false)
+  }
 
   return (
     <motion.div
@@ -57,13 +52,13 @@ function Splash({ navigatePath }: { navigatePath?: string }) {
       <div
         className={classNames([
           'flex flex-col justify-center items-center ease-in-out duration-[1000ms]',
-          showLoading || showRestartButton ? 'scale-85 -translate-y-12' : '',
+          showLoading || showSetupButton ? 'scale-85 -translate-y-12' : '',
         ])}
       >
         <div className="h-[130px]">
           <Image width={130} alt="Logo" src="/zerotier_orange.svg" />
         </div>
-        <h1 className="mt-6 text-4xl font-black text-[#ffb541]">ZeroTier Toolkit</h1>
+        <h1 className="mt-6 text-4xl font-black text-primary">ZeroTier Toolkit</h1>
       </div>
       <div className="h-0 -mt-4">
         {showLoading && (
@@ -71,10 +66,10 @@ function Splash({ navigatePath }: { navigatePath?: string }) {
             <Spinner size="md" color="primary" />
           </motion.div>
         )}
-        {showRestartButton && (
+        {showSetupButton && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
-            <Button className="w-50 text-white font-semibold bg-red-800" size="lg" onClick={restartAsAdmin}>
-              Restart As Admin
+            <Button className="min-w-48 font-semibold" color="primary" variant="flat" size="lg" onClick={setupZeroTier}>
+              Setup ZeroTier
             </Button>
           </motion.div>
         )}

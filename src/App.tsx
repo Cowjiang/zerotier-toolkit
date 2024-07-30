@@ -11,6 +11,7 @@ import RootLayout from './layout/RootLayout.tsx'
 import Dev from './pages/Dev'
 import AppearanceSetting from './pages/Settings/AppearanceSetting.tsx'
 import GeneralSetting from './pages/Settings/GeneralSetting.tsx'
+import Troubleshooting from './pages/Troubleshooting.tsx'
 import ZerotierNetworks from './pages/Zerotier/Networks/ZerotierNetworks.tsx'
 import ZerotierService from './pages/Zerotier/Service/ZerotierService.tsx'
 import ZerotierStatus from './pages/Zerotier/Status/ZerotierStatus.tsx'
@@ -86,6 +87,7 @@ function App() {
                 <Route path="/settings" element={<AppearanceSetting />} />
                 <Route path="/settings/appearance" element={<AppearanceSetting />} />
                 <Route path="/settings/general" element={<GeneralSetting />} />
+                <Route path="/troubleshooting" element={<Troubleshooting />} />
                 <Route path="*" element={<ZerotierNetworks />} />
               </Route>
               {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}

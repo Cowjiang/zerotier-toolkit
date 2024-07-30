@@ -20,7 +20,7 @@ beforeEach(() => {
 })
 
 describe('SplashPage', () => {
-  it('should render restart button as properly', async () => {
+  it('should render setup button as properly', async () => {
     useAppStore.setState({
       isLoading: false,
       isAdmin: false,
@@ -30,11 +30,11 @@ describe('SplashPage', () => {
     })
     const { queryByText } = render(<Splash />)
 
-    expect(queryByText('Restart As Admin')).not.toBeInTheDocument()
+    expect(queryByText('Setup ZeroTier')).not.toBeInTheDocument()
 
     await waitFor(
       () => {
-        expect(queryByText('Restart As Admin')).toBeInTheDocument()
+        expect(queryByText('Setup ZeroTier')).toBeInTheDocument()
       },
       { timeout: SPLASH_SCREEN_DELAY + 500 },
     )
@@ -62,7 +62,7 @@ describe('SplashPage', () => {
     render(<Splash />)
     await waitFor(
       () => {
-        expect(window.location.href).toContain('/home')
+        expect(window.location.href).toBe('http://localhost:3000/')
       },
       { timeout: SPLASH_SCREEN_DELAY + 500 },
     )

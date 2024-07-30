@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
-import { CommandIcon, NetworkIcon, PaintIcon, ServiceIcon, StatusIcon, WindowIcon } from '../components/base/Icon.tsx'
+import {
+  CommandIcon,
+  InterrogationIcon,
+  NetworkIcon,
+  PaintIcon,
+  ServiceIcon,
+  StatusIcon,
+  WindowIcon,
+} from '../components/base/Icon.tsx'
 import SideMenu, { MenuListItem, MenuListSection } from '../components/base/SideMenu.tsx'
 import TitleBar from '../components/base/TitleBar.tsx'
 import TitleBarButtons from '../components/base/TitleBarButtons.tsx'
@@ -62,6 +70,12 @@ const routes: MenuListSection[] = [
     title: '',
     items: [
       {
+        path: '/troubleshooting',
+        title: 'Troubleshooting',
+        description: 'Check ZeroTier status and troubleshoot issues',
+        startContent: <InterrogationIcon {...iconProps} />,
+      },
+      {
         path: '/about',
         title: 'About',
         description: '',
@@ -98,7 +112,7 @@ function RootLayout() {
     <div>
       <TitleBarButtons />
       {showSplash ? (
-        <Splash navigatePath={pathname} />
+        <Splash />
       ) : (
         <div className="w-full h-screen flex overflow-y-hidden pt-1">
           <SideMenu items={routes} tabPath={currentTab?.path} />
