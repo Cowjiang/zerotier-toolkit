@@ -5,7 +5,7 @@ describe('Icon', () => {
   it('should render icons', () => {
     Object.values(Icons).map((Icon) => {
       const { container } = render(<Icon />)
-      expect(container).toBeInTheDocument()
+      expect(container.querySelector('svg')).not.toBeNull()
     })
   })
 })

@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader, CardProps } from '@nextui-org/react'
-import { ReactElement, useEffect, useMemo } from 'react'
+import { ReactElement, useMemo } from 'react'
 
 import { CheckIcon, CloseCircleIcon, InfoIcon, WarningTriangleIcon } from './Icon.tsx'
 
@@ -31,10 +31,6 @@ function StatusCard({ type = 'info', title, content, onClick, cardProps }: Statu
     }
     return iconMap?.[type] ?? iconMap['info']
   }, [type])
-
-  useEffect(() => {
-    console.log([type, title, content, onClick, cardProps])
-  }, [type, title, content, onClick, cardProps])
 
   return (
     <Card

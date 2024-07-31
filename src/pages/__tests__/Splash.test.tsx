@@ -30,11 +30,11 @@ describe('SplashPage', () => {
     })
     const { queryByText } = render(<Splash />)
 
-    expect(queryByText('Setup ZeroTier')).not.toBeInTheDocument()
+    expect(queryByText('Setup ZeroTier')).toBeNull()
 
     await waitFor(
       () => {
-        expect(queryByText('Setup ZeroTier')).toBeInTheDocument()
+        expect(queryByText('Setup ZeroTier')).not.toBeNull()
       },
       { timeout: SPLASH_SCREEN_DELAY + 500 },
     )
@@ -48,7 +48,7 @@ describe('SplashPage', () => {
     const { queryByLabelText } = render(<Splash />)
     await waitFor(
       () => {
-        expect(queryByLabelText('Loading')).toBeInTheDocument()
+        expect(queryByLabelText('Loading')).not.toBeNull()
       },
       { timeout: SPLASH_SCREEN_DELAY + 500 },
     )

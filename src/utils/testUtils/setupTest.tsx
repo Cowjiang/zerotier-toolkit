@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom'
-
 import { clearMocks, mockIPC, mockWindows } from '@tauri-apps/api/mocks'
 import { render, RenderOptions } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'

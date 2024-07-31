@@ -28,7 +28,7 @@ function Troubleshooting() {
         const isRunning = serviceState === ServiceStatus.RUNNING
         return {
           type: isRunning ? 'success' : 'danger',
-          content: isRunning ? '' : 'ZeroTier service is stopped, click here to run',
+          content: isRunning ? '' : 'ZeroTier service is not running, click here to run',
           onClick: isRunning ? undefined : () => navigate('/zerotier/service'),
         }
       },
