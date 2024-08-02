@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import RefreshButton from '../components/base/RefreshButton.tsx'
 import StatusCard, { StatusCardProps } from '../components/base/StatusCard.tsx'
 import { useAppStore } from '../store/app.ts'
 import { useZeroTierStore } from '../store/zerotier.ts'
@@ -45,13 +47,37 @@ function Troubleshooting() {
     },
   ]
 
+  const [forceChecking, setForceChecking] = useState(false)
+  const [forceCheckTime, setForceCheckTime] = useState(Date.now())
+  const forceCheck = () => {
+    setForceChecking(true)
+    setForceCheckTime(Date.now())
+    setTimeout(() => setForceChecking(false), 1000)
+  }
+
   return (
-    <div className="flex flex-col gap-2">
-      {checkList.map(({ title, check }) => {
-        const checkResult = check()
-        return <StatusCard key={title} title={title} {...checkResult} />
-      })}
-    </div>
+    <>
+      <div className="overflow-x-hidden overflow-y-auto pb-4">
+        <div className="flex flex-col gap-2" key={forceCheckTime}>
+          {checkList.map(({ title, check }) => {
+            const checkResult = check()
+            return <StatusCard key={title} title={title} {...checkResult} />
+          })}
+        </div>
+      </div>
+      <div className="fixed bottom-8 right-10 z-10">
+        <RefreshButton
+          showIcon
+          buttonProps={{
+            variant: 'shadow',
+            color: 'secondary',
+            radius: 'full',
+          }}
+          isLoading={forceChecking}
+          onRefresh={forceCheck}
+        />
+      </div>
+    </>
   )
 }
 

@@ -39,7 +39,7 @@ function ToolBar({
       />
       {!!networks.length && (
         <RefreshButton
-          buttonProps={{ className: 'flex-shrink-0', variant: 'flat' }}
+          buttonProps={{ className: 'flex-shrink-0 bg-default-100', variant: 'flat' }}
           isLoading={isLoading}
           onRefresh={onRefresh}
         />

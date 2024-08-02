@@ -29,7 +29,7 @@ function ZerotierStatus() {
   }, [])
 
   return (
-    <div className="overflow-x-hidden overflow-y-auto">
+    <div className="overflow-x-hidden overflow-y-auto pb-4">
       {isLoading ? (
         <div className="w-full h-[60vh] flex justify-center items-center">
           <Spinner size="lg" />

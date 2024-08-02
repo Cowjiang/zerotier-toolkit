@@ -123,7 +123,7 @@ function RootLayout() {
       ) : (
         <div className="w-full h-screen flex overflow-y-hidden pt-1">
           <SideMenu items={routes} tabPath={currentTab?.path} />
-          <div className="w-full h-full flex flex-col px-6 py-4 mr-4 overflow-hidden" {...TAURI_DRAG_REGION}>
+          <div className="w-full h-full flex flex-col px-6 pt-4 mr-4 overflow-hidden" {...TAURI_DRAG_REGION}>
             <TitleBar title={currentTab?.title} description={currentTab?.description} />
             <div className="w-full h-full flex flex-col overflow-y-hidden">
               <Outlet />
