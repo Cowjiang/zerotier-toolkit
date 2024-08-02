@@ -72,7 +72,6 @@ export const useAppStore = create<AppState & AppAction>()(
       restartAsAdmin: async () => {
         try {
           const { success } = await invokeCommand(InvokeEvent.RESTART_AS_ADMIN)
-          // TODO handle exit callback
           success && (await exit(1))
         } catch (e) {
           console.error(e)
