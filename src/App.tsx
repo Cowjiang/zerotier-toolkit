@@ -12,6 +12,7 @@ import Dev from './pages/Dev'
 import AppearanceSetting from './pages/Settings/AppearanceSetting.tsx'
 import GeneralSetting from './pages/Settings/GeneralSetting.tsx'
 import Troubleshooting from './pages/Troubleshooting.tsx'
+import ZerotierExperiments from './pages/Zerotier/Experiments/ZerotierExperiments.tsx'
 import ZerotierNetworks from './pages/Zerotier/Networks/ZerotierNetworks.tsx'
 import ZerotierService from './pages/Zerotier/Service/ZerotierService.tsx'
 import ZerotierStatus from './pages/Zerotier/Status/ZerotierStatus.tsx'
@@ -84,6 +85,7 @@ function App() {
                 <Route path="/zerotier/networks" element={<ZerotierNetworks />} />
                 <Route path="/zerotier/status" element={<ZerotierStatus />} />
                 <Route path="/zerotier/service" element={<ZerotierService />} />
+                <Route path="/zerotier/experiments" element={<ZerotierExperiments />} />
                 <Route path="/settings" element={<AppearanceSetting />} />
                 <Route path="/settings/appearance" element={<AppearanceSetting />} />
                 <Route path="/settings/general" element={<GeneralSetting />} />

@@ -8,7 +8,6 @@ use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
 use configuration::try_store_bak;
 use system::*;
-use system_tray::init_system_tray;
 use window::set_window_shadow;
 
 use crate::configuration::{

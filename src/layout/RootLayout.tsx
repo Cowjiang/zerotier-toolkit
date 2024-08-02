@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import {
   CommandIcon,
+  FlaskIcon,
   InterrogationIcon,
   NetworkIcon,
   PaintIcon,
@@ -42,6 +43,12 @@ const routes: MenuListSection[] = [
         title: 'Service',
         startContent: <ServiceIcon {...iconProps} />,
         description: 'Manage ZeroTier Service',
+      },
+      {
+        path: '/zerotier/experiments',
+        title: 'Experiments',
+        startContent: <FlaskIcon {...iconProps} />,
+        description: 'Experimental features to customize ZeroTier',
       },
     ],
   },
