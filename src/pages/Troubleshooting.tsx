@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import RefreshButton from '../components/base/RefreshButton.tsx'
@@ -10,7 +10,8 @@ import { ServiceStatus } from '../typings/enum.ts'
 
 type CheckListItem = {
   key: string
-  check: (item: CheckListItem['key']) => void
+  check?: Promise<StatusCardProps> | (() => void)
+  checkResult?: StatusCardProps
 }
 
 function Troubleshooting() {
@@ -29,68 +30,59 @@ function Troubleshooting() {
   const checkList: CheckListItem[] = [
     {
       key: 'Check if ZeroTier is installed',
-      check: (key) => {
-        setCheckResult((prevResult) => ({
-          ...prevResult,
-          [key]: { type: 'success', title: key },
-        }))
-      },
+      check: () => ({ type: 'success' }),
     },
     {
       key: 'Check if ZeroTier can be managed',
-      check: async (key) => {
+      check: async () => {
         const { status } = await getNetworks()
         const statusMap: { [key: number | string]: StatusCardProps } = {
           200: { type: 'success' },
           default: { type: 'danger', content: 'ZeroTier can not be managed' },
         }
-        setCheckResult((prevResult) => ({
-          ...prevResult,
-          [key]: statusMap[status],
-        }))
+        return statusMap?.[status] ?? statusMap['default']
       },
     },
     {
       key: 'Check if local service is running',
-      check: (key) => {
+      checkResult: useMemo(() => {
         const isRunning = serviceState === ServiceStatus.RUNNING
-        setCheckResult((prevResult) => ({
-          ...prevResult,
-          [key]: {
-            type: isRunning ? 'success' : 'danger',
-            content: isRunning ? '' : 'ZeroTier service is not running, click here to run',
-            onClick: isRunning ? undefined : () => navigate('/zerotier/service'),
-          },
-        }))
-      },
+        return {
+          type: isRunning ? 'success' : 'danger',
+          content: isRunning ? '' : 'ZeroTier service is not running, click here to run',
+          onClick: isRunning ? undefined : () => navigate('/zerotier/service'),
+        }
+      }, [serviceState]),
     },
     {
       key: 'Check if the toolkit is running as Admin',
-      check: (key) => {
-        setCheckResult((prevResult) => ({
-          ...prevResult,
-          [key]: {
-            type: isAdmin ? 'success' : 'warning',
-            content: isAdmin ? '' : 'Click here to relaunch as Administrator',
-            onClick: isAdmin ? undefined : () => restartAsAdmin(),
-          },
-        }))
+      checkResult: {
+        type: isAdmin ? 'success' : 'warning',
+        content: isAdmin ? '' : 'Click here to relaunch as Administrator',
+        onClick: isAdmin ? undefined : () => restartAsAdmin(),
       },
     },
   ]
 
-  const [checkResult, setCheckResult] = useState<Record<string, StatusCardProps>>({})
+  const [overrideResult, setOverrideResult] = useState<Record<string, StatusCardProps>>({})
   useEffect(() => {
-    checkList.map(({ key, check }) => check(key))
+    checkList.map(async ({ key, check }) => {
+      if (check && typeof check === 'function') {
+        const checkResult: StatusCardProps = await (typeof check === 'function'
+          ? (check() as unknown as Promise<StatusCardProps>)
+          : check)
+        setOverrideResult((prev) => ({ ...prev, [key]: checkResult }))
+      }
+    })
   }, [forceCheckTime])
 
   return (
     <>
       <div className="overflow-x-hidden overflow-y-auto pb-4">
-        <div className="flex flex-col gap-2" key={forceCheckTime}>
-          {checkList.map(({ key }) => {
-            const result = checkResult[key]
-            return result && <StatusCard key={key} title={key || result.title} {...result} />
+        <div className="flex flex-col gap-2">
+          {checkList.map(({ key, checkResult }) => {
+            const result = overrideResult[key] ?? checkResult
+            return result && <StatusCard key={key} title={result?.title ?? key} {...result} />
           })}
         </div>
       </div>
