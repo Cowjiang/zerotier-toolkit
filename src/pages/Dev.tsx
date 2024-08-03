@@ -60,6 +60,7 @@ function Dev() {
     invokeCommandButton(InvokeEvent.PUT_CONFIG_COMMAND, { payload: JSON.stringify({ 'System.Theme': 'light' }) }),
     invokeCommandButton(InvokeEvent.SET_AUTO_LAUNCH),
     invokeCommandButton(InvokeEvent.UNSET_AUTO_LAUNCH),
+    invokeCommandButton(InvokeEvent.GET_ZEROTIER_ONE_PROGRAM_PATH),
   ]
 
   function ass(): JSX.Element {

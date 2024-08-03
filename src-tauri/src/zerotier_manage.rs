@@ -5,7 +5,7 @@ use std::path::Path;
 use std::string::ToString;
 
 use lazy_static::lazy_static;
-use log::error;
+use log::{debug, error};
 use serde::Serialize;
 
 use crate::r::{fail_message_json, success_json};
@@ -13,33 +13,52 @@ use crate::r::{fail_message_json, success_json};
 use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
 
 lazy_static! {
-    static ref GLOBAL_TRY_PROT_FILES: Vec<String> = {
-        #[cfg(target_os = "windows")]
+    static ref GLOBAL_TRY_HOME: Vec<String> = {
+    #[cfg(target_os = "windows")]
+    {
+         vec![
+                String::from("C:\\ProgramData\\ZeroTier\\One"),
+                String::from("C:\\ProgramData\\ZeroTier")
+        ]
+    }
+    #[cfg(target_os = "macos")]
+    {
+        vec![
+            String::from("/Library/Application Support/ZeroTier/One"),
+            String::from("/Library/Application Support/ZeroTier"),
+        ]
+    }
+    #[cfg(target_os = "linux")]
+    {
+        vec![
+            String::from("/var/lib/zerotier-one"),
+            String::from("/var/lib/zerotier"),
+        ]
+    }
+    };
+    static ref GLOBAL_TRY_PROT_FILES: Vec<String> =  vec![
+            String::from("zerotier-one.port"),
+            String::from("zerotier.port"),
+    ];
+    static ref GLOBAL_TRY_EXECUTE_FILE: Vec<String> = {
+        #[cfg(windows)]
         {
             vec![
-                String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier-one.port"),
-                String::from("C:\\ProgramData\\ZeroTier\\One\\zerotier.port"),
-                String::from("C:\\ProgramData\\ZeroTier\\zerotier-one.port"),
-                String::from("C:\\ProgramData\\ZeroTier\\zerotier.port")
+                String::from("zerotier-one_x64.exe"),
+                String::from("zerotier-one_x86.exe"),
+                String::from("zerotier-one.exe")
             ]
         }
-        // TODO: this is an demo for conditional compile => fill real path
+        // TODO fill this list 
         #[cfg(target_os = "macos")]
         {
             vec![
-                String::from("/Library/Application Support/ZeroTier/zerotier-one.port"),
-                String::from("/Library/Application Support/ZeroTier/zerotier.port"),
-                String::from("/Library/Application Support/ZeroTier/One/zerotier-one.port"),
-                String::from("/Library/Application Support/ZeroTier/One/zerotier.port"),
             ]
         }
         #[cfg(target_os = "linux")]
         {
             vec![
-                String::from("/var/lib/zerotier/zerotier-one.port"),
-                String::from("/var/lib/zerotier/zerotier.port"),
-                String::from("/var/lib/zerotier-one/zerotier-one.port"),
-                String::from("/var/lib/zerotier-one/zerotier.port"),
+                String::from("zerotier-one")
             ]
         }
     };
@@ -169,7 +188,16 @@ pub(crate) fn get_zerotier_state() -> String {
 
 #[tauri::command]
 pub(crate) fn get_zerotier_server_info() -> String {
-    let res_port = try_read_files(&GLOBAL_TRY_PROT_FILES.clone());
+    let mut res_port = Ok(String::from(""));
+    for home_dir in &GLOBAL_TRY_HOME.clone() {
+        let home_dir_path = Path::new(&home_dir);
+        for port_file_name in &GLOBAL_TRY_PROT_FILES.clone() {
+            let port_file_path = home_dir_path.join(&port_file_name);
+            if port_file_path.exists() {
+                res_port = try_read_file(port_file_path.as_path().to_str().unwrap().to_string());
+            }
+        }
+    }
     let res_secret = try_read_files(&GLOBAL_TRY_SECRET_FILES.clone());
     if res_port.is_err() || res_secret.is_err() {
         return fail_message_json("resolve port and secret fail");
@@ -178,6 +206,20 @@ pub(crate) fn get_zerotier_server_info() -> String {
         port: res_port.unwrap(),
         secret: res_secret.unwrap(),
     })
+}
+
+#[tauri::command]
+pub fn get_zerotier_one_program_path() -> String {
+    for home_dir in &GLOBAL_TRY_HOME.clone() {
+        let home_dir_path = Path::new(&home_dir);
+        for execute_file_name in &GLOBAL_TRY_EXECUTE_FILE.clone() {
+            let execute_file_path = home_dir_path.join(&execute_file_name);
+            if execute_file_path.exists() {
+                return success_json(execute_file_path.to_str());
+            }
+        }
+    }
+    return fail_message_json("zerotier_one program file is not found");
 }
 
 fn try_read_files(file_paths: &[String]) -> Result<String, Error> {
@@ -199,6 +241,7 @@ fn try_read_files(file_paths: &[String]) -> Result<String, Error> {
 }
 
 fn try_read_file(file_url: String) -> Result<String, Error> {
+    debug!("try read file :{file_url}");
     let file_path = Path::new(file_url.as_str());
     let res_secret = fs::read(file_path);
     match res_secret {
