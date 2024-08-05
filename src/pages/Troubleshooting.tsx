@@ -17,7 +17,7 @@ type CheckListItem = {
 function Troubleshooting() {
   const navigate = useNavigate()
   const { isAdmin, restartAsAdmin } = useAppStore()
-  const { serviceState } = useZeroTierStore()
+  const { serviceState, serverInfo, getServiceState } = useZeroTierStore()
 
   const [forceChecking, setForceChecking] = useState(false)
   const [forceCheckTime, setForceCheckTime] = useState(Date.now())
@@ -35,16 +35,33 @@ function Troubleshooting() {
     {
       key: 'Check if ZeroTier can be managed',
       check: async () => {
-        const { status } = await getNetworks()
-        const statusMap: { [key: number | string]: StatusCardProps } = {
+        const statusMap: { [key: number]: StatusCardProps } = {
           200: { type: 'success' },
-          default: { type: 'danger', content: 'ZeroTier can not be managed' },
+          401: {
+            type: 'danger',
+            content: 'Authentication is invalid or missing, click here to modify',
+            onClick: () => navigate('/zerotier/experiments'),
+          },
+          500: { type: 'danger', content: 'Failed to connect to ZeroTier service' },
         }
-        return statusMap?.[status] ?? statusMap['default']
+        if (!serverInfo.secret || !serverInfo.port) {
+          return statusMap[401]
+        }
+        try {
+          const { status } = await getNetworks()
+          return statusMap?.[status] ?? statusMap[500]
+        } catch (e: any) {
+          console.error(e)
+          return e?.status ? statusMap?.[e.status] : statusMap[500]
+        }
       },
+      checkResult: { type: 'info', content: 'Trying to connect to ZeroTier service...' },
     },
     {
       key: 'Check if local service is running',
+      check: async () => {
+        await getServiceState()
+      },
       checkResult: useMemo(() => {
         const isRunning = serviceState === ServiceStatus.RUNNING
         return {
@@ -66,12 +83,13 @@ function Troubleshooting() {
 
   const [overrideResult, setOverrideResult] = useState<Record<string, StatusCardProps>>({})
   useEffect(() => {
+    setOverrideResult({})
     checkList.map(async ({ key, check }) => {
       if (check && typeof check === 'function') {
         const checkResult: StatusCardProps = await (typeof check === 'function'
           ? (check() as unknown as Promise<StatusCardProps>)
           : check)
-        setOverrideResult((prev) => ({ ...prev, [key]: checkResult }))
+        checkResult && setOverrideResult((prev) => ({ ...prev, [key]: checkResult }))
       }
     })
   }, [forceCheckTime])
