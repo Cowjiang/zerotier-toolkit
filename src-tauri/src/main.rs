@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use log::debug;
 use tauri::{AppHandle, Builder, Manager, WindowBuilder, WindowEvent, Wry};
 
 use auto_launch::{set_auto_launch, unset_auto_launch};
@@ -11,7 +10,7 @@ use system::*;
 use window::set_window_shadow;
 
 use crate::configuration::{
-    get_config, get_config_dy_def, init_config, put_config_command, GENERAL_MINIMIZE_TO_TRAY,
+    GENERAL_MINIMIZE_TO_TRAY, get_config, get_config_dy_def, init_config, put_config_command,
 };
 use crate::logger::init_logger_main;
 use crate::window::{close_main_window, hide_main_window, show_main_window};
@@ -85,6 +84,8 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
             stop_zerotier,
             get_zerotier_state,
             get_zerotier_server_info,
+            get_zerotier_one_program_path,
+            open_zerotier_one_dir,
             // window handlers
             hide_main_window,
             show_main_window,
@@ -95,8 +96,7 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
             put_config_command,
             get_config,
             set_auto_launch,
-            unset_auto_launch,
-            get_zerotier_one_program_path
+            unset_auto_launch
         ]);
     builder
 }

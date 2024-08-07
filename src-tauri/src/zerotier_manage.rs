@@ -8,6 +8,7 @@ use lazy_static::lazy_static;
 use log::{debug, error};
 use serde::Serialize;
 
+use crate::command::execute_cmd;
 use crate::r::{fail_message_json, success_json};
 #[cfg(target_os = "windows")]
 use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
@@ -49,7 +50,7 @@ lazy_static! {
                 String::from("zerotier-one.exe")
             ]
         }
-        // TODO fill this list 
+        // TODO fill this list
         #[cfg(target_os = "macos")]
         {
             vec![
@@ -103,6 +104,12 @@ lazy_static! {
 pub struct ZerotierServerInfo {
     port: String,
     secret: String,
+}
+
+#[derive(Serialize)]
+pub struct ZerotierPathInfo {
+    file_dir: String,
+    file_name: String,
 }
 
 #[cfg(target_os = "windows")]
@@ -208,18 +215,43 @@ pub(crate) fn get_zerotier_server_info() -> String {
     })
 }
 
-#[tauri::command]
-pub fn get_zerotier_one_program_path() -> String {
+pub fn get_zerotier_one_path() -> Result<ZerotierPathInfo, String> {
     for home_dir in &GLOBAL_TRY_HOME.clone() {
         let home_dir_path = Path::new(&home_dir);
         for execute_file_name in &GLOBAL_TRY_EXECUTE_FILE.clone() {
             let execute_file_path = home_dir_path.join(&execute_file_name);
             if execute_file_path.exists() {
-                return success_json(execute_file_path.to_str());
+                let file_name = execute_file_path.file_name().unwrap().to_str().unwrap().to_string();
+                return Ok(ZerotierPathInfo {
+                    file_dir: home_dir_path.to_str().unwrap().to_string(),
+                    file_name,
+                })
             }
         }
     }
-    return fail_message_json("zerotier_one program file is not found");
+    Err("Failed to get ZeroTier One program path".to_string())
+}
+
+#[tauri::command]
+pub(crate) fn get_zerotier_one_program_path() -> String {
+    match get_zerotier_one_path() {
+        Ok(path) => success_json(path),
+        Err(..) => fail_message_json("Failed to get ZeroTier One program path"),
+    }
+}
+
+#[tauri::command]
+pub(crate) fn open_zerotier_one_dir() -> String {
+    return match get_zerotier_one_path() {
+        Ok(zerotier_one_path) => {
+            execute_cmd(vec![
+                String::from("explorer.exe"),
+                zerotier_one_path.file_dir,
+            ]).unwrap();
+            success_json("")
+        }
+        Err(..) => fail_message_json("Failed to get ZeroTier One program path"),
+    }
 }
 
 fn try_read_files(file_paths: &[String]) -> Result<String, Error> {
