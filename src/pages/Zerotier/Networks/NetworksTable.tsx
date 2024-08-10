@@ -63,8 +63,8 @@ function NetworksTable({
       networkId && (await leaveNetwork(networkId))
     } catch (e) {
       setNotification({
-        type: 'warning',
-        children: 'Failed to disconnect, please try again later.',
+        type: 'danger',
+        children: 'Failed to disconnect, please try again later',
         duration: 3000,
       })
     }

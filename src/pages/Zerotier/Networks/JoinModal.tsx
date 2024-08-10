@@ -1,32 +1,31 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalProps } from '@nextui-org/react'
 import { useState } from 'react'
 
-import NotificationBar from '../../../components/base/NotificationBar.tsx'
-import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
 import { joinNetwork } from '../../../services/zerotierService.ts'
 
 function JoinModal(props: Omit<ModalProps, 'children'>) {
   const { onClose } = props
-  const [inputValue, setInputValue] = useState('')
-  const { setNotification } = useNotification()
 
   const onModalClose = () => {
     setInputValue('')
     onClose?.()
   }
 
+  const [inputValue, setInputValue] = useState('')
+  const onInputValueChange = (value: string) => {
+    setIsError(false)
+    setInputValue(value)
+  }
+
   const [joining, setJoining] = useState(false)
+  const [isError, setIsError] = useState(false)
   const onJoinBtnClick = async () => {
     setJoining(true)
     try {
       await joinNetwork(inputValue)
       onModalClose()
     } catch (e) {
-      setNotification({
-        type: 'warning',
-        children: 'Failed to join network, please check your Network ID',
-        duration: 3000,
-      })
+      setIsError(true)
     } finally {
       setTimeout(() => setJoining(false), 300)
     }
@@ -43,8 +42,10 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
             label="Enter 16-digit Network ID"
             value={inputValue}
             maxLength={16}
-            onClear={() => setInputValue('')}
-            onValueChange={(value) => setInputValue(value)}
+            isInvalid={isError}
+            errorMessage="Failed to join network, please check your Network ID"
+            onClear={() => onInputValueChange('')}
+            onValueChange={onInputValueChange}
           />
         </ModalBody>
         <ModalFooter>
@@ -55,7 +56,6 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
             Join
           </Button>
         </ModalFooter>
-        <NotificationBar />
       </ModalContent>
     </Modal>
   )

@@ -4,7 +4,7 @@ import { ReactNode, useMemo } from 'react'
 import { CloseIcon } from './Icon.tsx'
 
 export type NotificationBarOptions = {
-  type?: 'success' | 'warning' | 'error' | 'primary' | 'secondary'
+  type?: 'success' | 'warning' | 'danger' | 'primary' | 'secondary'
   className?: string
   children?: ReactNode
   hideCloseButton?: boolean
@@ -17,10 +17,10 @@ export type NotificationBarProps = {
   hidden?: boolean
 } & NotificationBarOptions
 
-function NotificationBar(props: NotificationBarProps) {
+function Notification(props: NotificationBarProps) {
   const styles = useMemo(() => {
     const defaultClassNames = [
-      'w-full px-4 py-2 fixed top-0 z-[100] flex items-center text-sm font-semibold transition-transform-all',
+      'px-4 py-2.5 fixed bottom-6 left-0 z-[10000] translate-x-[calc(50vw-50%)] flex items-center text-sm transition-colors-opacity rounded-lg',
       props.animate ? 'duration-250' : 'duration-0',
     ]
     if (!props.children) {
@@ -30,11 +30,11 @@ function NotificationBar(props: NotificationBarProps) {
       return [...defaultClassNames, props.className]
     }
     const preset = {
-      success: 'bg-success text-success-foreground',
-      warning: 'bg-warning text-warning-foreground',
-      error: 'bg-danger text-danger-foreground',
-      primary: 'bg-primary text-primary-foreground',
-      secondary: 'bg-secondary text-secondary-foreground',
+      success: 'bg-success/20 text-success',
+      warning: 'bg-warning/20 text-warning',
+      danger: 'bg-danger/20 text-danger',
+      primary: 'bg-primary/20 text-primary',
+      secondary: 'bg-secondary/20 text-secondary',
     }
     return [...defaultClassNames, preset?.[props?.type ?? 'primary'] ?? preset['primary']]
   }, [props])
@@ -49,13 +49,11 @@ function NotificationBar(props: NotificationBarProps) {
       ])}
     >
       {props.children}
-      {props.hideCloseButton ? (
-        ''
-      ) : (
+      {!props.hideCloseButton && (
         <CloseIcon
-          width={20}
-          height={20}
-          className="ml-auto cursor-pointer hover:opacity-75"
+          width={18}
+          height={18}
+          className="ml-2 cursor-pointer hover:opacity-75"
           onClick={closeNotification}
         />
       )}
@@ -65,4 +63,4 @@ function NotificationBar(props: NotificationBarProps) {
   )
 }
 
-export default NotificationBar
+export default Notification

@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
 
-import NotificationBar, { NotificationBarOptions, NotificationBarProps } from '../base/NotificationBar.tsx'
+import Notification, { NotificationBarOptions, NotificationBarProps } from '../base/Notification.tsx'
 
 type NotificationContext = {
   setNotification: (props: NotificationBarProps) => void
@@ -41,7 +41,7 @@ function NotificationProvider({ children }: { children: ReactNode }) {
   return (
     <NotificationContext.Provider value={{ setNotification, closeNotification }}>
       {children}
-      <NotificationBar onClose={closeNotification} hidden={hidden} {...options} />
+      <Notification onClose={closeNotification} hidden={hidden} {...options} />
     </NotificationContext.Provider>
   )
 }
