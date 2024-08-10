@@ -1,17 +1,17 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::ops::Deref;
 use tauri::{AppHandle, Builder, Manager, WindowBuilder, WindowEvent, Wry};
 
 use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
-use configuration::try_store_bak;
 use system::*;
 use window::set_window_shadow;
 
-use crate::configuration::{
-    GENERAL_MINIMIZE_TO_TRAY, get_config, get_config_dy_def, init_config, put_config_command,
-};
+use crate::configurations::configurations_command::{get_configurations, put_configurations};
+use crate::configurations::configurations_service::{backup_all, get_configuration_context, init_configuration_context};
+use crate::configurations::system_configurations::{GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME};
 use crate::logger::init_logger_main;
 use crate::window::{close_main_window, hide_main_window, show_main_window};
 use crate::zerotier_manage::*;
@@ -19,7 +19,6 @@ use crate::zerotier_manage::*;
 mod command;
 
 mod auto_launch;
-mod configuration;
 mod logger;
 mod r;
 mod system;
@@ -28,6 +27,8 @@ mod window;
 #[cfg(windows)]
 mod windows_service_manage;
 mod zerotier_manage;
+mod configurations;
+mod util;
 
 fn main() {
     start_tauri();
@@ -51,7 +52,7 @@ fn register_window_event_handler(builder: Builder<Wry>) -> Builder<Wry> {
                 close_main_window(app_handle);
             }
             WindowEvent::Destroyed { .. } => {
-                try_store_bak(app_handle.clone());
+                backup_all()
             }
             _ => {}
         }
@@ -63,9 +64,8 @@ fn setup(builder: Builder<Wry>) -> Builder<Wry> {
     let builder = builder.setup(|app| {
         let app_handle = app.handle();
         init_logger_main(app_handle.clone());
-        init_config(app_handle.clone());
         init_window(app_handle.clone());
-
+        init_configuration_context(app_handle.clone());
         #[cfg(debug_assertions)]
         open_dev_tools(app_handle.clone());
 
@@ -90,13 +90,15 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
             hide_main_window,
             show_main_window,
             close_main_window,
+            // auto launch
+            set_auto_launch,
+            unset_auto_launch,
+            // configurations
+            get_configurations,
+            put_configurations,
             // other handlers
             is_admin,
-            restart_as_admin,
-            put_config_command,
-            get_config,
-            set_auto_launch,
-            unset_auto_launch
+            restart_as_admin
         ]);
     builder
 }
@@ -125,8 +127,12 @@ fn init_window(app_handle: AppHandle) {
         .build()
         .unwrap();
     window.show().unwrap();
-    if get_config_dy_def(GENERAL_MINIMIZE_TO_TRAY.read()).eq("true") {
-        hide_main_window(app_handle.clone());
-    }
+    let _ = get_configuration_context(SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(|context| {
+        let minimize_to_tray_def = GENERAL_MINIMIZE_TO_TRAY.read();
+        if context.get_config_by_def(minimize_to_tray_def.deref()).eq("true") {
+            hide_main_window(app_handle.clone());
+        }
+        true
+    });
     set_window_shadow(app_handle.clone());
 }

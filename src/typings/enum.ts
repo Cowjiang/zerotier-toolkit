@@ -30,6 +30,8 @@ export enum InvokeEvent {
   UNSET_AUTO_LAUNCH = 'unset_auto_launch',
   GET_ZEROTIER_ONE_PROGRAM_PATH = 'get_zerotier_one_program_path',
   OPEN_ZEROTIER_ONE_DIR = 'open_zerotier_one_dir',
+  GET_CONFIGURATIONS = 'get_configurations',
+  PUT_CONFIGURATIONS = 'put_configurations',
 }
 
 export enum Theme {

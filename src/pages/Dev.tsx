@@ -62,6 +62,7 @@ function Dev() {
     invokeCommandButton(InvokeEvent.UNSET_AUTO_LAUNCH),
     invokeCommandButton(InvokeEvent.GET_ZEROTIER_ONE_PROGRAM_PATH),
     invokeCommandButton(InvokeEvent.OPEN_ZEROTIER_ONE_DIR),
+    invokeCommandButton(InvokeEvent.GET_CONFIGURATIONS, { name: 'system' }),
   ]
 
   function ass(): JSX.Element {
