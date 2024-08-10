@@ -1,7 +1,10 @@
-import { Code, Input, Tooltip } from '@nextui-org/react'
+import { Button, Code, Input, Tooltip } from '@nextui-org/react'
 
 import { InterrogationIcon } from '../../../components/base/Icon.tsx'
+import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
+import { InvokeEvent } from '../../../typings/enum.ts'
+import { invokeCommand } from '../../../utils/helpers/tauriHelpers.ts'
 
 function SecretTooltip() {
   return (
@@ -40,6 +43,15 @@ function SecretTooltip() {
 
 function ZerotierExperiments() {
   const { serverInfo } = useZeroTierStore()
+  const { setNotification } = useNotification()
+
+  const openZeroTierOneDir = async () => {
+    try {
+      await invokeCommand(InvokeEvent.OPEN_ZEROTIER_ONE_DIR)
+    } catch (e) {
+      setNotification({ type: 'warning', children: 'Failed to open ZeroTier One directory', duration: 2000 })
+    }
+  }
 
   return (
     <div className="flex flex-col">
@@ -68,6 +80,16 @@ function ZerotierExperiments() {
               placeholder="Input service port"
               value={(serverInfo?.port ?? '').toString()}
             />
+          </div>
+        </div>
+        <div className="mt-4 flex items-center">
+          <div className="mr-4 flex gap-1.5 text-default-700">
+            <p>ZeroTier One Directory</p>
+          </div>
+          <div className="ml-auto flex gap-4">
+            <Button className="bg-default-100" onClick={openZeroTierOneDir}>
+              Open Folder
+            </Button>
           </div>
         </div>
       </section>
