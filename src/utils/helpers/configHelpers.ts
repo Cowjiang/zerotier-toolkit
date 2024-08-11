@@ -34,9 +34,9 @@ export const createConfigStorage = <T extends AppConfig | ZeroTierConfig>(config
       const {
         state: { config },
       }: StorageValue<{ config: T }> = JSON.parse(value)
-      const appConfig = JSON.stringify(config)
-      if (configTemp !== appConfig && isTauri) {
-        configTemp = appConfig
+      const configString = JSON.stringify(config)
+      if (configTemp !== configString && isTauri) {
+        configTemp = configString
         await updateConfig(configType, config)
       }
     },
@@ -53,7 +53,7 @@ const deserializeConfig = (config: { [key: string]: string }) => {
     Object.entries(config).map(([key, value]) => {
       if (value === 'true' || value === 'false') {
         return [key, value === 'true']
-      } else if (!isNaN(Number(value))) {
+      } else if (value !== '' && !isNaN(Number(value))) {
         return [key, Number(value)]
       } else {
         return [key, value]
