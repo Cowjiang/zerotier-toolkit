@@ -2,6 +2,7 @@ import { Body, HttpVerb, Response } from '@tauri-apps/api/http'
 
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
+import { ZerotierConfig } from '../../typings/config.ts'
 import { httpRequest } from './tauriHelpers.ts'
 
 type RequestOptions = {
@@ -12,15 +13,17 @@ type RequestOptions = {
 }
 
 const request = async <T>({ path, method, ...options }: RequestOptions) => {
-  const { port, secret } = useZeroTierStore.getState().serverInfo
-  if (!port || !secret) {
+  const { serverInfo, config } = useZeroTierStore.getState()
+  const { port, secret } = serverInfo
+  const { [ZerotierConfig.PORT]: overridePort, [ZerotierConfig.TOKEN]: overrideToken } = config
+  if ((!overridePort || !overrideToken) && (!port || !secret)) {
     throw new Error('Invalid port or secret for the ZeroTier service')
   }
   const httpOptions = {
-    url: `${ZEROTIER_SERVICE_HOST}:${port}${path}`,
+    url: `${ZEROTIER_SERVICE_HOST}:${overridePort || port}${path}`,
     method,
     headers: {
-      'X-ZT1-Auth': secret,
+      'X-ZT1-Auth': overrideToken || secret,
     },
     ...options,
   }

@@ -3,6 +3,7 @@ import { Button, Code, Input, Tooltip } from '@nextui-org/react'
 import { InterrogationIcon } from '../../../components/base/Icon.tsx'
 import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
+import { ZerotierConfig } from '../../../typings/config.ts'
 import { InvokeEvent } from '../../../typings/enum.ts'
 import { invokeCommand } from '../../../utils/helpers/tauriHelpers.ts'
 
@@ -42,7 +43,7 @@ function SecretTooltip() {
 }
 
 function ZerotierExperiments() {
-  const { serverInfo } = useZeroTierStore()
+  const { serverInfo, config, setConfig } = useZeroTierStore()
   const { setNotification } = useNotification()
 
   const openZeroTierOneDir = async () => {
@@ -51,6 +52,14 @@ function ZerotierExperiments() {
     } catch (e) {
       setNotification({ type: 'danger', children: 'Failed to open ZeroTier One directory', duration: 2000 })
     }
+  }
+
+  const onTokenChanged = (value: string) => {
+    setConfig({ [ZerotierConfig.TOKEN]: value })
+  }
+
+  const onPortChanged = (value: string) => {
+    setConfig({ [ZerotierConfig.PORT]: Number(value) })
   }
 
   return (
@@ -65,20 +74,29 @@ function ZerotierExperiments() {
             <SecretTooltip />
           </div>
           <div className="w-1/2 ml-auto flex gap-4">
-            <Input isRequired placeholder="Input your local auth token" value={serverInfo?.secret ?? ''} />
+            <Input
+              isRequired
+              isClearable
+              placeholder={serverInfo?.secret || 'Input your local auth token'}
+              value={config?.[ZerotierConfig.TOKEN] || ''}
+              onClear={() => onTokenChanged('')}
+              onValueChange={onTokenChanged}
+            />
           </div>
         </div>
         <div className="mt-4 flex items-center">
           <div className="mr-4 flex gap-1.5 text-default-700">
             <p>Service Port</p>
-            <SecretTooltip />
           </div>
           <div className="ml-auto flex gap-4">
             <Input
               isRequired
+              isClearable
               type="number"
-              placeholder="Input service port"
-              value={(serverInfo?.port ?? '').toString()}
+              placeholder={(serverInfo?.port ?? '').toString() || 'Input service port'}
+              value={(config?.[ZerotierConfig.PORT] || '').toString()}
+              onClear={() => onPortChanged('')}
+              onValueChange={onPortChanged}
             />
           </div>
         </div>
