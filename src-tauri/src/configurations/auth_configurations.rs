@@ -6,15 +6,11 @@ use crate::configurations::configuration_base::{ConfigurationContext, Configurat
 pub const AUTH_CONFIGURATION_NAME: &str = "auth";
 lazy_static! {
     static ref ZEROTIER_TOKEN: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
-        "Zerotier.Token".to_string(),
+        "ZerotierAuth.Token".to_string(),
         "".to_string()
     ));
     static ref ZEROTIER_PORT: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
-        "Zerotier.Port".to_string(),
-        "".to_string()
-    ));
-    static ref ZEROTIER_NETWORKS: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
-        "Zerotier.Networks".to_string(),
+        "ZerotierAuth.Port".to_string(),
         "".to_string()
     ));
 }
@@ -24,8 +20,6 @@ pub fn init_context(app_handle: AppHandle) -> ConfigurationContext {
     zerotier_token.register_to_context(&mut context);
     let zerotier_port = ZEROTIER_PORT.write();
     zerotier_port.register_to_context(&mut context);
-    let zerotier_networks = ZEROTIER_NETWORKS.write();
-    zerotier_networks.register_to_context(&mut context);
     context.sync_from_file();
     context
 }

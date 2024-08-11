@@ -1,9 +1,9 @@
 import { mockIPC } from '@tauri-apps/api/mocks'
 import { describe, expect } from 'vitest'
 
-import { ThemeConfig } from '../../../typings/config.ts'
+import { AppConfig, ConfigType, ThemeConfig } from '../../../typings/config.ts'
 import { InvokeEvent, Theme } from '../../../typings/enum.ts'
-import { getSystemConfig, updateSystemConfig } from '../configHelpers.ts'
+import { getConfig, updateConfig } from '../configHelpers.ts'
 
 const config = {
   [ThemeConfig.CURRENT]: Theme.LIGHT,
@@ -23,12 +23,12 @@ beforeEach(() => {
 
 describe('Config Helpers', () => {
   it('should serialize and update config', async () => {
-    const { data } = await updateSystemConfig(config)
+    const { data } = await updateConfig(ConfigType.APP, config)
     expect(data).toBe(JSON.stringify(serializedConfig))
   })
 
   it('should get and deserialize config', async () => {
-    const deserializedConfig = await getSystemConfig()
+    const deserializedConfig = await getConfig<AppConfig>(ConfigType.APP)
     expect(deserializedConfig).toMatchObject(config)
   })
 })

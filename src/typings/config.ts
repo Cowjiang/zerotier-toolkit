@@ -1,5 +1,10 @@
 import { Language, Theme } from './enum.ts'
 
+export enum ConfigType {
+  APP = 'system',
+  AUTH = 'auth',
+}
+
 export enum ThemeConfig {
   CURRENT = 'Theme.Current',
   IS_SYNC_WITH_SYSTEM = 'Theme.IsSyncWithSystem',
@@ -22,4 +27,14 @@ export type AppConfig = {
   [GeneralConfig.AUTO_START]?: boolean
   [GeneralConfig.ENABLE_TRAY]?: boolean
   [GeneralConfig.MINIMIZE_TO_TRAY]?: boolean
+}
+
+export enum ZerotierAuthConfig {
+  TOKEN = 'ZerotierAuth.Token',
+  PORT = 'ZerotierAuth.PORT',
+}
+
+export type AuthConfig = {
+  [ZerotierAuthConfig.TOKEN]?: string
+  [ZerotierAuthConfig.PORT]?: number
 }

@@ -2,9 +2,9 @@ import { exit } from '@tauri-apps/api/process'
 import { create } from 'zustand'
 import { createJSONStorage, persist, StateStorage, StorageValue } from 'zustand/middleware'
 
-import type { AppConfig } from '../typings/config.ts'
+import { AppConfig, ConfigType } from '../typings/config.ts'
 import { InvokeEvent } from '../typings/enum.ts'
-import { getSystemConfig, updateSystemConfig } from '../utils/helpers/configHelpers.ts'
+import { getConfig, updateConfig } from '../utils/helpers/configHelpers.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 export type AppState = {
@@ -35,7 +35,7 @@ const appConfigStorage = (): StateStorage => {
         version: 0,
       }
       if (isTauri) {
-        value.state.config = await getSystemConfig()
+        value.state.config = await getConfig<AppConfig>(ConfigType.APP)
       }
       return JSON.stringify(value)
     },
@@ -46,7 +46,7 @@ const appConfigStorage = (): StateStorage => {
       const appConfig = JSON.stringify(config)
       if (configTemp !== appConfig && isTauri) {
         configTemp = appConfig
-        await updateSystemConfig(config)
+        await updateConfig(ConfigType.APP, config)
       }
     },
     removeItem: (): void | Promise<void> => undefined,
