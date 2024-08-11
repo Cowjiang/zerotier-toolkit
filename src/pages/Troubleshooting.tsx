@@ -6,7 +6,8 @@ import StatusCard, { StatusCardProps } from '../components/base/StatusCard.tsx'
 import { getNetworks } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
 import { useZeroTierStore } from '../store/zerotier.ts'
-import { ServiceStatus } from '../typings/enum.ts'
+import { InvokeEvent, ServiceStatus } from '../typings/enum.ts'
+import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 type CheckListItem = {
   key: string
@@ -30,7 +31,10 @@ function Troubleshooting() {
   const checkList: CheckListItem[] = [
     {
       key: 'Check if ZeroTier is installed',
-      check: () => ({ type: 'success' }),
+      check: async () => {
+        const { success } = await invokeCommand(InvokeEvent.GET_ZEROTIER_ONE_DIR)
+        return success ? { type: 'success' } : { type: 'danger', content: 'Could not find ZeroTier One Directory' }
+      },
     },
     {
       key: 'Check if ZeroTier can be managed',

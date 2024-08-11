@@ -28,7 +28,7 @@ export enum InvokeEvent {
   HIDE_MAIN_WINDOW = 'hide_main_window',
   SET_AUTO_LAUNCH = 'set_auto_launch',
   UNSET_AUTO_LAUNCH = 'unset_auto_launch',
-  GET_ZEROTIER_ONE_PROGRAM_PATH = 'get_zerotier_one_program_path',
+  GET_ZEROTIER_ONE_DIR = 'get_zerotier_one_dir',
   OPEN_ZEROTIER_ONE_DIR = 'open_zerotier_one_dir',
   GET_CONFIGURATIONS = 'get_configurations',
   PUT_CONFIGURATIONS = 'put_configurations',

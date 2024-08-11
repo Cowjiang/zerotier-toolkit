@@ -233,7 +233,7 @@ pub fn get_zerotier_one_path() -> Result<ZerotierPathInfo, String> {
 }
 
 #[tauri::command]
-pub(crate) fn get_zerotier_one_program_path() -> String {
+pub(crate) fn get_zerotier_one_dir() -> String {
     match get_zerotier_one_path() {
         Ok(path) => success_json(path),
         Err(..) => fail_message_json("Failed to get ZeroTier One program path"),

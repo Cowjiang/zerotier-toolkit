@@ -84,7 +84,7 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
             stop_zerotier,
             get_zerotier_state,
             get_zerotier_server_info,
-            get_zerotier_one_program_path,
+            get_zerotier_one_dir,
             open_zerotier_one_dir,
             // window handlers
             hide_main_window,
