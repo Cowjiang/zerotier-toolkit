@@ -71,5 +71,6 @@ pub fn init_context(app_handle: AppHandle) -> ConfigurationContext {
     enable_tray.register_to_context(&mut context);
     // ==
     context.sync_from_file();
+    context.store_config();
     context
 }

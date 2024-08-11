@@ -27,5 +27,6 @@ pub fn init_context(app_handle: AppHandle) -> ConfigurationContext {
     let zerotier_networks = ZEROTIER_NETWORKS.write();
     zerotier_networks.register_to_context(&mut context);
     context.sync_from_file();
+    context.store_config();
     context
 }

@@ -64,8 +64,9 @@ fn setup(builder: Builder<Wry>) -> Builder<Wry> {
     let builder = builder.setup(|app| {
         let app_handle = app.handle();
         init_logger_main(app_handle.clone());
-        init_window(app_handle.clone());
         init_configuration_context(app_handle.clone());
+        init_window(app_handle.clone());
+
         #[cfg(debug_assertions)]
         open_dev_tools(app_handle.clone());
 

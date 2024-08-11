@@ -23,7 +23,7 @@ pub struct ConfigurationContext {
     file_bak_name: String,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ConfigurationDef {
     key: String,
     default_value: String,
@@ -170,9 +170,11 @@ impl ConfigurationContext {
 
     pub fn get_config_by_def(&self, configuration_def: &ConfigurationDef) -> String {
         let key = &configuration_def.key;
-        let value = self.configurations.get(key.as_str())
-            .map_or(&configuration_def.default_value.clone(), |v| v).to_string();
-        value
+        let value = self.configurations.get(&key.clone());
+        match value {
+            Some(value) => { value.clone() }
+            None => configuration_def.default_value.clone(),
+        }
     }
     pub fn get_configs(&self) -> &HashMap<String, String> {
         &self.configurations
