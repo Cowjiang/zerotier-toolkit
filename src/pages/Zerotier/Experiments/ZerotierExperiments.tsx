@@ -49,7 +49,7 @@ function ZerotierExperiments() {
     try {
       await invokeCommand(InvokeEvent.OPEN_ZEROTIER_ONE_DIR)
     } catch (e) {
-      setNotification({ type: 'warning', children: 'Failed to open ZeroTier One directory', duration: 2000 })
+      setNotification({ type: 'danger', children: 'Failed to open ZeroTier One directory', duration: 2000 })
     }
   }
 

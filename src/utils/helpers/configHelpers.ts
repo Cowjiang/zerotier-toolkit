@@ -1,3 +1,5 @@
+import { StateStorage, StorageValue } from 'zustand/middleware'
+
 import { AppConfig, ConfigType, ZeroTierConfig } from '../../typings/config.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
 import { invokeCommand } from './tauriHelpers.ts'
@@ -12,7 +14,37 @@ export const updateConfig = async (name: ConfigType, config: AppConfig | ZeroTie
   return await invokeCommand(InvokeEvent.PUT_CONFIGURATIONS, { name, payload: configString })
 }
 
-const serializeConfig = (config: AppConfig) => {
+export const createConfigStorage = <T extends AppConfig | ZeroTierConfig>(configType: ConfigType): StateStorage => {
+  const isTauri = !!window.__TAURI_IPC__
+  let configTemp = ''
+  return {
+    getItem: async () => {
+      const value = {
+        state: {
+          config: {},
+        },
+        version: 0,
+      }
+      if (isTauri) {
+        value.state.config = await getConfig<T>(configType)
+      }
+      return JSON.stringify(value)
+    },
+    setItem: async (_, value) => {
+      const {
+        state: { config },
+      }: StorageValue<{ config: T }> = JSON.parse(value)
+      const appConfig = JSON.stringify(config)
+      if (configTemp !== appConfig && isTauri) {
+        configTemp = appConfig
+        await updateConfig(configType, config)
+      }
+    },
+    removeItem: (): void | Promise<void> => undefined,
+  }
+}
+
+const serializeConfig = (config: AppConfig | ZeroTierConfig) => {
   return JSON.stringify(Object.fromEntries(Object.entries(config).map(([key, value]) => [key, String(value)])))
 }
 

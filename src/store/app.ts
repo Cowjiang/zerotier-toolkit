@@ -1,10 +1,10 @@
 import { exit } from '@tauri-apps/api/process'
 import { create } from 'zustand'
-import { createJSONStorage, persist, StateStorage, StorageValue } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { AppConfig, ConfigType } from '../typings/config.ts'
 import { InvokeEvent } from '../typings/enum.ts'
-import { getConfig, updateConfig } from '../utils/helpers/configHelpers.ts'
+import { createConfigStorage } from '../utils/helpers/configHelpers.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 export type AppState = {
@@ -21,36 +21,6 @@ export type AppAction = {
   checkAdmin: () => Promise<boolean>
   restartAsAdmin: () => Promise<void>
   setConfig: (config: Partial<AppConfig>) => void
-}
-
-const appConfigStorage = (): StateStorage => {
-  const isTauri = !!window.__TAURI_IPC__
-  let configTemp = ''
-  return {
-    getItem: async () => {
-      const value = {
-        state: {
-          config: {},
-        },
-        version: 0,
-      }
-      if (isTauri) {
-        value.state.config = await getConfig<AppConfig>(ConfigType.APP)
-      }
-      return JSON.stringify(value)
-    },
-    setItem: async (_, value) => {
-      const {
-        state: { config },
-      }: StorageValue<Pick<AppState, 'config'>> = JSON.parse(value)
-      const appConfig = JSON.stringify(config)
-      if (configTemp !== appConfig && isTauri) {
-        configTemp = appConfig
-        await updateConfig(ConfigType.APP, config)
-      }
-    },
-    removeItem: (): void | Promise<void> => undefined,
-  }
 }
 
 export const useAppStore = create<AppState & AppAction>()(
@@ -89,7 +59,7 @@ export const useAppStore = create<AppState & AppAction>()(
         }
       },
       partialize: (state) => ({ config: state.config }),
-      storage: createJSONStorage(appConfigStorage),
+      storage: createJSONStorage(() => createConfigStorage<AppConfig>(ConfigType.APP)),
     },
   ),
 )
