@@ -11,7 +11,7 @@ pub fn init_configuration_context(app_handle: AppHandle) {
     let mut configuration_groups = CONFIGURATION_GROUPS.write();
     let system_config_context = crate::configurations::system_configurations::init_context(app_handle.clone());
     configuration_groups.push(system_config_context);
-    let auth_config_context = crate::configurations::auth_configurations::init_context(app_handle.clone());
+    let auth_config_context = crate::configurations::zerotier_configurations::init_context(app_handle.clone());
     configuration_groups.push(auth_config_context);
 }
 

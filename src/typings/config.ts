@@ -1,8 +1,9 @@
 import { Language, Theme } from './enum.ts'
+import { Network } from './zerotier.ts'
 
 export enum ConfigType {
   APP = 'system',
-  AUTH = 'auth',
+  ZEROTIER = 'zerotier',
 }
 
 export enum ThemeConfig {
@@ -20,6 +21,12 @@ export enum GeneralConfig {
   MINIMIZE_TO_TRAY = 'General.MinimizeToTray',
 }
 
+export enum ZerotierConfig {
+  TOKEN = 'Zerotier.Token',
+  PORT = 'Zerotier.Port',
+  NETWORKS = 'Zerotier.Networks',
+}
+
 export type AppConfig = {
   [ThemeConfig.CURRENT]?: Theme
   [ThemeConfig.IS_SYNC_WITH_SYSTEM]?: boolean
@@ -29,12 +36,8 @@ export type AppConfig = {
   [GeneralConfig.MINIMIZE_TO_TRAY]?: boolean
 }
 
-export enum ZerotierAuthConfig {
-  TOKEN = 'ZerotierAuth.Token',
-  PORT = 'ZerotierAuth.PORT',
-}
-
-export type AuthConfig = {
-  [ZerotierAuthConfig.TOKEN]?: string
-  [ZerotierAuthConfig.PORT]?: number
+export type ZeroTierConfig = {
+  [ZerotierConfig.TOKEN]?: string
+  [ZerotierConfig.PORT]?: number
+  [ZerotierConfig.NETWORKS]?: Network[]
 }

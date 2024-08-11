@@ -1,13 +1,13 @@
-import { AppConfig, AuthConfig, ConfigType } from '../../typings/config.ts'
+import { AppConfig, ConfigType, ZeroTierConfig } from '../../typings/config.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
 import { invokeCommand } from './tauriHelpers.ts'
 
-export const getConfig = async <T extends AppConfig | AuthConfig>(name: ConfigType): Promise<T> => {
+export const getConfig = async <T extends AppConfig | ZeroTierConfig>(name: ConfigType): Promise<T> => {
   const config = (await invokeCommand(InvokeEvent.GET_CONFIGURATIONS, { name }))?.data || {}
   return deserializeConfig(config)
 }
 
-export const updateConfig = async (name: ConfigType, config: AppConfig | AuthConfig) => {
+export const updateConfig = async (name: ConfigType, config: AppConfig | ZeroTierConfig) => {
   const configString = serializeConfig(config)
   return await invokeCommand(InvokeEvent.PUT_CONFIGURATIONS, { name, payload: configString })
 }
