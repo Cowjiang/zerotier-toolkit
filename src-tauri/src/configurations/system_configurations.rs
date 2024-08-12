@@ -68,6 +68,7 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
             destroy_system_tray(&app_handle);
         }
     });
+    enable_tray.callback_anyway(true);
     enable_tray.register_to_context(&mut context);
     // ==
     context.sync_from_file();
