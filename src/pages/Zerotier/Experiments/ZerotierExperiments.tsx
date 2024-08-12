@@ -47,11 +47,8 @@ function ZerotierExperiments() {
   const { setNotification } = useNotification()
 
   const openZeroTierOneDir = async () => {
-    try {
-      await invokeCommand(InvokeEvent.OPEN_ZEROTIER_ONE_DIR)
-    } catch (e) {
-      setNotification({ type: 'danger', children: 'Failed to open ZeroTier One directory', duration: 2000 })
-    }
+    const { success } = await invokeCommand(InvokeEvent.OPEN_ZEROTIER_ONE_DIR)
+    !success && setNotification({ type: 'danger', children: 'Failed to open ZeroTier One directory', duration: 2000 })
   }
 
   const onTokenChanged = (value: string) => {

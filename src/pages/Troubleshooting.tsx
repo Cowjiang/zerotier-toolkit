@@ -6,6 +6,7 @@ import StatusCard, { StatusCardProps } from '../components/base/StatusCard.tsx'
 import { getNetworks } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
 import { useZeroTierStore } from '../store/zerotier.ts'
+import { ZerotierConfig } from '../typings/config.ts'
 import { InvokeEvent, ServiceStatus } from '../typings/enum.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
@@ -18,7 +19,7 @@ type CheckListItem = {
 function Troubleshooting() {
   const navigate = useNavigate()
   const { isAdmin, restartAsAdmin } = useAppStore()
-  const { serviceState, serverInfo, getServiceState } = useZeroTierStore()
+  const { serviceState, serverInfo, config, getServiceState } = useZeroTierStore()
 
   const [forceChecking, setForceChecking] = useState(false)
   const [forceCheckTime, setForceCheckTime] = useState(Date.now())
@@ -48,7 +49,9 @@ function Troubleshooting() {
           },
           500: { type: 'danger', content: 'Failed to connect to ZeroTier service' },
         }
-        if (!serverInfo.secret || !serverInfo.port) {
+        const { port, secret } = serverInfo
+        const { [ZerotierConfig.PORT]: overridePort, [ZerotierConfig.TOKEN]: overrideToken } = config
+        if ((!overridePort || !overrideToken) && (!port || !secret)) {
           return statusMap[401]
         }
         try {
