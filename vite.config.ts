@@ -22,7 +22,7 @@ export default defineConfig(async () => ({
     globals: true,
     setupFiles: ['./utils/testUtils/setupTest.tsx'],
     coverage: {
-      exclude: ['**/__mocks__/**', '**/typings/**', '**/i18n/**', '**/services/**', '**/*.d.ts']
+      exclude: ['**/__mocks__/**', '**/__tests__/**', '**/typings/**', '**/i18n/**', '**/services/**', '**/*.d.ts']
     }
   }
 }))
