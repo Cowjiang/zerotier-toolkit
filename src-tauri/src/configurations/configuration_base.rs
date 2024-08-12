@@ -57,7 +57,7 @@ impl ConfigurationContext {
         &mut self,
         file_name: &str,
     ) -> Result<HashMap<String, String>, Box<dyn Error>> {
-        let opt_file = open_config_file_default(self.app_handle.clone(), file_name);
+        let opt_file = open_config_file_default(&self.app_handle, file_name);
         if opt_file.is_err() {
             let opt_err = opt_file.err().unwrap();
             debug!("{file_name} open fail {opt_err}. ");
@@ -81,7 +81,7 @@ impl ConfigurationContext {
         HashMap::new()
     }
     pub fn store_config_to_file(&mut self, file: &str) {
-        let opt_file = open_config_file_truncate(self.app_handle.clone(), file);
+        let opt_file = open_config_file_truncate(&self.app_handle, file);
         if opt_file.is_err() {
             let opt_err = opt_file.err().unwrap();
             debug!("{file} open fail {opt_err}. fail to store config");

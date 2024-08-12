@@ -14,6 +14,8 @@ pub fn set_window_shadow(app_handle: &AppHandle) {
     set_shadow(&window, true).unwrap();
 }
 
+
+
 #[tauri::command]
 pub fn close_main_window(app_handle: AppHandle) -> String {
     let main_window = app_handle.get_window("main");
@@ -34,6 +36,8 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
         None => fail_message_json("failed to close window"),
     };
 }
+
+
 
 #[tauri::command]
 pub fn hide_main_window(app_handle: AppHandle) -> String {

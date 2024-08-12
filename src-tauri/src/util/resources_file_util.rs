@@ -3,7 +3,7 @@ use log::debug;
 use tauri::AppHandle;
 
 pub fn open_config_file(
-    app_handle: AppHandle,
+    app_handle: &AppHandle,
     file: &str,
     truncate: bool,
 ) -> Result<std::fs::File, std::io::Error> {
@@ -29,14 +29,14 @@ pub fn open_config_file(
 }
 
 pub fn open_config_file_truncate(
-    app_handle: AppHandle,
+    app_handle: &AppHandle,
     file: &str,
 ) -> Result<std::fs::File, std::io::Error> {
     open_config_file(app_handle, file, true)
 }
 
 pub fn open_config_file_default(
-    app_handle: AppHandle,
+    app_handle: &AppHandle,
     file: &str,
 ) -> Result<std::fs::File, std::io::Error> {
     open_config_file(app_handle, file, false)

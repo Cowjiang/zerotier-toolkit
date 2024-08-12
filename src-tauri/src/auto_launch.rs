@@ -4,6 +4,8 @@ use auto_launch::AutoLaunch;
 use log::debug;
 use tauri::AppHandle;
 
+use crate::r::success_json;
+
 fn init_auto(app_handle: &AppHandle) -> AutoLaunch {
     let config = app_handle.config();
     let package = &config.package;
@@ -24,24 +26,29 @@ fn init_auto(app_handle: &AppHandle) -> AutoLaunch {
     auto
 }
 
-#[tauri::command]
-pub fn set_auto_launch(app_handle: AppHandle) {
+pub fn init_and_set_auto_launch(app_handle: &AppHandle, enable: bool) -> auto_launch::Result<()> {
     let auto = init_auto(&app_handle);
-    let _ = auto.enable().is_ok();
+    if enable {
+        auto.enable()?;
+    } else {
+        auto.disable()?;
+    }
     debug!(
         "set auto launch:{} exe:{}",
         auto.is_enabled().unwrap(),
         auto.get_app_path().to_string()
-    )
+    );
+    Ok(())
 }
 
 #[tauri::command]
-pub fn unset_auto_launch(app_handle: AppHandle) {
-    let auto = init_auto(&app_handle);
-    let _ = auto.disable().is_ok();
-    debug!(
-        "set auto launch:{} exe:{}",
-        auto.is_enabled().unwrap(),
-        auto.get_app_path().to_string()
-    )
+pub fn set_auto_launch(app_handle: AppHandle) -> String {
+    let _ = init_and_set_auto_launch(&app_handle, true);
+    success_json("success")
+}
+
+#[tauri::command]
+pub fn unset_auto_launch(app_handle: AppHandle) -> String {
+    let _ = init_and_set_auto_launch(&app_handle, false);
+    success_json("success")
 }

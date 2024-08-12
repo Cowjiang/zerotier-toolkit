@@ -3,7 +3,7 @@ use log::debug;
 use parking_lot::RwLock;
 use tauri::AppHandle;
 
-use crate::auto_launch::{set_auto_launch, unset_auto_launch};
+use crate::auto_launch::{init_and_set_auto_launch};
 use crate::configurations::configuration_base::{ConfigurationContext, ConfigurationDef};
 use crate::system_tray::{destroy_system_tray, init_system_tray};
 
@@ -49,9 +49,9 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     general_auto_start.register_on_change(|_this, app_handle, changed| {
         debug!("auto start change to {}", changed);
         if changed == "true" {
-            set_auto_launch(app_handle.clone())
+            init_and_set_auto_launch(&app_handle, true).expect("init auto launch error");
         } else {
-            unset_auto_launch(app_handle.clone())
+            init_and_set_auto_launch(&app_handle, true).expect("init auto launch error");
         }
     });
     general_auto_start.register_to_context(&mut context);
