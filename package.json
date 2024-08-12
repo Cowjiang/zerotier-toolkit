@@ -25,7 +25,6 @@
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "^pnpm@8.10.0",
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
     "@tauri-apps/api": "^1.6.0",
