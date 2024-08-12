@@ -35,7 +35,9 @@ fn main() {
 }
 
 fn start_tauri() {
-    std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
+    unsafe {
+        std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
+    }
     let mut builder = tauri::Builder::default();
     builder = register_invoke_handlers(builder);
     builder = setup(builder);
