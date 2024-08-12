@@ -38,8 +38,8 @@ pub fn init_system_tray(app_handle: &AppHandle) {let status_item = CustomMenuIte
         .add_item(settings_item)
         .add_item(quit_item);
     let mut system_tray = SystemTray::new().with_menu(tray_menu);
-    system_tray = handle_system_tray_event(&app_handle, system_tray);
-    system_tray.with_id(TRAY_ID).build(&app_handle).unwrap();
+    system_tray = handle_system_tray_event(app_handle.clone(), system_tray);
+    system_tray.with_id(TRAY_ID).build(&app_handle.clone()).unwrap();
 }
 
 pub fn destroy_system_tray(app_handle: &AppHandle) {
@@ -56,7 +56,7 @@ pub fn destroy_system_tray(app_handle: &AppHandle) {
         });
 }
 
-pub fn handle_system_tray_event(app_handle: &AppHandle, system_tray: SystemTray) -> SystemTray {
+pub fn handle_system_tray_event(app_handle: AppHandle, system_tray: SystemTray) -> SystemTray {
     system_tray.on_event(move |e| match e {
         SystemTrayEvent::DoubleClick { .. } => {
             show_main_window(app_handle.clone());
