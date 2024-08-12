@@ -1,9 +1,10 @@
+use std::env::current_exe;
+
 use auto_launch::AutoLaunch;
 use log::debug;
-use std::env::current_exe;
 use tauri::AppHandle;
 
-fn init_auto(app_handle: AppHandle) -> AutoLaunch {
+fn init_auto(app_handle: &AppHandle) -> AutoLaunch {
     let config = app_handle.config();
     let package = &config.package;
     let default = "".to_string();
@@ -13,19 +14,19 @@ fn init_auto(app_handle: AppHandle) -> AutoLaunch {
     let mut current_exe = current_exe().unwrap();
     let app_path = current_exe.as_mut_os_string();
     #[cfg(not(target_os = "macos"))]
-    let auto = AutoLaunch::new(
+        let auto = AutoLaunch::new(
         app_name.as_str(),
         app_path.to_str().unwrap(),
         &[] as &[&str],
     );
     #[cfg(target_os = "macos")]
-    let auto = AutoLaunch::new(&*app_name, app_path.to_str().unwrap(), false, &[] as &[&str]);
+        let auto = AutoLaunch::new(&*app_name, app_path.to_str().unwrap(), false, &[] as &[&str]);
     auto
 }
 
 #[tauri::command]
 pub fn set_auto_launch(app_handle: AppHandle) {
-    let auto = init_auto(app_handle.clone());
+    let auto = init_auto(&app_handle);
     let _ = auto.enable().is_ok();
     debug!(
         "set auto launch:{} exe:{}",
@@ -36,7 +37,7 @@ pub fn set_auto_launch(app_handle: AppHandle) {
 
 #[tauri::command]
 pub fn unset_auto_launch(app_handle: AppHandle) {
-    let auto = init_auto(app_handle.clone());
+    let auto = init_auto(&app_handle);
     let _ = auto.disable().is_ok();
     debug!(
         "set auto launch:{} exe:{}",

@@ -18,7 +18,7 @@ lazy_static! {
         "".to_string()
     ));
 }
-pub fn init_context(app_handle: AppHandle) -> ConfigurationContext {
+pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     let mut context = ConfigurationContext::new(app_handle.clone(), ZEROTIER_CONFIGURATION_NAME.to_string());
     let zerotier_token = ZEROTIER_TOKEN.write();
     zerotier_token.register_to_context(&mut context);

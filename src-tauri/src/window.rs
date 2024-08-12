@@ -8,7 +8,7 @@ use crate::configurations::system_configurations::{GENERAL_ENABLE_TRAY, SYSTEM_C
 
 use crate::r::{fail_message_json, success_json};
 
-pub fn set_window_shadow(app_handle: AppHandle) {
+pub fn set_window_shadow(app_handle: &AppHandle) {
     let window = app_handle.get_window("main").unwrap();
     #[cfg(any(windows, target_os = "macos"))]
     set_shadow(&window, true).unwrap();
@@ -20,7 +20,7 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
     return match main_window {
         Some(window) => {
             let _ = window.hide();
-            let _ = get_configuration_context(SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(|context| {
+            let _ = get_configuration_context(&SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(|context| {
                 let general_minimize_to_tray_def = GENERAL_ENABLE_TRAY.read();
                 if context.get_config_by_def(general_minimize_to_tray_def.deref()).eq("false") {
                     process::exit(0);

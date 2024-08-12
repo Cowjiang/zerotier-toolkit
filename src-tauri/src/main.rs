@@ -63,12 +63,12 @@ fn register_window_event_handler(builder: Builder<Wry>) -> Builder<Wry> {
 fn setup(builder: Builder<Wry>) -> Builder<Wry> {
     let builder = builder.setup(|app| {
         let app_handle = app.handle();
-        init_logger_main(app_handle.clone());
-        init_configuration_context(app_handle.clone());
-        init_window(app_handle.clone());
+        init_logger_main(&app_handle);
+        init_configuration_context(&app_handle);
+        init_window(&app_handle);
 
         #[cfg(debug_assertions)]
-        open_dev_tools(app_handle.clone());
+        open_dev_tools(&app_handle);
 
         Ok(())
     });
@@ -105,14 +105,14 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
 }
 
 #[cfg(debug_assertions)]
-fn open_dev_tools(app_handle: AppHandle) {
+fn open_dev_tools(app_handle: &AppHandle) {
     let window = app_handle.get_window("main").unwrap();
     window.open_devtools();
 }
 
-fn init_window(app_handle: AppHandle) {
+fn init_window(app_handle: &AppHandle) {
     let window = WindowBuilder::new(
-        &app_handle,
+        app_handle,
         "main",
         tauri::WindowUrl::App("index.html".into()),
     )
@@ -128,12 +128,12 @@ fn init_window(app_handle: AppHandle) {
         .build()
         .unwrap();
     window.show().unwrap();
-    let _ = get_configuration_context(SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(|context| {
+    let _ = get_configuration_context(&SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(|context| {
         let minimize_to_tray_def = GENERAL_MINIMIZE_TO_TRAY.read();
         if context.get_config_by_def(minimize_to_tray_def.deref()).eq("true") {
             hide_main_window(app_handle.clone());
         }
         true
     });
-    set_window_shadow(app_handle.clone());
+    set_window_shadow(&app_handle);
 }

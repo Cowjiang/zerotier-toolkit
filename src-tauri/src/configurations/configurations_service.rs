@@ -7,16 +7,16 @@ lazy_static! {
 }
 
 
-pub fn init_configuration_context(app_handle: AppHandle) {
+pub fn init_configuration_context(app_handle: &AppHandle) {
     let mut configuration_groups = CONFIGURATION_GROUPS.write();
-    let system_config_context = crate::configurations::system_configurations::init_context(app_handle.clone());
+    let system_config_context = crate::configurations::system_configurations::init_context(&app_handle);
     configuration_groups.push(system_config_context);
-    let auth_config_context = crate::configurations::zerotier_configurations::init_context(app_handle.clone());
+    let auth_config_context = crate::configurations::zerotier_configurations::init_context(&app_handle);
     configuration_groups.push(auth_config_context);
 }
 
 
-pub fn get_configuration_context(name: String) -> Option<ConfigurationContext> {
+pub fn get_configuration_context(name: &String) -> Option<ConfigurationContext> {
     let configuration_groups = CONFIGURATION_GROUPS.read();
     for context in configuration_groups.iter() {
         if context.name() == name {

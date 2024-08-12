@@ -28,7 +28,7 @@ lazy_static! {
     );
 }
 
-pub fn init_context(app_handle: AppHandle) -> ConfigurationContext {
+pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     let mut context = ConfigurationContext::new(app_handle.clone(), SYSTEM_CONFIGURATION_NAME.to_string());
     debug!("start to init configuration");
     // == area for put configuration ande register the on-change-callback
@@ -63,9 +63,9 @@ pub fn init_context(app_handle: AppHandle) -> ConfigurationContext {
     enable_tray.register_on_change(|_this, app_handle, changed| {
         debug!("enable tray change to {}", changed);
         if changed == "true" {
-            init_system_tray(app_handle);
+            init_system_tray(&app_handle);
         } else {
-            destroy_system_tray(app_handle);
+            destroy_system_tray(&app_handle);
         }
     });
     enable_tray.register_to_context(&mut context);

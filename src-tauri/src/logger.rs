@@ -83,7 +83,7 @@ pub fn init_logger() {
     init_logger_with_level(Info)
 }
 
-pub fn init_logger_main(app_handle: AppHandle) {
+pub fn init_logger_main(app_handle: &AppHandle) {
     let opt_log_file = app_handle.path_resolver().resolve_resource("system.log");
     let mut opt_open_log_file: Option<File> = None;
     match opt_log_file {

@@ -27,7 +27,7 @@ lazy_static! {
     static ref SYSTEM_TRAY_STATUS: RwLock<bool> = RwLock::new(false);
 }
 
-pub fn init_system_tray(app_handle: AppHandle) {let status_item = CustomMenuItem::new(String::from(STATUS_ITEM_ID), STATUS_ITEM_TITLE);
+pub fn init_system_tray(app_handle: &AppHandle) {let status_item = CustomMenuItem::new(String::from(STATUS_ITEM_ID), STATUS_ITEM_TITLE);
     let networks_item = CustomMenuItem::new(String::from(NETWORKS_ITEM_ID), NETWORKS_ITEM_TITLE);
     let settings_item = CustomMenuItem::new(String::from(SETTINGS_ITEM_ID), SETTINGS_ITEM_TITLE);
     let quit_item = CustomMenuItem::new(String::from(QUIT_ITEM_ID), QUIT_ITEM_TITLE);
@@ -38,11 +38,11 @@ pub fn init_system_tray(app_handle: AppHandle) {let status_item = CustomMenuItem
         .add_item(settings_item)
         .add_item(quit_item);
     let mut system_tray = SystemTray::new().with_menu(tray_menu);
-    system_tray = handle_system_tray_event(app_handle.clone(), system_tray);
+    system_tray = handle_system_tray_event(&app_handle, system_tray);
     system_tray.with_id(TRAY_ID).build(&app_handle).unwrap();
 }
 
-pub fn destroy_system_tray(app_handle: AppHandle) {
+pub fn destroy_system_tray(app_handle: &AppHandle) {
     let _ = app_handle
         .tray_handle_by_id(TRAY_ID)
         .is_some_and(|tray_handle| {
@@ -56,7 +56,7 @@ pub fn destroy_system_tray(app_handle: AppHandle) {
         });
 }
 
-pub fn handle_system_tray_event(app_handle: AppHandle, system_tray: SystemTray) -> SystemTray {
+pub fn handle_system_tray_event(app_handle: &AppHandle, system_tray: SystemTray) -> SystemTray {
     system_tray.on_event(move |e| match e {
         SystemTrayEvent::DoubleClick { .. } => {
             show_main_window(app_handle.clone());
