@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { getNetworks, getStatus } from '../services/zerotierService.ts'
-import { ConfigType, ZeroTierConfig } from '../typings/config.ts'
+import { getNetworks, getStatus, leaveNetwork } from '../services/zerotierService.ts'
+import { ConfigType, ZeroTierConfig, ZerotierConfig } from '../typings/config.ts'
 import { InvokeEvent, ServiceStartType, ServiceStatus } from '../typings/enum.ts'
 import { Network, ServerInfo, Status } from '../typings/zerotier.ts'
 import { createConfigStorage } from '../utils/helpers/configHelpers.ts'
@@ -25,13 +25,14 @@ export type ZeroTierAction = {
   setServiceStartType: (serviceStartType: ServiceStartType) => Promise<boolean>
   getServerInfo: () => Promise<ServerInfo>
   getNetworks: () => Promise<Network[]>
+  disconnectNetwork: (networkId: string) => Promise<void>
   getStatus: () => Promise<Status>
   setConfig: (config: Partial<ZeroTierConfig>) => void
 }
 
 export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       serviceState: ServiceStatus.UNKNOWN,
       serviceStartType: ServiceStartType.DEMAND_START,
       serverInfo: {},
@@ -72,8 +73,26 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
       },
       getNetworks: async () => {
         const { data: networks } = await getNetworks()
-        set((state) => ({ ...state, networks }))
+        const { [ZerotierConfig.NETWORKS]: networksHistory } = get().config
+        const mergedNetworks = [
+          ...networks,
+          ...(networksHistory || []).filter((network) => !networks.find(({ id }) => id === network.id)),
+        ]
+        set((state) => ({ ...state, networks: mergedNetworks }))
+        set((state) => ({ ...state, config: { ...state.config, [ZerotierConfig.NETWORKS]: mergedNetworks } }))
         return networks
+      },
+      disconnectNetwork: async (networkId: string) => {
+        await leaveNetwork(networkId)
+        const { networks } = get()
+        const newNetworks = networks.map((network) => {
+          if (network.id === networkId) {
+            network.status = 'DISCONNECTED'
+          }
+          return network
+        })
+        set((state) => ({ ...state, networks: newNetworks }))
+        set((state) => ({ ...state, config: { ...state.config, [ZerotierConfig.NETWORKS]: newNetworks } }))
       },
       getStatus: async () => {
         const { data: status } = await getStatus()

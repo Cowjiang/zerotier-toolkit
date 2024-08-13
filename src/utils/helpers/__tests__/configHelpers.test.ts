@@ -9,7 +9,7 @@ const config = {
   [ThemeConfig.CURRENT]: Theme.LIGHT,
   [ThemeConfig.IS_SYNC_WITH_SYSTEM]: true,
 }
-const serializedConfig = { 'Theme.Current': 'light', 'Theme.IsSyncWithSystem': 'true' }
+const serializedConfig = { 'Theme.Current': '"light"', 'Theme.IsSyncWithSystem': 'true' }
 
 beforeEach(() => {
   mockIPC(async (cmd, args) => {

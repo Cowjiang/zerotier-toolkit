@@ -54,6 +54,7 @@ export type NetworkStatus =
   | 'PORT_ERROR'
   | 'CLIENT_TOO_OLD'
   | 'AUTHENTICATION_REQUIRED'
+  | 'DISCONNECTED'
 
 export interface Dns {
   domain?: string
