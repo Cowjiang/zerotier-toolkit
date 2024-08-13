@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react'
-import { Key, useCallback, useState } from 'react'
+import { Key, useCallback, useRef, useState } from 'react'
 
 import CopyText from '../../../components/base/CopyText.tsx'
 import { ConnectIcon, DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../../components/base/Icon.tsx'
@@ -27,20 +27,20 @@ import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
 import DetailsModal from './DetailsModal.tsx'
 
 function NetworksTable({
-  editMode,
   networks,
   isLoading,
   isRefreshing,
   onRefresh,
 }: {
   networks: Network[]
-  editMode?: boolean
   isLoading?: boolean
   isRefreshing?: boolean
   onRefresh?: () => void
 }) {
   const { setNotification } = useNotification()
   const { getNetworks, disconnectNetwork } = useZeroTierStore()
+
+  const tableRef = useRef<HTMLTableElement>(null)
 
   const columns: ({ label: string } & Omit<TableColumnProps<any>, 'children'>)[] = [
     { key: 'id', label: 'NETWORK ID', maxWidth: '100' },
@@ -114,7 +114,10 @@ function NetworksTable({
         case 'action':
           const iconProps = { width: 16, height: 16 }
           const onOpen = () => network?.id && setSelectedKeys(new Set([network.id]))
-          const onClose = () => setSelectedKeys(new Set([]))
+          const onClose = () => {
+            // setSelectedKeys(new Set([]))
+            clearHoverState()
+          }
           const openDetailsModal = () => {
             setSelectedNetwork(network)
             setIsDetailsModalOpen(true)
@@ -166,6 +169,12 @@ function NetworksTable({
     [networks, loadingId],
   )
 
+  const clearHoverState = () => {
+    tableRef.current?.querySelectorAll('tr').forEach((tr) => {
+      tr.dataset.hover = ''
+    })
+  }
+
   const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>()
   const [selectedNetwork, setSelectedNetwork] = useState<Network>()
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
@@ -173,16 +182,19 @@ function NetworksTable({
   return (
     <div className="overflow-x-auto">
       <Table
+        ref={tableRef}
         aria-label="Network List"
         removeWrapper
-        selectionMode={editMode ? 'multiple' : 'single'}
         color="primary"
+        selectionMode="single"
+        disallowEmptySelection
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
         classNames={{
           td: ['whitespace-nowrap'],
           table: isLoading ? ['min-h-[65vh]'] : [],
           loadingWrapper: ['h-[65vh]'],
         }}
-        selectedKeys={selectedKeys}
       >
         <TableHeader columns={columns}>
           {(column) => (

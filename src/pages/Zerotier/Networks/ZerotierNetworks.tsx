@@ -16,11 +16,6 @@ function ZerotierNetworks() {
   }
   useEffect(init, [])
 
-  const [editMode, setEditMode] = useState(false)
-  const onEditChange = () => {
-    setEditMode(!editMode)
-  }
-
   const [filterValue, setFilterValue] = useState('')
   const onFilterValueChange = useCallback((value: string) => {
     setFilterValue(value)
@@ -43,8 +38,6 @@ function ZerotierNetworks() {
   return (
     <div className="h-full flex flex-col gap-4">
       <ToolBar
-        editMode={editMode}
-        onEditChange={onEditChange}
         filterValue={filterValue}
         onFilterValueChange={onFilterValueChange}
         isLoading={isRefreshing}
@@ -52,7 +45,6 @@ function ZerotierNetworks() {
       />
       <NetworksTable
         networks={filteredNetworks}
-        editMode={editMode}
         isLoading={isLoading}
         isRefreshing={isRefreshing}
         onRefresh={onRefresh}

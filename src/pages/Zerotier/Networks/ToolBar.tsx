@@ -11,8 +11,6 @@ function ToolBar({
   isLoading,
   onRefresh,
 }: {
-  editMode?: boolean
-  onEditChange?: () => void
   filterValue: string
   onFilterValueChange?: (value: string) => void
   isLoading?: boolean
