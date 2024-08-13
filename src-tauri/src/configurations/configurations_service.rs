@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use lazy_static::lazy_static;
 use parking_lot::RwLock;
+use serde_json::Value;
 use tauri::AppHandle;
 
 use crate::configurations::configuration_base::ConfigurationContext;
@@ -32,13 +33,14 @@ pub fn get_configuration_context(name: &String) -> Option<ConfigurationContext> 
 
 pub fn put_configuration_context(
     name: &String,
-    configs: HashMap<String, String>,
+    configs: HashMap<String, Value>,
 ) -> Result<(), String> {
     let mut configuration_groups = CONFIGURATION_GROUPS.write();
     for context in configuration_groups.iter_mut() {
         if context.name() == name {
             for (key, value) in &configs {
                 context.put_config(key.clone(), value.clone());
+
             }
             context.store_config();
             return Ok(());

@@ -1,22 +1,26 @@
 use lazy_static::lazy_static;
 use parking_lot::RwLock;
+use serde_json::Value;
 use tauri::AppHandle;
 
-use crate::configurations::configuration_base::{ConfigurationContext, ConfigurationDef};
+use crate::configurations::configuration_base::{ConfigurationContext, ConfigurationDef, ExpectType};
 
 pub const ZEROTIER_CONFIGURATION_NAME: &str = "zerotier";
 lazy_static! {
     static ref ZEROTIER_TOKEN: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
         "Zerotier.Token".to_string(),
-        "".to_string()
+        Value::from(""),
+        ExpectType::String
     ));
     static ref ZEROTIER_PORT: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
         "Zerotier.Port".to_string(),
-        "".to_string()
+        Value::from(""),
+        ExpectType::String
     ));
     static ref ZEROTIER_NETWORKS: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
         "Zerotier.Networks".to_string(),
-        "".to_string()
+        Value::from(""),
+        ExpectType::String
     ));
 }
 pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {

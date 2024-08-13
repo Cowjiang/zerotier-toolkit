@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use log::debug;
+use serde_json::Value;
 
 use crate::configurations::configurations_service::{
     get_configuration_context, put_configuration_context,
@@ -18,7 +19,7 @@ pub fn get_configurations(name: String) -> String {
 #[tauri::command]
 pub fn put_configurations(name: String, payload: String) -> String {
     debug!("accept command:payload[{payload}]");
-    let configs: HashMap<String, String> =
+    let configs: HashMap<String, Value> =
         serde_json::from_str(&*payload).expect("value type of configuration is String only");
     match put_configuration_context(&name, configs) {
         Ok(..) => success_json(""),

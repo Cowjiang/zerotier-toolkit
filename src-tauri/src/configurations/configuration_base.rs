@@ -3,8 +3,9 @@ use std::error::Error;
 use std::io::Write;
 use std::path::MAIN_SEPARATOR;
 
-use log::debug;
+use log::{debug, error};
 use serde::Serialize;
+use serde_json::Value;
 use tauri::{AppHandle, Manager};
 
 use crate::r::success_json;
@@ -17,7 +18,7 @@ const CONFIG_DIR: &str = "config";
 pub struct ConfigurationContext {
     name: String,
     configuration_def_map: HashMap<String, ConfigurationDef>,
-    configurations: HashMap<String, String>,
+    configurations: HashMap<String, Value>,
     app_handle: AppHandle,
     file_name: String,
     file_bak_name: String,
@@ -26,16 +27,17 @@ pub struct ConfigurationContext {
 #[derive(Clone, Debug)]
 pub struct ConfigurationDef {
     key: String,
-    default_value: String,
-    on_change_callback: Option<fn(&ConfigurationDef, AppHandle, String)>,
+    default_value: Value,
+    on_change_callback: Option<fn(&ConfigurationDef, AppHandle, Value)>,
     callback_anyway: bool,
+    expect_type: ExpectType,
 }
 
 #[derive(Serialize)]
 pub struct ConfigurationChangeEvent {
     key: String,
-    before: String,
-    after: String,
+    before: Value,
+    after: Value,
 }
 
 impl ConfigurationContext {
@@ -61,7 +63,7 @@ impl ConfigurationContext {
     fn read_config_from_file(
         &mut self,
         file_name: &str,
-    ) -> Result<HashMap<String, String>, Box<dyn Error>> {
+    ) -> Result<HashMap<String, Value>, Box<dyn Error>> {
         let opt_file = open_config_file_default(&self.app_handle, file_name);
         if opt_file.is_err() {
             let opt_err = opt_file.err().unwrap();
@@ -69,10 +71,10 @@ impl ConfigurationContext {
             return Err(opt_err.into());
         }
         debug!("{file_name} is exist. start to resolve");
-        let config: HashMap<String, String> = serde_json::from_reader(opt_file.unwrap())?;
+        let config: HashMap<String, Value> = serde_json::from_reader(opt_file.unwrap())?;
         Ok(config)
     }
-    pub fn try_read_config_from_file(&mut self) -> HashMap<String, String> {
+    pub fn try_read_config_from_file(&mut self) -> HashMap<String, Value> {
         let file_name = self.file_name.clone();
         let mut config_file = self.read_config_from_file(&file_name);
         if config_file.is_err() {
@@ -122,16 +124,23 @@ impl ConfigurationContext {
         self.store_config();
     }
 
-    pub fn put_config(&mut self, key: String, value: String) {
-        self.on_change(key.clone(), value.clone());
-        self.configurations.insert(key, value);
-    }
-    fn on_change(&self, key: String, value: String) {
-        let config_def = &self.get_config_def(key);
+    pub fn put_config(&mut self, key: String, value: Value) {
+        let config_def = &self.get_config_def(key.clone());
         if config_def.is_none() {
             return;
         }
-        let config_def = config_def.as_ref().unwrap();
+        let config_def = config_def.unwrap();
+        if !config_def.expect_type.check_value(&value) {
+            error!("configuration item {} expect type {:?} but get {:?}",
+                key.clone(),
+                config_def.expect_type,
+                value.clone());
+            return;
+        }
+        self.on_change(config_def, value.clone());
+        self.configurations.insert(key, value);
+    }
+    fn on_change(&self, config_def: &ConfigurationDef, value: Value) {
         let before = self
             .get_config(config_def.key())
             .unwrap_or(&config_def.default_value);
@@ -157,7 +166,7 @@ impl ConfigurationContext {
             value
         );
         let _ = config_def.on_change_callback.is_some_and(|callback| {
-            callback(*config_def, app_handle, value.clone());
+            callback(&*config_def, app_handle, value.clone());
             true
         });
     }
@@ -167,14 +176,14 @@ impl ConfigurationContext {
         config_def
     }
 
-    pub fn get_config(&self, key: &str) -> Option<&String> {
+    pub fn get_config(&self, key: &str) -> Option<&Value> {
         return self.configurations.get(key).or_else(|| {
             let config_def = self.get_config_def(key.to_string());
             config_def.map(|config_def| &config_def.default_value)
         });
     }
 
-    pub fn get_config_by_def(&self, configuration_def: &ConfigurationDef) -> String {
+    pub fn get_config_by_def(&self, configuration_def: &ConfigurationDef) -> Value {
         let key = &configuration_def.key;
         let value = self.configurations.get(&key.clone());
         match value {
@@ -182,7 +191,7 @@ impl ConfigurationContext {
             None => configuration_def.default_value.clone(),
         }
     }
-    pub fn get_configs(&self) -> &HashMap<String, String> {
+    pub fn get_configs(&self) -> &HashMap<String, Value> {
         &self.configurations
     }
 
@@ -195,7 +204,10 @@ impl ConfigurationContext {
         self.configuration_def_map
             .clone()
             .values()
-            .for_each(|value| self.put_config(value.key.clone(), value.default_value.clone()));
+            .for_each(|value| {
+                debug!("reset config:{}:{} to default {}", value.key.clone(),self.name.clone(),value.default_value.clone());
+                self.put_config(value.key.clone(), value.default_value.clone())
+            });
     }
 }
 
@@ -203,15 +215,16 @@ impl ConfigurationDef {
     pub fn key(&self) -> &str {
         &self.key
     }
-    pub fn new(key: String, default_value: String) -> Self {
+    pub fn new(key: String, default_value: Value, expect_type: ExpectType) -> Self {
         Self {
             key,
             default_value,
             on_change_callback: None,
             callback_anyway: false,
+            expect_type,
         }
     }
-    pub fn register_on_change(&mut self, on_change: fn(&ConfigurationDef, AppHandle, String)) {
+    pub fn register_on_change(&mut self, on_change: fn(&ConfigurationDef, AppHandle, Value)) {
         self.on_change_callback = Some(on_change);
     }
 
@@ -223,3 +236,27 @@ impl ConfigurationDef {
         context.put_config_def(self.key.to_string(), self.clone());
     }
 }
+
+#[derive(Clone, Debug)]
+pub enum ExpectType {
+    Number,
+    String,
+    Boolean,
+    Array,
+    Object,
+    Null,
+}
+
+impl ExpectType {
+    pub fn check_value(&self, value: &Value) -> bool {
+        match self {
+            ExpectType::Number => value.is_number(),
+            ExpectType::String => value.is_string(),
+            ExpectType::Boolean => value.is_boolean(),
+            ExpectType::Array => value.is_array(),
+            ExpectType::Object => value.is_object(),
+            ExpectType::Null => value.is_null(),
+        }
+    }
+}
+
