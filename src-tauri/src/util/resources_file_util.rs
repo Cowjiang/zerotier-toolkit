@@ -1,21 +1,17 @@
-use std::fs::OpenOptions;
+use std::fs::{File, OpenOptions};
+use std::io::Error;
+use std::path::PathBuf;
 
 use log::debug;
 use tauri::AppHandle;
+
 
 pub fn open_config_file(
     app_handle: &AppHandle,
     file: &str,
     truncate: bool,
-) -> Result<std::fs::File, std::io::Error> {
-    let opt_configuration_json_file = app_handle.path_resolver().resolve_resource(file);
-    if opt_configuration_json_file.is_none() {
-        debug!("{file} is not exist.");
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::NotFound,
-            "file not found",
-        ));
-    }
+) -> Result<File, Error> {
+    let opt_configuration_json_file = get_path_buf_from_resource(app_handle, file);
     let json_file_path = opt_configuration_json_file.unwrap();
     let dir = json_file_path.parent().unwrap();
     if !dir.exists() {
@@ -28,6 +24,21 @@ pub fn open_config_file(
     }
     open_options.open(json_file_path)
 }
+
+pub fn get_path_buf_from_resource(app_handle: &AppHandle, file: &str) -> Option<PathBuf> {
+    app_handle.path_resolver().resolve_resource(file)
+}
+
+pub fn open_file_from_path_buf(path_buf: &PathBuf) -> std::io::Result<File> {
+    let dir = path_buf.parent().unwrap();
+    if !dir.exists() {
+        std::fs::create_dir_all(dir)?;
+    }
+    let mut open_options = OpenOptions::new();
+    open_options.read(true).write(true).create(true);
+    open_options.open(path_buf)
+}
+
 
 pub fn open_config_file_truncate(
     app_handle: &AppHandle,

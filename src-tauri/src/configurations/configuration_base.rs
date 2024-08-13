@@ -9,7 +9,7 @@ use serde_json::Value;
 use tauri::{AppHandle, Manager};
 
 use crate::r::success_json;
-use crate::util::resources_file_util::{open_config_file_default, open_config_file_truncate};
+use crate::util::resources_file_util::{get_path_buf_from_resource, open_config_file_default, open_config_file_truncate};
 
 pub const EVENT_CONFIG_CHANGE: &str = "event_config_change";
 const CONFIG_DIR: &str = "config";
@@ -63,15 +63,20 @@ impl ConfigurationContext {
     fn read_config_from_file(
         &mut self,
         file_name: &str,
-    ) -> Result<HashMap<String, Value>, Box<dyn Error>> {
+    ) -> Result<HashMap<String, Value>, String> {
+        let file_path_buf = get_path_buf_from_resource(&self.app_handle, file_name).unwrap();
+        if !file_path_buf.exists() {
+            debug!("{file_name} is not exist. skip!");
+            return Err(format!("{file_name} is not exist."));
+        }
         let opt_file = open_config_file_default(&self.app_handle, file_name);
         if opt_file.is_err() {
             let opt_err = opt_file.err().unwrap();
             debug!("{file_name} open fail {opt_err}. ");
-            return Err(opt_err.into());
+            return Err(opt_err.to_string());
         }
         debug!("{file_name} is exist. start to resolve");
-        let config: HashMap<String, Value> = serde_json::from_reader(opt_file.unwrap())?;
+        let config: HashMap<String, Value> = serde_json::from_reader(opt_file.unwrap()).expect("json serialize fail");
         Ok(config)
     }
     pub fn try_read_config_from_file(&mut self) -> HashMap<String, Value> {
