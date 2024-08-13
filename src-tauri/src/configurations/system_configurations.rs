@@ -3,7 +3,7 @@ use log::debug;
 use parking_lot::RwLock;
 use tauri::AppHandle;
 
-use crate::auto_launch::{init_and_set_auto_launch};
+use crate::auto_launch::init_and_set_auto_launch;
 use crate::configurations::configuration_base::{ConfigurationContext, ConfigurationDef};
 use crate::system_tray::{destroy_system_tray, init_system_tray};
 

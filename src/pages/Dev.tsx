@@ -63,6 +63,7 @@ function Dev() {
     invokeCommandButton(InvokeEvent.GET_ZEROTIER_ONE_DIR),
     invokeCommandButton(InvokeEvent.OPEN_ZEROTIER_ONE_DIR),
     invokeCommandButton(InvokeEvent.GET_CONFIGURATIONS, { name: 'system' }),
+    invokeCommandButton(InvokeEvent.RESET_CONFIGURATIONS, { name: 'all' }),
   ]
 
   function ass(): JSX.Element {

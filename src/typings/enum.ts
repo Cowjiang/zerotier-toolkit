@@ -32,6 +32,7 @@ export enum InvokeEvent {
   OPEN_ZEROTIER_ONE_DIR = 'open_zerotier_one_dir',
   GET_CONFIGURATIONS = 'get_configurations',
   PUT_CONFIGURATIONS = 'put_configurations',
+  RESET_CONFIGURATIONS = 'reset_configurations',
 }
 
 export enum Theme {

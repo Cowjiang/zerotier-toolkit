@@ -47,6 +47,20 @@ pub fn put_configuration_context(
     Err(format!("configuration [{name}] not found"))
 }
 
+pub fn reset_configurations_context_to_default(name: &String) {
+    let mut configuration_groups = CONFIGURATION_GROUPS.write();
+    if name.eq("all") {
+        configuration_groups
+            .iter_mut()
+            .for_each(|v| v.reset_to_default());
+        return;
+    }
+    configuration_groups
+        .iter_mut()
+        .find(|context| context.name() == name)
+        .map(|context| context.reset_to_default());
+}
+
 pub fn backup_all() {
     let mut configuration_groups = CONFIGURATION_GROUPS.write();
     configuration_groups

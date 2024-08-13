@@ -1,7 +1,8 @@
+use std::process;
+
 use lazy_static::lazy_static;
 use log::debug;
 use parking_lot::RwLock;
-use std::process;
 use tauri::{
     AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
     SystemTrayMenuItem,

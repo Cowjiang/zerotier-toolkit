@@ -2,16 +2,22 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::ops::Deref;
+
 use tauri::{AppHandle, Builder, Manager, WindowBuilder, WindowEvent, Wry};
 
 use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
+use configurations::configurations_command::reset_configurations;
 use system::*;
 use window::set_window_shadow;
 
 use crate::configurations::configurations_command::{get_configurations, put_configurations};
-use crate::configurations::configurations_service::{backup_all, get_configuration_context, init_configuration_context};
-use crate::configurations::system_configurations::{GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME};
+use crate::configurations::configurations_service::{
+    backup_all, get_configuration_context, init_configuration_context,
+};
+use crate::configurations::system_configurations::{
+    GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME,
+};
 use crate::logger::init_logger_main;
 use crate::window::{close_main_window, hide_main_window, show_main_window};
 use crate::zerotier_manage::*;
@@ -19,16 +25,16 @@ use crate::zerotier_manage::*;
 mod command;
 
 mod auto_launch;
+mod configurations;
 mod logger;
 mod r;
 mod system;
 mod system_tray;
+mod util;
 mod window;
 #[cfg(windows)]
 mod windows_service_manage;
 mod zerotier_manage;
-mod configurations;
-mod util;
 
 fn main() {
     start_tauri();
@@ -79,30 +85,31 @@ fn setup(builder: Builder<Wry>) -> Builder<Wry> {
 
 fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
     let builder = builder.invoke_handler(tauri::generate_handler![
-            // zerotier handlers
-            get_zerotier_services,
-            get_zerotier_start_type,
-            set_zerotier_start_type,
-            start_zerotier,
-            stop_zerotier,
-            get_zerotier_state,
-            get_zerotier_server_info,
-            get_zerotier_one_dir,
-            open_zerotier_one_dir,
-            // window handlers
-            hide_main_window,
-            show_main_window,
-            close_main_window,
-            // auto launch
-            set_auto_launch,
-            unset_auto_launch,
-            // configurations
-            get_configurations,
-            put_configurations,
-            // other handlers
-            is_admin,
-            restart_as_admin
-        ]);
+        // zerotier handlers
+        get_zerotier_services,
+        get_zerotier_start_type,
+        set_zerotier_start_type,
+        start_zerotier,
+        stop_zerotier,
+        get_zerotier_state,
+        get_zerotier_server_info,
+        get_zerotier_one_dir,
+        open_zerotier_one_dir,
+        // window handlers
+        hide_main_window,
+        show_main_window,
+        close_main_window,
+        // auto launch
+        set_auto_launch,
+        unset_auto_launch,
+        // configurations
+        get_configurations,
+        put_configurations,
+        reset_configurations,
+        // other handlers
+        is_admin,
+        restart_as_admin
+    ]);
     builder
 }
 

@@ -10,7 +10,7 @@ use chrono::Local;
 use env_logger::Builder;
 use log::{info, LevelFilter};
 use log::LevelFilter::Info;
-use tauri::{AppHandle};
+use tauri::AppHandle;
 
 use crate::logger;
 

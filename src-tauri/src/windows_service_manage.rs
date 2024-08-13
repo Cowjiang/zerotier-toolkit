@@ -9,7 +9,6 @@ pub(crate) mod api {
     use std::thread;
 
     use log::{debug, error};
-
     use serde::Serialize;
     use winapi::shared::minwindef::{BOOL, DWORD, FALSE, TRUE};
     use winapi::shared::winerror::ERROR_SUCCESS;
@@ -19,12 +18,12 @@ pub(crate) mod api {
     use winapi::um::winnt::{PVOID, SERVICE_AUTO_START, SERVICE_DEMAND_START, SERVICE_DISABLED};
     use winapi::um::winsvc::{
         ChangeServiceConfigA, CloseServiceHandle, ControlService, NotifyServiceStatusChangeA,
-        OpenSCManagerA, OpenServiceA, StartServiceA, SC_HANDLE__, SC_MANAGER_CONNECT,
-        SERVICE_ALL_ACCESS, SERVICE_CHANGE_CONFIG, SERVICE_CONTROL_STOP, SERVICE_NOTIFY_2A,
+        OpenSCManagerA, OpenServiceA, SC_HANDLE__, SC_MANAGER_CONNECT, SERVICE_ALL_ACCESS,
+        SERVICE_CHANGE_CONFIG, SERVICE_CONTROL_STOP, SERVICE_NO_CHANGE, SERVICE_NOTIFY_2A,
         SERVICE_NOTIFY_RUNNING, SERVICE_NOTIFY_START_PENDING, SERVICE_NOTIFY_STATUS_CHANGE,
-        SERVICE_NOTIFY_STOPPED, SERVICE_NOTIFY_STOP_PENDING, SERVICE_NO_CHANGE, SERVICE_RUNNING,
-        SERVICE_START, SERVICE_START_PENDING, SERVICE_STATUS, SERVICE_STOP, SERVICE_STOPPED,
-        SERVICE_STOP_PENDING,
+        SERVICE_NOTIFY_STOP_PENDING, SERVICE_NOTIFY_STOPPED, SERVICE_RUNNING, SERVICE_START,
+        SERVICE_START_PENDING, SERVICE_STATUS, SERVICE_STOP, SERVICE_STOP_PENDING, SERVICE_STOPPED,
+        StartServiceA,
     };
 
     use crate::command::{execute_cmd, parse_output};

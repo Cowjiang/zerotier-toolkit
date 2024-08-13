@@ -45,7 +45,12 @@ impl ConfigurationContext {
             configuration_def_map: HashMap::new(),
             configurations: HashMap::new(),
             app_handle,
-            file_name: format!("{}{}{}_config.json", CONFIG_DIR, MAIN_SEPARATOR, name.clone()),
+            file_name: format!(
+                "{}{}{}_config.json",
+                CONFIG_DIR,
+                MAIN_SEPARATOR,
+                name.clone()
+            ),
             file_bak_name: format!("{}{}{}_config.bak.json", CONFIG_DIR, MAIN_SEPARATOR, name),
         }
     }
@@ -69,9 +74,9 @@ impl ConfigurationContext {
     }
     pub fn try_read_config_from_file(&mut self) -> HashMap<String, String> {
         let file_name = self.file_name.clone();
-        let file_bak_name = self.file_bak_name.clone();
         let mut config_file = self.read_config_from_file(&file_name);
         if config_file.is_err() {
+            let file_bak_name = self.file_bak_name.clone();
             config_file = self.read_config_from_file(&file_bak_name);
         }
         if config_file.is_ok() {
@@ -96,6 +101,7 @@ impl ConfigurationContext {
         self.store_config_to_file(&self.file_name.clone())
     }
     pub fn store_config_bak(&mut self) {
+        debug!("backup config to bak file:{}", self.file_bak_name);
         self.store_config_to_file(&self.file_bak_name.clone())
     }
     pub fn sync_from_file(&mut self) {
@@ -172,7 +178,7 @@ impl ConfigurationContext {
         let key = &configuration_def.key;
         let value = self.configurations.get(&key.clone());
         match value {
-            Some(value) => { value.clone() }
+            Some(value) => value.clone(),
             None => configuration_def.default_value.clone(),
         }
     }
@@ -182,6 +188,14 @@ impl ConfigurationContext {
 
     pub fn name(&self) -> &str {
         &self.name
+    }
+
+    pub fn reset_to_default(&mut self) {
+        debug!("reset configurations [{}] to default",self.name.clone());
+        self.configuration_def_map
+            .clone()
+            .values()
+            .for_each(|value| self.put_config(value.key.clone(), value.default_value.clone()));
     }
 }
 
