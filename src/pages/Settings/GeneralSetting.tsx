@@ -1,11 +1,15 @@
-import { Switch } from '@nextui-org/react'
+import { Button, Divider, Switch } from '@nextui-org/react'
 import { useEffect } from 'react'
 
+import { useNotification } from '../../components/providers/NotificationProvider.tsx'
 import { useAppStore } from '../../store/app.ts'
 import { GeneralConfig } from '../../typings/config.ts'
+import { InvokeEvent } from '../../typings/enum.ts'
+import { invokeCommand } from '../../utils/helpers/tauriHelpers.ts'
 
 function GeneralSetting() {
   const { config, setConfig } = useAppStore()
+  const { setNotification } = useNotification()
 
   useEffect(() => {
     if (!config[GeneralConfig.ENABLE_TRAY] && config[GeneralConfig.MINIMIZE_TO_TRAY]) {
@@ -18,6 +22,16 @@ function GeneralSetting() {
       setConfig({ [GeneralConfig.ENABLE_TRAY]: true })
     }
   }, [config[GeneralConfig.MINIMIZE_TO_TRAY]])
+
+  const restoreSettings = async () => {
+    const { success } = await invokeCommand(InvokeEvent.RESET_CONFIGURATIONS, { name: 'all' })
+    if (success) {
+      await useAppStore.persist.rehydrate()
+      setNotification({ children: 'Restore settings successfully', type: 'success', duration: 2000 })
+    } else {
+      setNotification({ children: 'Failed to restore settings', type: 'danger', duration: 2000 })
+    }
+  }
 
   return (
     <div className="flex flex-col">
@@ -64,6 +78,20 @@ function GeneralSetting() {
               isSelected={!!config[GeneralConfig.MINIMIZE_TO_TRAY]}
               onValueChange={(v) => setConfig({ [GeneralConfig.MINIMIZE_TO_TRAY]: v })}
             />
+          </div>
+        </div>
+      </section>
+      <Divider className="mt-8 mb-6" />
+      <section>
+        <div>
+          <p className="font-bold text-large">Configuration</p>
+        </div>
+        <div className="mt-4 flex items-center">
+          <p className="text-default-700">Restore to default settings</p>
+          <div className="ml-auto flex gap-4">
+            <Button variant="flat" color="danger" onPress={restoreSettings}>
+              Restore Settings
+            </Button>
           </div>
         </div>
       </section>
