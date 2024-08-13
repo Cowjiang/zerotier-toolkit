@@ -64,6 +64,7 @@ function NetworksTable({
   const disconnect = async (networkId?: string) => {
     try {
       if (networkId) {
+        setLoadingId((loadingId) => [...loadingId, networkId])
         await disconnectNetwork(networkId)
         await getNetworks()
       }
@@ -74,22 +75,26 @@ function NetworksTable({
         duration: 3000,
       })
     }
+    setLoadingId((loadingId) => [...loadingId.filter((id) => id !== networkId)])
   }
 
   const connect = async (networkId?: string) => {
     try {
       if (networkId) {
+        setLoadingId((loadingId) => [...loadingId, networkId])
         await joinNetwork(networkId)
         await getNetworks()
       }
     } catch (e) {
       setNotification({
         type: 'danger',
-        children: 'Failed to disconnect, please try again later',
+        children: 'Failed to connect, please try again later',
         duration: 3000,
       })
     }
+    setLoadingId((loadingId) => [...loadingId.filter((id) => id !== networkId)])
   }
+  const [loadingId, setLoadingId] = useState<string[]>([])
 
   const renderCell = useCallback(
     (network: Network, columnKey?: Key | null) => {
@@ -125,7 +130,7 @@ function NetworksTable({
                 onClose={onClose}
               >
                 <DropdownTrigger>
-                  <Button isIconOnly size="sm" variant="light">
+                  <Button isIconOnly size="sm" variant="light" isLoading={loadingId.includes(network?.id ?? '')}>
                     <VerticalDotIcon className="text-default-400" />
                   </Button>
                 </DropdownTrigger>
@@ -158,7 +163,7 @@ function NetworksTable({
           return <CopyText copyValue={cellValue}>{cellValue}</CopyText>
       }
     },
-    [networks],
+    [networks, loadingId],
   )
 
   const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>()
