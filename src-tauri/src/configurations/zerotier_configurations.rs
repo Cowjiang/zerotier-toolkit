@@ -20,7 +20,7 @@ lazy_static! {
     static ref ZEROTIER_NETWORKS: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
         "Zerotier.Networks".to_string(),
         Value::from(""),
-        ExpectType::String
+        ExpectType::Array
     ));
 }
 pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {

@@ -15,7 +15,7 @@ lazy_static! {
         Value::from("dark"),
         ExpectType::String
     ));
-    static ref THEME_SYNC_WITCH_SYSTEM: RwLock<ConfigurationDef> = RwLock::new(
+    static ref THEME_SYNC_WITH_SYSTEM: RwLock<ConfigurationDef> = RwLock::new(
         ConfigurationDef::new("Theme.IsSyncWithSystem".to_string(), Value::from(true),ExpectType::Boolean)
     );
     static ref GENERAL_AUTO_START: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
@@ -40,13 +40,14 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     system_theme.register_on_change(|_this, _app_handle, _changed| {
         //  this is demo for config change handle
     });
-    // callback func will always trigger if true
+    // callback func will always trigger if false
     system_theme.callback_anyway(false);
     // init must be called after register the on-change-callback
     system_theme.register_to_context(&mut context);
     // ==== end demo
-    // == init THEME_SYNC_WITCH_SYSTEM
-
+    // == init THEME_SYNC_WITH_SYSTEM
+    let theme_sync_with_system = THEME_SYNC_WITH_SYSTEM.write();
+    theme_sync_with_system.register_to_context(&mut context);
     // == init GENERAL_AUTO_START
     let mut general_auto_start = GENERAL_AUTO_START.write();
     general_auto_start.register_on_change(|_this, app_handle, changed| {
