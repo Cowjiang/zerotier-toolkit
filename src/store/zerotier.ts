@@ -26,6 +26,7 @@ export type ZeroTierAction = {
   getServerInfo: () => Promise<ServerInfo>
   getNetworks: () => Promise<Network[]>
   disconnectNetwork: (networkId: string) => Promise<void>
+  deleteNetwork: (networkId: string) => void
   getStatus: () => Promise<Status>
   setConfig: (config: Partial<ZeroTierConfig>) => void
 }
@@ -91,6 +92,12 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
           }
           return network
         })
+        set((state) => ({ ...state, networks: newNetworks }))
+        set((state) => ({ ...state, config: { ...state.config, [ZerotierConfig.NETWORKS]: newNetworks } }))
+      },
+      deleteNetwork: async (networkId: string) => {
+        const { networks } = get()
+        const newNetworks = networks.filter((network) => network.id !== networkId)
         set((state) => ({ ...state, networks: newNetworks }))
         set((state) => ({ ...state, config: { ...state.config, [ZerotierConfig.NETWORKS]: newNetworks } }))
       },

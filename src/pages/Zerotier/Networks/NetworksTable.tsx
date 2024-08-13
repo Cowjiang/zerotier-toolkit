@@ -18,7 +18,14 @@ import {
 import { Key, useCallback, useRef, useState } from 'react'
 
 import CopyText from '../../../components/base/CopyText.tsx'
-import { ConnectIcon, DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../../components/base/Icon.tsx'
+import {
+  ConnectIcon,
+  DisconnectIcon,
+  InfoIcon,
+  RefreshIcon,
+  TrashIcon,
+  VerticalDotIcon,
+} from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
 import { joinNetwork } from '../../../services/zerotierService.ts'
@@ -38,7 +45,7 @@ function NetworksTable({
   onRefresh?: () => void
 }) {
   const { setNotification } = useNotification()
-  const { getNetworks, disconnectNetwork } = useZeroTierStore()
+  const { getNetworks, disconnectNetwork, deleteNetwork } = useZeroTierStore()
 
   const tableRef = useRef<HTMLTableElement>(null)
 
@@ -142,7 +149,6 @@ function NetworksTable({
                   {network.status === 'DISCONNECTED' ? (
                     <DropdownItem
                       className="text-success"
-                      color="success"
                       variant="flat"
                       startContent={<ConnectIcon {...iconProps} />}
                       title="Connect"
@@ -151,13 +157,19 @@ function NetworksTable({
                   ) : (
                     <DropdownItem
                       className="text-danger"
-                      color="danger"
                       variant="flat"
                       startContent={<DisconnectIcon {...iconProps} />}
                       title="Disconnect"
                       onPress={() => disconnect(network.id)}
                     />
                   )}
+                  <DropdownItem
+                    className={network.status === 'DISCONNECTED' ? 'text-danger' : 'hidden'}
+                    variant="flat"
+                    startContent={<TrashIcon {...iconProps} />}
+                    title="Delete"
+                    onPress={() => network.status === 'DISCONNECTED' && network.id && deleteNetwork(network.id)}
+                  />
                 </DropdownMenu>
               </Dropdown>
             </div>
