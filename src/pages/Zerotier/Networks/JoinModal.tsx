@@ -2,10 +2,12 @@ import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader
 import { useState } from 'react'
 
 import { joinNetwork } from '../../../services/zerotierService.ts'
+import { useZeroTierStore } from '../../../store/zerotier.ts'
 
 function JoinModal(props: Omit<ModalProps, 'children'>) {
-  const { onClose } = props
+  const { getNetworks } = useZeroTierStore()
 
+  const { onClose } = props
   const onModalClose = () => {
     setInputValue('')
     onClose?.()
@@ -23,6 +25,7 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
     setJoining(true)
     try {
       await joinNetwork(inputValue)
+      await getNetworks()
       onModalClose()
     } catch (e) {
       setIsError(true)

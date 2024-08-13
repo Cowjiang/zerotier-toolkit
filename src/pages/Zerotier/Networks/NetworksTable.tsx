@@ -18,10 +18,11 @@ import {
 import { Key, useCallback, useState } from 'react'
 
 import CopyText from '../../../components/base/CopyText.tsx'
-import { DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../../components/base/Icon.tsx'
+import { ConnectIcon, DisconnectIcon, InfoIcon, RefreshIcon, VerticalDotIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
-import { leaveNetwork } from '../../../services/zerotierService.ts'
+import { joinNetwork } from '../../../services/zerotierService.ts'
+import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
 import DetailsModal from './DetailsModal.tsx'
 
@@ -39,6 +40,7 @@ function NetworksTable({
   onRefresh?: () => void
 }) {
   const { setNotification } = useNotification()
+  const { getNetworks, disconnectNetwork } = useZeroTierStore()
 
   const columns: ({ label: string } & Omit<TableColumnProps<any>, 'children'>)[] = [
     { key: 'id', label: 'NETWORK ID', maxWidth: '100' },
@@ -49,6 +51,7 @@ function NetworksTable({
 
   const statusChip: Record<NetworkStatus | 'UNKNOWN', { label: string; color: ChipProps['color'] }> = {
     OK: { label: 'Connected', color: 'success' },
+    DISCONNECTED: { label: 'Disconnected', color: 'secondary' },
     REQUESTING_CONFIGURATION: { label: 'Requesting Config', color: 'default' },
     ACCESS_DENIED: { label: 'Access Denied', color: 'warning' },
     NOT_FOUND: { label: 'Not Found', color: 'danger' },
@@ -60,7 +63,10 @@ function NetworksTable({
 
   const disconnect = async (networkId?: string) => {
     try {
-      networkId && (await leaveNetwork(networkId))
+      if (networkId) {
+        await disconnectNetwork(networkId)
+        await getNetworks()
+      }
     } catch (e) {
       setNotification({
         type: 'danger',
@@ -70,62 +76,90 @@ function NetworksTable({
     }
   }
 
-  const renderCell = useCallback((network: Network, columnKey: Key) => {
-    const cellValue = network[columnKey as keyof Network] as string | number | boolean | undefined
-    switch (columnKey) {
-      case 'status':
-        return (
-          <Chip
-            className="capitalize"
-            color={statusChip?.[network?.status ?? 'UNKNOWN']?.color}
-            size="sm"
-            variant="flat"
-          >
-            {statusChip?.[network?.status ?? 'UNKNOWN']?.label ?? cellValue}
-          </Chip>
-        )
-      case 'action':
-        const iconProps = { width: 16, height: 16 }
-        const onOpen = () => network?.id && setSelectedKeys(new Set([network.id]))
-        const onClose = () => setSelectedKeys(new Set([]))
-        const openDetailsModal = () => {
-          setSelectedNetwork(network)
-          setIsDetailsModalOpen(true)
-        }
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown
-              backdrop="opaque"
-              placement="bottom-end"
-              showArrow
-              size="sm"
-              onOpenChange={onOpen}
-              onClose={onClose}
-            >
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotIcon className="text-default-400" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Actions">
-                <DropdownItem startContent={<InfoIcon {...iconProps} />} title="Details" onPress={openDetailsModal} />
-                {/*<DropdownItem className="text-success" color="success" variant="flat" startContent={<ConnectIcon {...iconProps} />}>Connect</DropdownItem>*/}
-                <DropdownItem
-                  className="text-danger"
-                  color="danger"
-                  variant="flat"
-                  startContent={<DisconnectIcon {...iconProps} />}
-                  title="Disconnect"
-                  onPress={() => disconnect(network.id)}
-                />
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        )
-      default:
-        return <CopyText copyValue={cellValue}>{cellValue}</CopyText>
+  const connect = async (networkId?: string) => {
+    try {
+      if (networkId) {
+        await joinNetwork(networkId)
+        await getNetworks()
+      }
+    } catch (e) {
+      setNotification({
+        type: 'danger',
+        children: 'Failed to disconnect, please try again later',
+        duration: 3000,
+      })
     }
-  }, [])
+  }
+
+  const renderCell = useCallback(
+    (network: Network, columnKey?: Key | null) => {
+      const cellValue = network[columnKey as keyof Network] as string | number | boolean | undefined
+      switch (columnKey) {
+        case 'status':
+          return (
+            <Chip
+              className="capitalize"
+              color={statusChip?.[network?.status ?? 'UNKNOWN']?.color}
+              size="sm"
+              variant="flat"
+            >
+              {statusChip?.[network?.status ?? 'UNKNOWN']?.label ?? cellValue}
+            </Chip>
+          )
+        case 'action':
+          const iconProps = { width: 16, height: 16 }
+          const onOpen = () => network?.id && setSelectedKeys(new Set([network.id]))
+          const onClose = () => setSelectedKeys(new Set([]))
+          const openDetailsModal = () => {
+            setSelectedNetwork(network)
+            setIsDetailsModalOpen(true)
+          }
+          return (
+            <div className="relative flex justify-end items-center gap-2">
+              <Dropdown
+                backdrop="opaque"
+                placement="bottom-end"
+                showArrow
+                size="sm"
+                onOpenChange={onOpen}
+                onClose={onClose}
+              >
+                <DropdownTrigger>
+                  <Button isIconOnly size="sm" variant="light">
+                    <VerticalDotIcon className="text-default-400" />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Actions">
+                  <DropdownItem startContent={<InfoIcon {...iconProps} />} title="Details" onPress={openDetailsModal} />
+                  {network.status === 'DISCONNECTED' ? (
+                    <DropdownItem
+                      className="text-success"
+                      color="success"
+                      variant="flat"
+                      startContent={<ConnectIcon {...iconProps} />}
+                      title="Connect"
+                      onPress={() => connect(network.id)}
+                    />
+                  ) : (
+                    <DropdownItem
+                      className="text-danger"
+                      color="danger"
+                      variant="flat"
+                      startContent={<DisconnectIcon {...iconProps} />}
+                      title="Disconnect"
+                      onPress={() => disconnect(network.id)}
+                    />
+                  )}
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          )
+        default:
+          return <CopyText copyValue={cellValue}>{cellValue}</CopyText>
+      }
+    },
+    [networks],
+  )
 
   const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>()
   const [selectedNetwork, setSelectedNetwork] = useState<Network>()
@@ -177,11 +211,11 @@ function NetworksTable({
             </div>
           }
         >
-          {(network) => (
+          {networks.map((network) => (
             <TableRow key={network.id}>
               {(columnKey) => <TableCell>{renderCell(network, columnKey)}</TableCell>}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
       <DetailsModal
