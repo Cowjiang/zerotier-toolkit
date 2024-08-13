@@ -139,7 +139,7 @@ fn init_window(app_handle: &AppHandle) {
     window.show().unwrap();
     let _ = get_configuration_context(&SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(|context| {
         let minimize_to_tray_def = GENERAL_MINIMIZE_TO_TRAY.read();
-        if context.get_config_by_def(minimize_to_tray_def.deref()).eq("true") {
+        if context.get_config_by_def(minimize_to_tray_def.deref()).as_bool().unwrap() {
             hide_main_window(app_handle.clone());
         }
         true
