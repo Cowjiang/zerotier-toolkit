@@ -9,6 +9,7 @@ use tauri::{
 };
 
 use crate::show_main_window;
+use crate::window::exit_app;
 
 const TRAY_ID: &str = "TRAY";
 
@@ -28,7 +29,8 @@ lazy_static! {
     static ref SYSTEM_TRAY_STATUS: RwLock<bool> = RwLock::new(false);
 }
 
-pub fn init_system_tray(app_handle: &AppHandle) {let status_item = CustomMenuItem::new(String::from(STATUS_ITEM_ID), STATUS_ITEM_TITLE);
+pub fn init_system_tray(app_handle: &AppHandle) {
+    let status_item = CustomMenuItem::new(String::from(STATUS_ITEM_ID), STATUS_ITEM_TITLE);
     let networks_item = CustomMenuItem::new(String::from(NETWORKS_ITEM_ID), NETWORKS_ITEM_TITLE);
     let settings_item = CustomMenuItem::new(String::from(SETTINGS_ITEM_ID), SETTINGS_ITEM_TITLE);
     let quit_item = CustomMenuItem::new(String::from(QUIT_ITEM_ID), QUIT_ITEM_TITLE);
@@ -47,7 +49,7 @@ pub fn destroy_system_tray(app_handle: &AppHandle) {
     let _ = app_handle
         .tray_handle_by_id(TRAY_ID)
         .is_some_and(|tray_handle| {
-            let result =tray_handle.destroy().is_ok();
+            let result = tray_handle.destroy().is_ok();
             debug!(
                 "destory tray is {:?} and tray is {:?}",
                 result,
@@ -64,7 +66,7 @@ pub fn handle_system_tray_event(app_handle: AppHandle, system_tray: SystemTray) 
         }
         SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
             QUIT_ITEM_ID => {
-                process::exit(0);
+                exit_app(&app_handle);
             }
             _ => {
                 show_main_window(app_handle.clone());

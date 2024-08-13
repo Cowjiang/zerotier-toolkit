@@ -3,7 +3,7 @@ use std::ops::Deref;
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
 
-use crate::configurations::configurations_service::get_configuration_context;
+use crate::configurations::configurations_service::{backup_all, get_configuration_context};
 use crate::configurations::system_configurations::{GENERAL_ENABLE_TRAY, SYSTEM_CONFIGURATION_NAME};
 use crate::r::{fail_message_json, success_json};
 
@@ -13,6 +13,14 @@ pub fn set_window_shadow(app_handle: &AppHandle) {
     set_shadow(&window, true).unwrap();
 }
 
+pub fn exit_app(app_handle: &AppHandle) {
+    before_exit();
+    app_handle.exit(0)
+}
+
+fn before_exit() {
+    backup_all();
+}
 
 
 #[tauri::command]
@@ -24,7 +32,7 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
             let _ = get_configuration_context(&SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(|context| {
                 let general_minimize_to_tray_def = GENERAL_ENABLE_TRAY.read();
                 if !context.get_config_by_def(general_minimize_to_tray_def.deref()).as_bool().unwrap() {
-                    app_handle.exit(0);
+                    exit_app(&app_handle);
                 } else {
                     hide_main_window(app_handle);
                 }
@@ -35,7 +43,6 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
         None => fail_message_json("failed to close window"),
     };
 }
-
 
 
 #[tauri::command]

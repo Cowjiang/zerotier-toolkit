@@ -21,7 +21,7 @@ pub fn init_configuration_context(app_handle: &AppHandle) {
     configuration_groups.push(auth_config_context);
 }
 
-pub fn get_configuration_context(name: &String) -> Option<ConfigurationContext> {
+pub fn get_configuration_context(name: &str) -> Option<ConfigurationContext> {
     let configuration_groups = CONFIGURATION_GROUPS.read();
     for context in configuration_groups.iter() {
         if context.name() == name {
@@ -40,7 +40,6 @@ pub fn put_configuration_context(
         if context.name() == name {
             for (key, value) in &configs {
                 context.put_config(key.clone(), value.clone());
-
             }
             context.store_config();
             return Ok(());

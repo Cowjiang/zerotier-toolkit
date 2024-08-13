@@ -66,7 +66,7 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     let mut enable_tray = GENERAL_ENABLE_TRAY.write();
     enable_tray.register_on_change(|_this, app_handle, changed| {
         debug!("enable tray change to {}", changed);
-        if changed == "true" {
+        if changed.as_bool().unwrap() {
             init_system_tray(&app_handle);
         } else {
             destroy_system_tray(&app_handle);
