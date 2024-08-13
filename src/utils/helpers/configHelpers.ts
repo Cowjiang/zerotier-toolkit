@@ -6,7 +6,7 @@ import { invokeCommand } from './tauriHelpers.ts'
 
 export const getConfig = async <T extends AppConfig | ZeroTierConfig>(name: ConfigType): Promise<T> => {
   const config = (await invokeCommand(InvokeEvent.GET_CONFIGURATIONS, { name }))?.data || {}
-  return deserializeConfig(config) as T
+  return config as T
 }
 
 export const updateConfig = async (name: ConfigType, config: AppConfig | ZeroTierConfig) => {
@@ -45,33 +45,5 @@ export const createConfigStorage = <T extends AppConfig | ZeroTierConfig>(config
 }
 
 const serializeConfig = (config: AppConfig | ZeroTierConfig) => {
-  return JSON.stringify(
-    Object.fromEntries(
-      Object.entries(config).map(([key, value]) => {
-        try {
-          return [key, JSON.stringify(value)]
-        } catch (_) {
-          return [key, String(value)]
-        }
-      }),
-    ),
-  )
-}
-
-const deserializeConfig = (config: { [key: string]: string }): AppConfig | ZeroTierConfig => {
-  return Object.fromEntries(
-    Object.entries(config).map(([key, value]) => {
-      try {
-        return [key, JSON.parse(value)]
-      } catch (_) {
-        if (value === 'true' || value === 'false') {
-          return [key, value === 'true']
-        } else if (value !== '' && !isNaN(Number(value))) {
-          return [key, Number(value)]
-        } else {
-          return [key, value]
-        }
-      }
-    }),
-  )
+  return JSON.stringify(config)
 }

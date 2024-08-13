@@ -23,7 +23,7 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
             let _ = window.hide();
             let _ = get_configuration_context(&SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(|context| {
                 let general_minimize_to_tray_def = GENERAL_ENABLE_TRAY.read();
-                if context.get_config_by_def(general_minimize_to_tray_def.deref()).eq("false") {
+                if !context.get_config_by_def(general_minimize_to_tray_def.deref()).as_bool().unwrap() {
                     app_handle.exit(0);
                 } else {
                     hide_main_window(app_handle);
