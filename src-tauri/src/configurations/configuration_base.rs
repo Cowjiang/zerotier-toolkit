@@ -95,7 +95,7 @@ impl ConfigurationContext {
             return;
         }
         let mut file = opt_file.unwrap();
-        let config_json = serde_json::to_string(self.get_configs()).unwrap();
+        let config_json = serde_json::to_string_pretty(self.get_configs()).unwrap();
         file.write_all(config_json.as_bytes())
             .expect("fail to write config to config file");
     }
@@ -238,6 +238,7 @@ impl ConfigurationDef {
 }
 
 #[derive(Clone, Debug)]
+#[warn(dead_code)]
 pub enum ExpectType {
     Number,
     String,
