@@ -68,8 +68,8 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
         return success
       },
       getServerInfo: async () => {
-        const { data: serverInfo } = await invokeCommand(InvokeEvent.GET_ZEROTIER_SERVER_INFO)
-        set((state) => ({ ...state, serverInfo }))
+        const { data: serverInfo, success } = await invokeCommand(InvokeEvent.GET_ZEROTIER_SERVER_INFO)
+        success && set((state) => ({ ...state, serverInfo }))
         return serverInfo
       },
       getNetworks: async () => {

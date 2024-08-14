@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { SPLASH_SCREEN_DELAY } from '../constant.ts'
+import { SPLASH_SCREEN_DELAY, TAURI_DRAG_REGION } from '../constant.ts'
 import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { ServiceStatus } from '../typings/enum.ts'
@@ -48,6 +48,7 @@ function Splash() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      {...TAURI_DRAG_REGION}
     >
       <div
         className={classNames([
