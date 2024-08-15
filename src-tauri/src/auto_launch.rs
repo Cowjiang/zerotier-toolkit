@@ -14,7 +14,7 @@ fn init_auto(app_handle: &AppHandle) -> AutoLaunch {
     let version = package.version.as_ref().unwrap_or(&default);
     let app_name = format!("{}@{}", product_name, version);
     let mut current_exe = current_exe().unwrap();
-    let app_path = current_exe.as_mut_os_string();
+    let app_path = current_exe.as_path().clone();
     #[cfg(not(target_os = "macos"))]
         let auto = AutoLaunch::new(
         app_name.as_str(),

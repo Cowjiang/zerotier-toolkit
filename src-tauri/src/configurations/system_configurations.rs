@@ -1,5 +1,5 @@
 use lazy_static::lazy_static;
-use log::debug;
+use log::{debug, error};
 use parking_lot::RwLock;
 use serde_json::Value;
 use tauri::AppHandle;
@@ -52,11 +52,11 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     let mut general_auto_start = GENERAL_AUTO_START.write();
     general_auto_start.register_on_change(|_this, app_handle, changed| {
         debug!("auto start change to {}", changed);
-        if changed == "true" {
-            init_and_set_auto_launch(&app_handle, true).expect("init auto launch error");
-        } else {
-            init_and_set_auto_launch(&app_handle, true).expect("init auto launch error");
-        }
+        let enable = changed.as_bool().unwrap();
+        let _ = init_and_set_auto_launch(&app_handle, enable).is_err_and(|err| {
+            error!("set auto launch failed: {}", err);
+            true
+        });
     });
     general_auto_start.register_to_context(&mut context);
     // == INIT GENERAL_MINIMIZE_TO_TRAY
