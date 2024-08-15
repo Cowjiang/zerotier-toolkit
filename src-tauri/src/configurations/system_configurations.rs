@@ -29,6 +29,9 @@ lazy_static! {
     pub static ref GENERAL_MINIMIZE_TO_TRAY: RwLock<ConfigurationDef> = RwLock::new(
         ConfigurationDef::new("General.MinimizeToTray".to_string(), Value::from(false),ExpectType::Boolean)
     );
+    static ref LANGUAGE_UI: RwLock<ConfigurationDef> = RwLock::new(
+        ConfigurationDef::new("Language.UI".to_string(), Value::from("en"),ExpectType::String)
+    );
 }
 
 pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
@@ -75,6 +78,8 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     enable_tray.callback_anyway(true);
     enable_tray.register_to_context(&mut context);
     // ==
+    let mut language_ui = LANGUAGE_UI.write();
+    language_ui.register_to_context(&mut context);
     context.sync_from_file();
     context.store_config();
     context
