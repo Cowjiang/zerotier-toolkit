@@ -38,12 +38,14 @@ const routes: MenuListSection[] = [
         startContent: <StatusIcon {...iconProps} />,
         description: 'My status of ZeroTier',
       },
+      // #if WINDOWS
       {
         path: '/zerotier/service',
         title: 'Service',
         startContent: <ServiceIcon {...iconProps} />,
         description: 'Manage ZeroTier Service',
       },
+      // #endif
       {
         path: '/zerotier/experiments',
         title: 'Experiments',

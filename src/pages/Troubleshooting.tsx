@@ -64,6 +64,7 @@ function Troubleshooting() {
       },
       checkResult: { type: 'info', content: 'Trying to connect to ZeroTier service...' },
     },
+    // #if WINDOWS
     {
       key: 'Check if local service is running',
       check: async () => {
@@ -86,6 +87,7 @@ function Troubleshooting() {
         onClick: isAdmin ? undefined : () => restartAsAdmin(),
       },
     },
+    // #endif
   ]
 
   const [overrideResult, setOverrideResult] = useState<Record<string, StatusCardProps>>({})

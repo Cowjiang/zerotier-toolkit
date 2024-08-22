@@ -109,6 +109,9 @@ devDependencies:
   typescript:
     specifier: ^5.5.4
     version: 5.5.4
+  unplugin-preprocessor-directives:
+    specifier: ^1.0.3
+    version: 1.0.3(vite@5.3.5)
   vite:
     specifier: ^5.3.5
     version: 5.3.5
@@ -7551,6 +7554,48 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: true
 
+  /unplugin-preprocessor-directives@1.0.3(vite@5.3.5):
+    resolution: {integrity: sha512-l/ZZ7CpVSqzkG3v2zBl2DEur4sC+qUdHpc9TrKahXP+JbPCQYHKUgdCgFpbrM5hLLQqxoa9gVleIZJL/2Lk4Bg==, tarball: https://registry.npmmirror.com/unplugin-preprocessor-directives/-/unplugin-preprocessor-directives-1.0.3.tgz}
+    peerDependencies:
+      '@nuxt/kit': ^3
+      '@nuxt/schema': ^3
+      '@rspack/core': '*'
+      esbuild: '*'
+      rollup: ^3
+      vite: '>=3'
+      webpack: ^4 || ^5
+    peerDependenciesMeta:
+      '@nuxt/kit':
+        optional: true
+      '@nuxt/schema':
+        optional: true
+      '@rspack/core':
+        optional: true
+      esbuild:
+        optional: true
+      rollup:
+        optional: true
+      vite:
+        optional: true
+      webpack:
+        optional: true
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      magic-string: 0.30.11
+      unplugin: 1.12.2
+      vite: 5.3.5
+    dev: true
+
+  /unplugin@1.12.2:
+    resolution: {integrity: sha512-bEqQxeC7rxtxPZ3M5V4Djcc4lQqKPgGe3mAWZvxcSmX5jhGxll19NliaRzQSQPrk4xJZSGniK3puLWpRuZN7VQ==, tarball: https://registry.npmmirror.com/unplugin/-/unplugin-1.12.2.tgz}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      acorn: 8.12.1
+      chokidar: 3.6.0
+      webpack-sources: 3.2.3
+      webpack-virtual-modules: 0.6.2
+    dev: true
+
   /update-browserslist-db@1.1.0(browserslist@4.23.2):
     resolution: {integrity: sha512-EdRAaAyk2cUE1wOf2DkEhzxqOQvFOoRJFNS6NeyJ01Gp2beMRpBAINjM2iDXE3KCuKhwnvHIQCJm6ThL2Z+HzQ==, tarball: https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.1.0.tgz}
     hasBin: true
@@ -7777,6 +7822,15 @@ packages:
   /webidl-conversions@7.0.0:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==, tarball: https://registry.npmmirror.com/webidl-conversions/-/webidl-conversions-7.0.0.tgz}
     engines: {node: '>=12'}
+    dev: true
+
+  /webpack-sources@3.2.3:
+    resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==, tarball: https://registry.npmmirror.com/webpack-sources/-/webpack-sources-3.2.3.tgz}
+    engines: {node: '>=10.13.0'}
+    dev: true
+
+  /webpack-virtual-modules@0.6.2:
+    resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==, tarball: https://registry.npmmirror.com/webpack-virtual-modules/-/webpack-virtual-modules-0.6.2.tgz}
     dev: true
 
   /whatwg-encoding@3.1.1:

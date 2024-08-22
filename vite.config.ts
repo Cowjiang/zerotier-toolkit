@@ -1,8 +1,22 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import PreprocessorDirectives from 'unplugin-preprocessor-directives/vite'
+
+function checkPlatform() {
+  const { platform, env } = process
+  if (platform === 'darwin') {
+    env.MAC_OS = 'true'
+  } else if (platform === 'win32') {
+    env.WINDOWS = 'true'
+  } else if (platform === 'linux') {
+    env.LINUX = 'true'
+  }
+}
+
+checkPlatform()
 
 export default defineConfig(async () => ({
-  plugins: [react()],
+  plugins: [react(), PreprocessorDirectives()],
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   // 1. prevent vite from obscuring rust errors
   clearScreen: false,
