@@ -8,7 +8,9 @@ import NotificationProvider from './components/providers/NotificationProvider.ts
 import ThemeProvider from './components/providers/ThemeProvider.tsx'
 import { SERVICE_POLLING_INTERVAL } from './constant.ts'
 import RootLayout from './layout/RootLayout.tsx'
+// #if DEV
 import Dev from './pages/Dev'
+// #endif
 import AppearanceSetting from './pages/Settings/AppearanceSetting.tsx'
 import GeneralSetting from './pages/Settings/GeneralSetting.tsx'
 import Troubleshooting from './pages/Troubleshooting.tsx'
@@ -56,23 +58,24 @@ function App() {
     }
   }, [isAdmin, getServiceState])
 
-  import.meta.env.DEV &&
-    useEffect(() => {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.ctrlKey && event.key === 'd') {
-          let redirectUrl = '/'
-          const isDevPage = window.location.pathname === '/dev'
-          if (!isDevPage) {
-            redirectUrl = '/dev'
-          }
-          window.location.href = redirectUrl
+  // #if DEV
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'd') {
+        let redirectUrl = '/'
+        const isDevPage = window.location.pathname === '/dev'
+        if (!isDevPage) {
+          redirectUrl = '/dev'
         }
+        window.location.href = redirectUrl
       }
-      document.addEventListener('keydown', handleKeyDown)
-      return () => {
-        document.removeEventListener('keydown', handleKeyDown)
-      }
-    }, [])
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+  // #endif
 
   return (
     <NextUIProvider navigate={navigate}>
@@ -92,7 +95,9 @@ function App() {
                 <Route path="/troubleshooting" element={<Troubleshooting />} />
                 <Route path="*" element={<ZerotierNetworks />} />
               </Route>
-              {import.meta.env.DEV && <Route path="/dev" element={<Dev />} />}
+              {/* #if DEV */}
+              <Route path="/dev" element={<Dev />} />
+              {/* #endif  */}
             </Routes>
           </div>
         </NotificationProvider>
