@@ -48,7 +48,7 @@ const routes: MenuListSection[] = [
       // #endif
       {
         path: '/zerotier/experiments',
-        title: 'Experiments',
+        title: 'Experimental',
         startContent: <FlaskIcon {...iconProps} />,
         description: 'Experimental features to customize ZeroTier',
       },
