@@ -8,6 +8,7 @@ import NotificationProvider from './components/providers/NotificationProvider.ts
 import ThemeProvider from './components/providers/ThemeProvider.tsx'
 import { SERVICE_POLLING_INTERVAL } from './constant.ts'
 import RootLayout from './layout/RootLayout.tsx'
+import About from './pages/About.tsx'
 // #if DEV
 import Dev from './pages/Dev'
 // #endif
@@ -93,6 +94,7 @@ function App() {
                 <Route path="/settings/appearance" element={<AppearanceSetting />} />
                 <Route path="/settings/general" element={<GeneralSetting />} />
                 <Route path="/troubleshooting" element={<Troubleshooting />} />
+                <Route path="/about" element={<About />} />
                 <Route path="*" element={<ZerotierNetworks />} />
               </Route>
               {/* #if DEV */}

@@ -10,10 +10,6 @@ import { Language, Theme } from '../../typings/enum.ts'
 
 const languages = [
   {
-    label: '简体中文',
-    value: Language.CN,
-  },
-  {
     label: 'English',
     value: Language.EN,
   },

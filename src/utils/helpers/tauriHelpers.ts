@@ -1,3 +1,4 @@
+import { getVersion } from '@tauri-apps/api/app'
 import { writeText } from '@tauri-apps/api/clipboard'
 import { FsOptions, readTextFile as tauriReadTextFile, writeTextFile as tauriWriteTextFile } from '@tauri-apps/api/fs'
 import { getClient, HttpOptions } from '@tauri-apps/api/http'
@@ -54,4 +55,8 @@ export const closeWindow = async () => {
 export const showWindow = async () => {
   ;(await appWindow.isMinimized()) && (await appWindow.unminimize())
   await appWindow.show()
+}
+
+export const getAppVersion = async () => {
+  return await getVersion()
 }

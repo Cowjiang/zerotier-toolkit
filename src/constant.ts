@@ -7,3 +7,9 @@ export const ZEROTIER_SERVICE_HOST = 'http://127.0.0.1'
 export const CONFIGURATION_FILE_PATH = 'resources/configuration.json'
 
 export const TAURI_DRAG_REGION = { 'data-tauri-drag-region': '' }
+
+export const GITHUB_REPO_HOMEPAGE = 'https://github.com/Cowjiang/tauri-react-zerotier-toolkit'
+
+export const GITHUB_REPO_ISSUES = 'https://github.com/Cowjiang/tauri-react-zerotier-toolkit/issues'
+
+export const GITHUB_REPO_RELEASES = 'https://github.com/Cowjiang/tauri-react-zerotier-toolkit/releases'
