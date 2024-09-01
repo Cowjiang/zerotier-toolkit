@@ -29,8 +29,14 @@ function Splash() {
 
   useEffect(() => {
     if (!showSplash && !isAdmin && serviceState !== ServiceStatus.RUNNING) {
-      setShowSetupButton(true)
-    } else if (!isLoading && !showSplash) {
+      // #if WINDOWS
+      if (!isAdmin) {
+        setShowSetupButton(true)
+        return
+      }
+      // #endif
+    }
+    if (!isLoading && !showSplash) {
       setAppShowSplash(false)
     } else if (isLoading && !showSplash) {
       setShowLoading(true)

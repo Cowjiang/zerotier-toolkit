@@ -41,7 +41,7 @@ function About() {
     const version = await getAppVersion()
     version && setAppVersion(version)
   }
-  init()
+  init().catch((_) => {})
 
   return (
     <div className="flex flex-col">

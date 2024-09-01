@@ -6,7 +6,6 @@ import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import NotificationProvider from './components/providers/NotificationProvider.tsx'
 import ThemeProvider from './components/providers/ThemeProvider.tsx'
-import { SERVICE_POLLING_INTERVAL } from './constant.ts'
 import RootLayout from './layout/RootLayout.tsx'
 import About from './pages/About.tsx'
 // #if DEV
@@ -31,33 +30,19 @@ function App() {
     await showWindow()
   })
 
-  const { isAdmin, setLoading, checkAdmin } = useAppStore()
+  const { setLoading, checkAdmin } = useAppStore()
   const { getServiceState, getServiceStartType, getServerInfo } = useZeroTierStore()
 
   useEffect(() => {
-    Promise.all([checkAdmin(), getServiceState(), getServiceStartType(), getServerInfo()]).finally(() =>
-      setLoading(false),
-    )
+    Promise.all([
+      // #if WINDOWS
+      checkAdmin(),
+      getServiceState(),
+      getServiceStartType(),
+      // #endif
+      getServerInfo(),
+    ]).finally(() => setLoading(false))
   }, [])
-
-  const pollingInterval = () => setInterval(getServiceState, SERVICE_POLLING_INTERVAL)
-  useEffect(() => {
-    let pollingTimer: ReturnType<typeof setInterval>
-    if (isAdmin) {
-      pollingTimer = pollingInterval()
-    }
-    const handleVisibilityChange = () => {
-      clearInterval(pollingTimer)
-      if (document.visibilityState === 'visible' && isAdmin) {
-        pollingTimer = pollingInterval()
-      }
-    }
-    window.addEventListener('visibilitychange', handleVisibilityChange)
-    return () => {
-      window.removeEventListener('visibilitychange', handleVisibilityChange)
-      clearInterval(pollingTimer)
-    }
-  }, [isAdmin, getServiceState])
 
   // #if DEV
   useEffect(() => {

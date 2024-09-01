@@ -1,5 +1,5 @@
 import { Button, ButtonProps, Select, SelectItem } from '@nextui-org/react'
-import { ReactElement, useMemo, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 
 import { useAppStore } from '../../../store/app.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
@@ -22,7 +22,12 @@ const startTypes = [
 
 function ZerotierService() {
   const { isAdmin, restartAsAdmin } = useAppStore()
-  const { serviceState, serviceStartType, startService, stopService, setServiceStartType } = useZeroTierStore()
+  const { serviceState, serviceStartType, getServiceState, startService, stopService, setServiceStartType } =
+    useZeroTierStore()
+
+  useEffect(() => {
+    getServiceState().catch((_) => {})
+  }, [])
 
   const [statusBtnLoading, setStatusBtnLoading] = useState(false)
   const serviceStatusButton = useMemo(() => {
