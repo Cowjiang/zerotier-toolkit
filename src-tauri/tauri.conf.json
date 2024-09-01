@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "tauri-react-zerotier-toolkit",
-    "version": "0.0.1"
+    "version": "../package.json"
   },
   "tauri": {
     "allowlist": {
