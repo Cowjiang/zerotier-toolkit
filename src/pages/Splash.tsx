@@ -7,12 +7,13 @@ import { useNavigate } from 'react-router-dom'
 import { SPLASH_SCREEN_DELAY, TAURI_DRAG_REGION } from '../constant.ts'
 import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier.ts'
+import { ZerotierConfig } from '../typings/config.ts'
 import { ServiceStatus } from '../typings/enum.ts'
 
 function Splash() {
   const navigate = useNavigate()
-  const { isLoading, isAdmin, setShowSplash: setAppShowSplash } = useAppStore()
-  const { serviceState } = useZeroTierStore()
+  const { isLoading: isAppLoading, isAdmin, setShowSplash: setAppShowSplash } = useAppStore()
+  const { serviceState, serverInfo, config } = useZeroTierStore()
 
   const [showSplash, setShowSplash] = useState(true)
   const [showLoading, setShowLoading] = useState(false)
@@ -28,20 +29,27 @@ function Splash() {
   }, [])
 
   useEffect(() => {
-    if (!showSplash && !isAdmin && serviceState !== ServiceStatus.RUNNING) {
-      // #if WINDOWS
-      if (!isAdmin) {
-        setShowSetupButton(true)
-        return
-      }
-      // #endif
+    if (showSplash) {
+      return
     }
-    if (!isLoading && !showSplash) {
-      setAppShowSplash(false)
-    } else if (isLoading && !showSplash) {
+    const { port, secret } = serverInfo
+    const { [ZerotierConfig.PORT]: overridePort, [ZerotierConfig.TOKEN]: overrideToken } = config
+    // #if WINDOWS
+    if (!isAdmin && serviceState !== ServiceStatus.RUNNING) {
+      setShowSetupButton(true)
+      return
+    }
+    // #endif
+    if ((!overridePort || !overrideToken) && (!port || !secret)) {
+      setShowSetupButton(true)
+      return
+    }
+    if (isAppLoading) {
       setShowLoading(true)
+      return
     }
-  }, [isLoading, showSplash])
+    setAppShowSplash(false)
+  }, [isAppLoading, showSplash])
 
   const setupZeroTier = () => {
     navigate('/troubleshooting')
