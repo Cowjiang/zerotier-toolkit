@@ -4,6 +4,7 @@ use crate::{
     execute_cmd,
     r::{fail_message_json, success_json},
 };
+use crate::r::unsupported_platform;
 
 #[tauri::command]
 pub(crate) fn restart_as_admin() -> String {
@@ -38,7 +39,15 @@ pub(crate) fn restart_as_admin() -> String {
         }
     }
     #[cfg(not(windows))]
-    fail_message_json("not support")
+    unsupported_platform()
+}
+
+#[tauri::command]
+pub(crate) fn open_something(something: String) -> String {
+    return match open::that(something) {
+        Ok(_) => success_json("success"),
+        Err(err) => fail_message_json(&err.to_string()),
+    };
 }
 
 #[cfg(test)]

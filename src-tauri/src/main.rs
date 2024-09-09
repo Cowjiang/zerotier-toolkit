@@ -109,7 +109,8 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
         reset_configurations,
         // other handlers
         is_admin,
-        restart_as_admin
+        restart_as_admin,
+        open_something
     ]);
     builder
 }
