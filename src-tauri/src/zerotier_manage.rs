@@ -9,7 +9,7 @@ use log::{debug, error};
 use serde::Serialize;
 
 use crate::command::execute_cmd;
-use crate::r::{fail_message_json, success_json};
+use crate::r::{fail_message_json, success_json, unsupported_platform};
 #[cfg(target_os = "windows")]
 use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
 
@@ -126,7 +126,7 @@ pub(crate) fn get_zerotier_services() -> String {
         Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
-    fail_message_json("this is an windows only command")
+    unsupported_platform()
 }
 
 #[tauri::command]
@@ -137,7 +137,7 @@ pub(crate) fn get_zerotier_start_type() -> String {
         Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
-    fail_message_json("this is an windows only command")
+    unsupported_platform()
 }
 
 #[tauri::command]
@@ -157,7 +157,7 @@ pub(crate) fn set_zerotier_start_type(start_type: String) -> String {
     }
 
     #[cfg(not(windows))]
-    fail_message_json("this is an windows only command")
+    unsupported_platform()
 }
 
 #[tauri::command]
@@ -168,7 +168,7 @@ pub(crate) async fn start_zerotier() -> String {
         Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
-    fail_message_json("this is an windows only command")
+    unsupported_platform()
 }
 
 #[tauri::command]
@@ -179,7 +179,7 @@ pub(crate) async fn stop_zerotier() -> String {
         Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
-    fail_message_json("this is an windows only command")
+    unsupported_platform()
 }
 
 #[tauri::command]
@@ -190,7 +190,7 @@ pub(crate) fn get_zerotier_state() -> String {
         Err(err) => fail_message_json(&err.to_string()),
     }
     #[cfg(not(windows))]
-    fail_message_json("this is an windows only command")
+    unsupported_platform()
 }
 
 #[tauri::command]
@@ -225,7 +225,7 @@ pub fn get_zerotier_one_path() -> Result<ZerotierPathInfo, String> {
                 return Ok(ZerotierPathInfo {
                     file_dir: home_dir_path.to_str().unwrap().to_string(),
                     file_name,
-                })
+                });
             }
         }
     }
@@ -244,14 +244,11 @@ pub(crate) fn get_zerotier_one_dir() -> String {
 pub(crate) fn open_zerotier_one_dir() -> String {
     return match get_zerotier_one_path() {
         Ok(zerotier_one_path) => {
-            execute_cmd(vec![
-                String::from("explorer.exe"),
-                zerotier_one_path.file_dir,
-            ]).unwrap();
+            open::that(zerotier_one_path.file_dir).unwrap();
             success_json("")
         }
         Err(..) => fail_message_json("Failed to get ZeroTier One program path"),
-    }
+    };
 }
 
 fn try_read_files(file_paths: &[String]) -> Result<String, Error> {
