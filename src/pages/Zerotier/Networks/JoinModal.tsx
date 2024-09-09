@@ -3,8 +3,10 @@ import { useState } from 'react'
 
 import { joinNetwork } from '../../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
+import useRequest from '../../../utils/hooks/useRequest.ts'
 
 function JoinModal(props: Omit<ModalProps, 'children'>) {
+  const { request } = useRequest()
   const { getNetworks } = useZeroTierStore()
 
   const { onClose } = props
@@ -24,8 +26,8 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
   const onJoinBtnClick = async () => {
     setJoining(true)
     try {
-      await joinNetwork(inputValue)
-      await getNetworks()
+      await request(joinNetwork(inputValue))
+      await request(getNetworks())
       onModalClose()
     } catch (e) {
       setIsError(true)

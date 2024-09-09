@@ -26,7 +26,7 @@ export type ZeroTierAction = {
   getServerInfo: () => Promise<ServerInfo>
   getNetworks: () => Promise<Network[]>
   disconnectNetwork: (networkId: string) => Promise<void>
-  deleteNetwork: (networkId: string) => void
+  deleteNetwork: (networkId: string) => Promise<void>
   getStatus: () => Promise<Status>
   setConfig: (config: Partial<ZeroTierConfig>) => void
 }

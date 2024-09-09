@@ -4,14 +4,17 @@ import { useCallback, useEffect, useState } from 'react'
 import { RefreshIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
+import useRequest from '../../../utils/hooks/useRequest.ts'
 
 function ZerotierStatus() {
+  const { request } = useRequest()
   const { status, getStatus } = useZeroTierStore()
+
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
   const init = () => {
-    getStatus()
+    request(getStatus())
       .then(() => setIsError(false))
       .catch(() => setIsError(true))
       .finally(() => setIsLoading(false))
@@ -22,7 +25,7 @@ function ZerotierStatus() {
   const onRefresh = useCallback(async () => {
     setIsRefreshing(true)
     try {
-      await getStatus()
+      await request(getStatus())
     } finally {
       setTimeout(() => setIsRefreshing(false), 300)
     }

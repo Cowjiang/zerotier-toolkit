@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useZeroTierStore } from '../../../store/zerotier.ts'
+import useRequest from '../../../utils/hooks/useRequest.ts'
 import NetworksTable from './NetworksTable.tsx'
 import ToolBar from './ToolBar.tsx'
 
 function ZerotierNetworks() {
+  const { request } = useRequest()
   const { networks, getNetworks } = useZeroTierStore()
 
   const [isLoading, setIsLoading] = useState(false)
   const init = () => {
     !isLoading && !networks.length && setIsLoading(true)
-    getNetworks().finally(() => {
+    request(getNetworks()).finally(() => {
       setIsLoading(false)
     })
   }
@@ -29,7 +31,7 @@ function ZerotierNetworks() {
   const onRefresh = useCallback(async () => {
     setIsRefreshing(true)
     try {
-      await getNetworks()
+      await request(getNetworks())
     } finally {
       setTimeout(() => setIsRefreshing(false), 300)
     }

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import CopyText from '../../../components/base/CopyText.tsx'
 import { updateNetwork } from '../../../services/zerotierService.ts'
 import { Network } from '../../../typings/zerotier.ts'
+import useRequest from '../../../utils/hooks/useRequest.ts'
 
 const checkboxClasses = { label: 'text-[0.8rem]' }
 
@@ -15,6 +16,7 @@ function DetailsModal({
   networkDetails?: Network
   modalProps: Omit<ModalProps, 'children'>
 }) {
+  const { request } = useRequest()
   const { allowManaged, allowGlobal, allowDefault, allowDNS } = networkDetails ?? {}
 
   useEffect(() => {
@@ -33,13 +35,15 @@ function DetailsModal({
   const [selected, setSelected] = useState<string[]>([])
   const onSelectedChange = (selected: string[]) => {
     networkDetails?.id &&
-      updateNetwork(networkDetails.id, {
-        ...networkDetails,
-        allowGlobal: selected.includes('allowGlobal'),
-        allowManaged: selected.includes('allowManaged'),
-        allowDNS: selected.includes('allowDNS'),
-        allowDefault: selected.includes('allowDefault'),
-      })
+      request(
+        updateNetwork(networkDetails.id, {
+          ...networkDetails,
+          allowGlobal: selected.includes('allowGlobal'),
+          allowManaged: selected.includes('allowManaged'),
+          allowDNS: selected.includes('allowDNS'),
+          allowDefault: selected.includes('allowDefault'),
+        }),
+      )
     setSelected(selected)
   }
 

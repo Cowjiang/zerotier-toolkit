@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react'
+import { Response } from '@tauri-apps/api/http'
 import { Key, useCallback, useRef, useState } from 'react'
 
 import CopyText from '../../../components/base/CopyText.tsx'
@@ -31,6 +32,7 @@ import { useNotification } from '../../../components/providers/NotificationProvi
 import { joinNetwork } from '../../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
+import useRequest from '../../../utils/hooks/useRequest.ts'
 import DetailsModal from './DetailsModal.tsx'
 
 function NetworksTable({
@@ -44,6 +46,7 @@ function NetworksTable({
   isRefreshing?: boolean
   onRefresh?: () => void
 }) {
+  const { request } = useRequest()
   const { setNotification } = useNotification()
   const { getNetworks, disconnectNetwork, deleteNetwork } = useZeroTierStore()
 
@@ -72,15 +75,17 @@ function NetworksTable({
     try {
       if (networkId) {
         setLoadingId((loadingId) => [...loadingId, networkId])
-        await disconnectNetwork(networkId)
-        await getNetworks()
+        await request(disconnectNetwork(networkId))
+        await request(getNetworks())
       }
     } catch (e) {
-      setNotification({
-        type: 'danger',
-        children: 'Failed to disconnect, please try again later',
-        duration: 3000,
-      })
+      if ((e as Response<void>)?.status !== 401) {
+        setNotification({
+          type: 'danger',
+          children: 'Failed to disconnect, please try again later',
+          duration: 3000,
+        })
+      }
     }
     setLoadingId((loadingId) => [...loadingId.filter((id) => id !== networkId)])
   }
@@ -89,15 +94,17 @@ function NetworksTable({
     try {
       if (networkId) {
         setLoadingId((loadingId) => [...loadingId, networkId])
-        await joinNetwork(networkId)
-        await getNetworks()
+        await request(joinNetwork(networkId))
+        await request(getNetworks())
       }
     } catch (e) {
-      setNotification({
-        type: 'danger',
-        children: 'Failed to connect, please try again later',
-        duration: 3000,
-      })
+      if ((e as Response<void>)?.status !== 401) {
+        setNotification({
+          type: 'danger',
+          children: 'Failed to connect, please try again later',
+          duration: 3000,
+        })
+      }
     }
     setLoadingId((loadingId) => [...loadingId.filter((id) => id !== networkId)])
   }
@@ -152,7 +159,7 @@ function NetworksTable({
                       variant="flat"
                       startContent={<ConnectIcon {...iconProps} />}
                       title="Connect"
-                      onPress={() => connect(network.id)}
+                      onPress={() => request(connect(network.id))}
                     />
                   ) : (
                     <DropdownItem
@@ -160,7 +167,7 @@ function NetworksTable({
                       variant="flat"
                       startContent={<DisconnectIcon {...iconProps} />}
                       title="Disconnect"
-                      onPress={() => disconnect(network.id)}
+                      onPress={() => request(disconnect(network.id))}
                     />
                   )}
                   <DropdownItem
@@ -168,7 +175,9 @@ function NetworksTable({
                     variant="flat"
                     startContent={<TrashIcon {...iconProps} />}
                     title="Delete"
-                    onPress={() => network.status === 'DISCONNECTED' && network.id && deleteNetwork(network.id)}
+                    onPress={() =>
+                      network.status === 'DISCONNECTED' && network.id && request(deleteNetwork(network.id))
+                    }
                   />
                 </DropdownMenu>
               </Dropdown>
