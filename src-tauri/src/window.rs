@@ -50,7 +50,10 @@ pub fn hide_main_window(app_handle: AppHandle) -> String {
     let main_window = app_handle.get_window("main");
     return match main_window {
         Some(window) => {
+            #[cfg(windows)]
             let _ = window.hide();
+            #[cfg(not(windows))]
+            let _ = window.minimize();
             success_json("success")
         }
         None => fail_message_json("failed to hide window"),
