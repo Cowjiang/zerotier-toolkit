@@ -1,5 +1,5 @@
 import { clearMocks, mockIPC, mockWindows } from '@tauri-apps/api/mocks'
-import { render, RenderOptions } from '@testing-library/react'
+import { Queries, queries, render, renderHook, RenderHookOptions, RenderOptions } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
@@ -64,4 +64,15 @@ const Providers = ({ children }: { children: ReactNode }) => {
 const renderWithProviders = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
   render(ui, { wrapper: Providers, ...options })
 
-export { renderWithProviders as render }
+const renderHookWithProviders = <
+  Result,
+  Props,
+  Q extends Queries = typeof queries,
+  Container extends Element | DocumentFragment = HTMLElement,
+  BaseElement extends Element | DocumentFragment = Container,
+>(
+  render: (initialProps: Props) => Result,
+  options?: Omit<RenderHookOptions<Props, Q, Container, BaseElement>, 'wrapper'>,
+) => renderHook(render, { wrapper: Providers, ...options })
+
+export { renderWithProviders as render, renderHookWithProviders as renderHook }

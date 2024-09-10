@@ -1,5 +1,4 @@
 import { mockIPC } from '@tauri-apps/api/mocks'
-import { describe, expect } from 'vitest'
 
 import { AppConfig, ConfigType, ThemeConfig } from '../../../typings/config.ts'
 import { InvokeEvent, Theme } from '../../../typings/enum.ts'
