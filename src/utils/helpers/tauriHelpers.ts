@@ -51,9 +51,7 @@ export const minimizeWindow = async () => {
 export const closeWindow = async () => {
   await invokeCommand(InvokeEvent.CLOSE_MAIN_WINDOW)
 }
-export const openSomething = async (something: string) => {
-  something && (await invokeCommand(InvokeEvent.OPEN_SOMETHING, { something }))
-}
+
 export const showWindow = async () => {
   ;(await appWindow.isMinimized()) && (await appWindow.unminimize())
   await appWindow.show()
@@ -61,4 +59,8 @@ export const showWindow = async () => {
 
 export const getAppVersion = async () => {
   return await getVersion()
+}
+
+export const openInSystem = async (argument: string) => {
+  argument && (await invokeCommand(InvokeEvent.OPEN_SOMETHING, { something: argument }))
 }

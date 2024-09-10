@@ -1,8 +1,8 @@
-import { Avatar, Divider, Image, Link, Listbox, ListboxItem, ListboxSection, Tooltip } from '@nextui-org/react'
+import { Avatar, Divider, Image, Link, Listbox, ListboxItem, ListboxSection } from '@nextui-org/react'
 import { useState } from 'react'
 
 import { BugIcon, GithubIcon, TagsIcon } from '../components/base/Icon.tsx'
-import { getAppVersion, openSomething } from '../utils/helpers/tauriHelpers.ts'
+import { getAppVersion, openInSystem } from '../utils/helpers/tauriHelpers.ts'
 
 const developers = [
   {
@@ -24,8 +24,7 @@ const githubLinks = [
     title: 'Check For Updates',
     description: 'Latest releases',
     startContent: <TagsIcon width={18} />,
-    // TODO : Check For Updates
-    link: '',
+    link: 'https://github.com/Cowjiang/tauri-react-zerotier-toolkit/releases',
   },
   {
     title: 'Github Repository',
@@ -44,18 +43,14 @@ const githubLinks = [
 const poweredBy = [
   {
     title: 'Tauri',
-    description:
-      'Tauri is a framework for building tiny, blazing fast binaries for all platforms with a single codebase.',
     link: 'https://tauri.app/',
   },
   {
     title: 'NextUI',
-    description: 'A component library for building beautiful and modern web interfaces with Tailwind CSS and React.',
     link: 'https://nextui.org/',
   },
   {
     title: 'Flaticon',
-    description: 'Flaticon is a free icon set.',
     link: 'https://www.flaticon.com/',
   },
 ]
@@ -89,7 +84,7 @@ function About() {
                 aria-label={link.title}
                 description={link.description}
                 startContent={link.startContent}
-                onClick={() => openSomething(link.link)}
+                onClick={() => openInSystem(link.link)}
               >
                 {link.title}
               </ListboxItem>
@@ -99,7 +94,7 @@ function About() {
         <Listbox variant="flat" aria-label="Developers">
           <ListboxSection title="Developers">
             {developers.map((user) => (
-              <ListboxItem key={user.userId} aria-label={user.name} onClick={() => openSomething(user.link)}>
+              <ListboxItem key={user.userId} aria-label={user.name} onClick={() => openInSystem(user.link)}>
                 <div className="flex gap-2 items-center">
                   <Avatar
                     className="flex-shrink-0"
@@ -125,16 +120,14 @@ function About() {
           <span>
             {poweredBy.map((item, index) => (
               <span key={index}>
-                <Tooltip content={item.description} placement={'bottom-start'}>
-                  <Link size="sm" showAnchorIcon className={'cursor-pointer'} onClick={() => openSomething(item.link)}>
-                    {item.title}
-                  </Link>
-                </Tooltip>
+                <Link size="sm" showAnchorIcon className="cursor-pointer" onClick={() => openInSystem(item.link)}>
+                  {item.title}
+                </Link>
                 {index < poweredBy.length - 1 && ' / '}
               </span>
             ))}
           </span>
-          <span> following MIT License</span>
+          <span>, following MIT License</span>
         </p>
       </div>
     </div>
