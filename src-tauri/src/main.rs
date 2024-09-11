@@ -20,7 +20,7 @@ use crate::configurations::system_configurations::{
     GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME,
 };
 use crate::logger::init_logger_main;
-use crate::window::{close_main_window, hide_main_window, show_main_window};
+use crate::window::{close_main_window, do_hide_main_window, hide_main_window, show_main_window};
 use crate::zerotier_manage::*;
 
 mod command;
@@ -139,12 +139,12 @@ fn init_window(app_handle: &AppHandle) {
         .build()
         .unwrap();
     window.show().unwrap();
+    set_window_shadow(&app_handle);
     let _ = get_configuration_context(SYSTEM_CONFIGURATION_NAME).is_some_and(|context| {
         let minimize_to_tray_def = GENERAL_MINIMIZE_TO_TRAY.read();
         if context.get_config_by_def(minimize_to_tray_def.deref()).as_bool().unwrap() {
-            hide_main_window(app_handle.clone());
+            do_hide_main_window(&app_handle).expect("hide main window fail");
         }
         true
     });
-    set_window_shadow(&app_handle);
 }

@@ -1,4 +1,7 @@
+use std::fmt;
+use std::fmt::Formatter;
 use std::ops::Deref;
+use log::error;
 
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
@@ -6,6 +9,19 @@ use window_shadows::set_shadow;
 use crate::configurations::configurations_service::{backup_all, get_configuration_context};
 use crate::configurations::system_configurations::{GENERAL_ENABLE_TRAY, SYSTEM_CONFIGURATION_NAME};
 use crate::r::{fail_message_json, success_json};
+
+#[derive(Debug, PartialEq)]
+pub enum Error {
+    WindowNotFound(String),
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match self {
+            Error::WindowNotFound(msg) => write!(f, "Window not found: {}", msg),
+        }
+    }
+}
 
 pub fn set_window_shadow(app_handle: &AppHandle) {
     let window = app_handle.get_window("main").unwrap();
@@ -47,16 +63,28 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
 
 #[tauri::command]
 pub fn hide_main_window(app_handle: AppHandle) -> String {
+    return match do_hide_main_window(&app_handle) {
+        Ok(_) => {
+            success_json("success")
+        }
+        Err(err) => {
+            error!("{}", err);
+            fail_message_json("failed to hide window")
+        }
+    };
+}
+
+pub fn do_hide_main_window(app_handle: &AppHandle) -> Result<(), Error> {
     let main_window = app_handle.get_window("main");
     return match main_window {
         Some(window) => {
             #[cfg(windows)]
-            let _ = window.hide();
+                let _ = window.hide();
             #[cfg(not(windows))]
-            let _ = window.minimize();
-            success_json("success")
+                let _ = window.minimize();
+            Ok(())
         }
-        None => fail_message_json("failed to hide window"),
+        None => Err(Error::WindowNotFound("main window not found".to_string())),
     };
 }
 
