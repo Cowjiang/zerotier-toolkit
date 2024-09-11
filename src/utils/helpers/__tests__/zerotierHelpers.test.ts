@@ -9,7 +9,11 @@ describe('Zerotier Helpers', () => {
     const test = async () => {
       await zerotierService.get('/test').catch((e) => Promise.reject(e))
     }
-    expect(test).rejects.toThrowError('Invalid port or secret for the ZeroTier service')
+    expect(test).rejects.toEqual({
+      ok: false,
+      status: 401,
+      data: 'Invalid port or secret for the ZeroTier service',
+    })
   })
 
   it('should make a request if user has overridden port and secret', async () => {

@@ -17,7 +17,12 @@ const request = async <T>({ path, method, ...options }: RequestOptions) => {
   const { port, secret } = serverInfo
   const { [ZerotierConfig.PORT]: overridePort, [ZerotierConfig.TOKEN]: overrideToken } = config
   if ((!overridePort || !overrideToken) && (!port || !secret)) {
-    throw new Error('Invalid port or secret for the ZeroTier service')
+    // throw new Error('Invalid port or secret for the ZeroTier service')
+    throw {
+      ok: false,
+      status: 401,
+      data: 'Invalid port or secret for the ZeroTier service',
+    } as Response<T>
   }
   const httpOptions = {
     url: `${ZEROTIER_SERVICE_HOST}:${overridePort || port}${path}`,

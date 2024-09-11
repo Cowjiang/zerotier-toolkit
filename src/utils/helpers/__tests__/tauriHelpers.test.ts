@@ -1,5 +1,4 @@
 import { mockIPC } from '@tauri-apps/api/mocks'
-import { expect } from 'vitest'
 
 import { copyToClipboard, invokeCommand, readTextFile, showWindow, writeTextFile } from '../tauriHelpers.ts'
 

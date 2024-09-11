@@ -1,7 +1,6 @@
 import { mockIPC } from '@tauri-apps/api/mocks'
 import { invoke } from '@tauri-apps/api/tauri'
 import { renderHook } from '@testing-library/react'
-import { expect, vi } from 'vitest'
 
 import useTauriEventListener from '../useTauriEventListener.ts'
 
