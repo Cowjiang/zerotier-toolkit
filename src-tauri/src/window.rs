@@ -1,8 +1,8 @@
 use std::fmt;
 use std::fmt::Formatter;
 use std::ops::Deref;
-use log::error;
 
+use log::error;
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
 
@@ -13,12 +13,16 @@ use crate::r::{fail_message_json, success_json};
 #[derive(Debug, PartialEq)]
 pub enum Error {
     WindowNotFound(String),
+    HideWindowError(String),
 }
+
+pub type Result<T> = std::result::Result<T, Error>;
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
             Error::WindowNotFound(msg) => write!(f, "Window not found: {}", msg),
+            Error::HideWindowError(msg) => write!(f, "Hide window error: {}", msg),
         }
     }
 }
@@ -74,15 +78,18 @@ pub fn hide_main_window(app_handle: AppHandle) -> String {
     };
 }
 
-pub fn do_hide_main_window(app_handle: &AppHandle) -> Result<(), Error> {
+pub fn do_hide_main_window(app_handle: &AppHandle) -> Result<()> {
     let main_window = app_handle.get_window("main");
     return match main_window {
         Some(window) => {
             #[cfg(windows)]
-                let _ = window.hide();
+                let result = window.hide();
             #[cfg(not(windows))]
-                let _ = window.minimize();
-            Ok(())
+                let result = window.minimize();
+            match result {
+                Ok(_) => Ok(()),
+                Err(err) => Err(Error::HideWindowError(err.to_string()))
+            }
         }
         None => Err(Error::WindowNotFound("main window not found".to_string())),
     };
