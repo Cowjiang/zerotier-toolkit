@@ -138,7 +138,6 @@ fn init_window(app_handle: &AppHandle) {
         .inner_size(800.0, 500.0)
         .build()
         .unwrap();
-    window.show().unwrap();
     set_window_shadow(&app_handle);
     let _ = get_configuration_context(SYSTEM_CONFIGURATION_NAME).is_some_and(|context| {
         let minimize_to_tray_def = GENERAL_MINIMIZE_TO_TRAY.read();
