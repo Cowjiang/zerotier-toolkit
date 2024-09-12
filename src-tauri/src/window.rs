@@ -86,10 +86,7 @@ pub fn do_hide_main_window(app_handle: &AppHandle) -> Result<()> {
                 let result = window.hide();
             #[cfg(not(windows))]
                 let result = window.minimize();
-            match result {
-                Ok(_) => Ok(()),
-                Err(err) => Err(Error::HideWindowError(err.to_string()))
-            }
+            result.map_err(|err| Error::HideWindowError(err.to_string()))
         }
         None => Err(Error::WindowNotFound("main window not found".to_string())),
     };
