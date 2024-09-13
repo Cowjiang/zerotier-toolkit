@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import zerotierLogo from '../assets/zerotier_orange.svg'
 import { SPLASH_SCREEN_DELAY, TAURI_DRAG_REGION } from '../constant.ts'
 import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier.ts'
@@ -71,7 +72,7 @@ function Splash() {
         ])}
       >
         <div className="h-[130px]">
-          <Image width={130} alt="Logo" src="/zerotier_orange.svg" />
+          <Image width={130} alt="Logo" src={zerotierLogo} />
         </div>
         <h1 className="mt-6 text-4xl font-black text-primary">ZeroTier Toolkit</h1>
       </div>

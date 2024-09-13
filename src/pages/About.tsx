@@ -1,6 +1,7 @@
 import { Avatar, Divider, Image, Link, Listbox, ListboxItem, ListboxSection } from '@nextui-org/react'
 import { useState } from 'react'
 
+import zerotierLogo from '../assets/zerotier_orange.svg'
 import { BugIcon, GithubIcon, TagsIcon } from '../components/base/Icon.tsx'
 import { getAppVersion, openInSystem } from '../utils/helpers/tauriHelpers.ts'
 
@@ -67,7 +68,7 @@ function About() {
     <div className="flex flex-col">
       <div className="flex gap-6 items-center">
         <div className="h-[80px]">
-          <Image width={80} alt="Logo" src="/zerotier_orange.svg" />
+          <Image width={80} alt="Logo" src={zerotierLogo} />
         </div>
         <div className="flex flex-col gap-1">
           <h1 className="mb-1 text-2xl font-bold text-primary">ZeroTier Toolkit</h1>

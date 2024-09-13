@@ -109,7 +109,7 @@ function Dev() {
   return (
     <div className="w-full min-h-[100vh] p-3">
       <div className="flex flex-row justify-center">
-        <img src="/lab.png" className="w-40" />
+        <img src="/zerotier.png" className="w-40" />
       </div>
       <div className="w-full mt-5 flex flex-wrap ">
         {btnList.map(({ text, onClick }) => (
