@@ -119,7 +119,9 @@ function RootLayout() {
 
   return (
     <div>
+      {/* #if !UTOOLS */}
       <TitleBarButtons />
+      {/* #endif */}
       {showSplash ? (
         <Splash />
       ) : (

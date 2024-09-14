@@ -1,0 +1,13 @@
+{
+  "main": "index.html",
+  "logo": "zerotier.png",
+  "features": [
+    {
+      "code": "ZeroTier",
+      "explain": "ZeroTier",
+      "cmds": [
+        "zerotier"
+      ]
+    }
+  ]
+}

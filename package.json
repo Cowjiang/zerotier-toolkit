@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "tauri dev",
     "build": "tauri build",
-    "info": "tauri info",
-    "tauri": "tauri",
+    "build:utools": "tsc && vite build --mode utools",
     "test": "vitest",
     "test:no-watch": "vitest run",
     "test:coverage": "vitest run --coverage",
