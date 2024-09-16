@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tauri dev",
     "build": "tauri build",
-    "build:utools": "tsc && vite build --mode utools",
+    "build:utools": "tsc && vite build --mode utools && tsc -b src-utools",
     "test": "vitest",
     "test:no-watch": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@tauri-apps/cli": "^1.6.1",
     "@testing-library/react": "^14.3.1",
+    "@types/node": "^22.5.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",

@@ -46,6 +46,9 @@ devDependencies:
   '@testing-library/react':
     specifier: ^14.3.1
     version: 14.3.1(react-dom@18.3.1)(react@18.3.1)
+  '@types/node':
+    specifier: ^22.5.5
+    version: 22.5.5
   '@types/react':
     specifier: ^18.3.5
     version: 18.3.5
@@ -114,10 +117,10 @@ devDependencies:
     version: 1.0.3(vite@5.4.4)
   vite:
     specifier: ^5.4.4
-    version: 5.4.4
+    version: 5.4.4(@types/node@22.5.5)
   vitest:
     specifier: ^2.0.5
-    version: 2.0.5(jsdom@24.1.3)
+    version: 2.0.5(@types/node@22.5.5)(jsdom@24.1.3)
 
 packages:
 
@@ -682,7 +685,7 @@ packages:
       '@inquirer/figures': 1.0.5
       '@inquirer/type': 1.5.3
       '@types/mute-stream': 0.0.4
-      '@types/node': 22.5.4
+      '@types/node': 22.5.5
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
       cli-spinners: 2.9.2
@@ -3949,11 +3952,11 @@ packages:
   /@types/mute-stream@0.0.4:
     resolution: {integrity: sha512-CPM9nzrCPPJHQNA9keH9CVkVI+WR5kMa+7XEs5jcGQ0VoAGnLv242w8lIVgwAEfmE4oufJRaTc9PNLQl0ioAow==, tarball: https://registry.npmmirror.com/@types/mute-stream/-/mute-stream-0.0.4.tgz}
     dependencies:
-      '@types/node': 22.5.4
+      '@types/node': 22.5.5
     dev: true
 
-  /@types/node@22.5.4:
-    resolution: {integrity: sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==, tarball: https://registry.npmmirror.com/@types/node/-/node-22.5.4.tgz}
+  /@types/node@22.5.5:
+    resolution: {integrity: sha512-Xjs4y5UPO/CLdzpgR6GirZJx36yScjh73+2NlLlkFRSoQN8B0DpfXPdZGnvVmLRLOsqDpOfTNv7D9trgGhmOIA==, tarball: https://registry.npmmirror.com/@types/node/-/node-22.5.5.tgz}
     dependencies:
       undici-types: 6.19.8
     dev: true
@@ -4127,7 +4130,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.4
+      vite: 5.4.4(@types/node@22.5.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4149,7 +4152,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.0.5(jsdom@24.1.3)
+      vitest: 2.0.5(@types/node@22.5.5)(jsdom@24.1.3)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7429,7 +7432,7 @@ packages:
       '@ampproject/remapping': 2.3.0
       magic-string: 0.30.11
       unplugin: 1.14.1
-      vite: 5.4.4
+      vite: 5.4.4(@types/node@22.5.5)
     transitivePeerDependencies:
       - webpack-sources
     dev: true
@@ -7548,7 +7551,7 @@ packages:
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==, tarball: https://registry.npmmirror.com/util-deprecate/-/util-deprecate-1.0.2.tgz}
 
-  /vite-node@2.0.5:
+  /vite-node@2.0.5(@types/node@22.5.5):
     resolution: {integrity: sha512-LdsW4pxj0Ot69FAoXZ1yTnA9bjGohr2yNBU7QKRxpz8ITSkhuDl6h3zS/tvgz4qrNjeRnvrWeXQ8ZF7Um4W00Q==, tarball: https://registry.npmmirror.com/vite-node/-/vite-node-2.0.5.tgz}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -7557,7 +7560,7 @@ packages:
       debug: 4.3.7
       pathe: 1.1.2
       tinyrainbow: 1.2.0
-      vite: 5.4.4
+      vite: 5.4.4(@types/node@22.5.5)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -7570,7 +7573,7 @@ packages:
       - terser
     dev: true
 
-  /vite@5.4.4:
+  /vite@5.4.4(@types/node@22.5.5):
     resolution: {integrity: sha512-RHFCkULitycHVTtelJ6jQLd+KSAAzOgEYorV32R2q++M6COBjKJR6BxqClwp5sf0XaBDjVMuJ9wnNfyAJwjMkA==, tarball: https://registry.npmmirror.com/vite/-/vite-5.4.4.tgz}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -7601,6 +7604,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 22.5.5
       esbuild: 0.21.5
       postcss: 8.4.45
       rollup: 4.21.3
@@ -7608,7 +7612,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest@2.0.5(jsdom@24.1.3):
+  /vitest@2.0.5(@types/node@22.5.5)(jsdom@24.1.3):
     resolution: {integrity: sha512-8GUxONfauuIdeSl5f9GTgVEpg5BTOlplET4WEDaeY2QBiN8wSm68vxN/tb5z405OwppfoCavnwXafiaYBC/xOA==, tarball: https://registry.npmmirror.com/vitest/-/vitest-2.0.5.tgz}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -7634,6 +7638,7 @@ packages:
         optional: true
     dependencies:
       '@ampproject/remapping': 2.3.0
+      '@types/node': 22.5.5
       '@vitest/expect': 2.0.5
       '@vitest/pretty-format': 2.0.5
       '@vitest/runner': 2.0.5
@@ -7650,8 +7655,8 @@ packages:
       tinybench: 2.9.0
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.4.4
-      vite-node: 2.0.5
+      vite: 5.4.4(@types/node@22.5.5)
+      vite-node: 2.0.5(@types/node@22.5.5)
       why-is-node-running: 2.3.0
     transitivePeerDependencies:
       - less
