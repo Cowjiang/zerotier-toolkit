@@ -65,7 +65,7 @@ function Dev() {
     invokeCommandButton(InvokeEvent.GET_CONFIGURATIONS, { name: 'system' }),
     invokeCommandButton(InvokeEvent.RESET_CONFIGURATIONS, { name: 'all' }),
     invokeCommandButton(InvokeEvent.OPEN_SOMETHING, {
-      something: 'https://github.com/Cowjiang/tauri-react-zerotier-toolkit',
+      something: 'https://github.com/Cowjiang/zerotier-toolkit',
     }),
   ]
 

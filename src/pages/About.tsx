@@ -25,19 +25,19 @@ const githubLinks = [
     title: 'Check For Updates',
     description: 'Latest releases',
     startContent: <TagsIcon width={18} />,
-    link: 'https://github.com/Cowjiang/tauri-react-zerotier-toolkit/releases',
+    link: 'https://github.com/Cowjiang/zerotier-toolkit/releases',
   },
   {
     title: 'Github Repository',
     description: 'Source code',
     startContent: <GithubIcon width={18} />,
-    link: 'https://github.com/Cowjiang/tauri-react-zerotier-toolkit',
+    link: 'https://github.com/Cowjiang/zerotier-toolkit',
   },
   {
     title: 'Report Issues',
     description: 'Report issues',
     startContent: <BugIcon width={18} />,
-    link: 'https://github.com/Cowjiang/tauri-react-zerotier-toolkit/issues',
+    link: 'https://github.com/Cowjiang/zerotier-toolkit/issues',
   },
 ]
 

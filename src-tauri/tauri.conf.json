@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "tauri-react-zerotier-toolkit",
+    "productName": "zerotier-toolkit",
     "version": "../package.json"
   },
   "tauri": {
