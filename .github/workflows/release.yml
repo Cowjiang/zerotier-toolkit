@@ -15,12 +15,12 @@ jobs:
         include:
           - platform: 'macos-latest' # for Arm based macs (M1 and above).
             args: '--target aarch64-apple-darwin'
-    #          - platform: 'macos-latest' # for Intel based macs.
-    #            args: '--target x86_64-apple-darwin'
-    #          - platform: 'ubuntu-22.04' # for Tauri v1 you could replace this with ubuntu-20.04.
-    #            args: ''
-    #          - platform: 'windows-latest'
-    #            args: ''
+          - platform: 'macos-latest' # for Intel based macs.
+            args: '--target x86_64-apple-darwin'
+          - platform: 'ubuntu-22.04' # for Tauri v1 you could replace this with ubuntu-20.04.
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -54,11 +54,20 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: pnpm install # change this to npm or pnpm depending on which one you use.
 
-      - name: Get package name
-        id: get_package_name
+      - name: Get package name from unix
+        id: get_package_name_from_unix
+        if: matrix.platform != 'windows-latest'
         run: |
           PACKAGE_NAME=$(npm pkg get name | tr -d '"')
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+
+      - name: Get package name from windows
+        id: get_package_name_from_windows
+        if: matrix.platform == 'windows-latest'
+        run: |
+          $packageName = (npm pkg get name).Trim('"')
+          echo "PACKAGE_NAME=$packageName" >> $env:GITHUB_ENV
+        shell: pwsh
 
       - uses: tauri-apps/tauri-action@v0
         env:
