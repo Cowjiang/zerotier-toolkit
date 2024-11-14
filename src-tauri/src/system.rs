@@ -13,7 +13,7 @@ pub(crate) fn restart_as_admin() -> String {
         let current = env::current_exe().unwrap();
         let exec_path = current.to_str();
         if exec_path.is_none() {
-            return fail_message_json("can't not get current exe path");
+            return fail_message_json("failed to get current exe path");
         }
         let exec_path = exec_path.unwrap();
         let output = execute_cmd(vec![
@@ -31,7 +31,7 @@ pub(crate) fn restart_as_admin() -> String {
             Ok(value) => {
                 let status = value.status;
                 if !status.success() {
-                    return fail_message_json("resater fail.please restart manually");
+                    return fail_message_json("restart failed, please restart manually");
                 }
                 return success_json("success");
             }

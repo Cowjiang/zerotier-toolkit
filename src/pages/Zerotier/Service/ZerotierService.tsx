@@ -4,6 +4,7 @@ import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { useAppStore } from '../../../store/app.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { ServiceStartType, ServiceStatus } from '../../../typings/enum.ts'
+import useRestartAsAdmin from '../../../utils/hooks/useRestartAsAdmin.ts'
 
 const startTypes = [
   {
@@ -21,9 +22,10 @@ const startTypes = [
 ]
 
 function ZerotierService() {
-  const { isAdmin, restartAsAdmin } = useAppStore()
+  const { isAdmin } = useAppStore()
   const { serviceState, serviceStartType, getServiceState, startService, stopService, setServiceStartType } =
     useZeroTierStore()
+  const { restart } = useRestartAsAdmin()
 
   useEffect(() => {
     getServiceState().catch((_) => {})
@@ -68,7 +70,7 @@ function ZerotierService() {
             fullWidth
             color="warning"
             variant="flat"
-            onPress={restartAsAdmin}
+            onPress={restart}
           >
             Please click here to relaunch as Administrator for management
           </Button>

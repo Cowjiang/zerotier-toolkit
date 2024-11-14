@@ -9,6 +9,7 @@ import { useZeroTierStore } from '../store/zerotier.ts'
 import { ZerotierConfig } from '../typings/config.ts'
 import { InvokeEvent, ServiceStatus } from '../typings/enum.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
+import useRestartAsAdmin from '../utils/hooks/useRestartAsAdmin.ts'
 
 type CheckListItem = {
   key: string
@@ -18,8 +19,9 @@ type CheckListItem = {
 
 function Troubleshooting() {
   const navigate = useNavigate()
-  const { isAdmin, restartAsAdmin } = useAppStore()
+  const { isAdmin } = useAppStore()
   const { serviceState, serverInfo, config, getServiceState } = useZeroTierStore()
+  const { restart } = useRestartAsAdmin()
 
   const [forceChecking, setForceChecking] = useState(false)
   const [forceCheckTime, setForceCheckTime] = useState(Date.now())
@@ -84,7 +86,7 @@ function Troubleshooting() {
       checkResult: {
         type: isAdmin ? 'success' : 'warning',
         content: isAdmin ? '' : 'Click here to relaunch as Administrator',
-        onClick: isAdmin ? undefined : () => restartAsAdmin(),
+        onClick: isAdmin ? undefined : () => restart(),
       },
     },
     // #endif
