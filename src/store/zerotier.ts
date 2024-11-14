@@ -77,7 +77,9 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
         const { [ZerotierConfig.NETWORKS]: networksHistory } = get().config
         const mergedNetworks = [
           ...networks,
-          ...(networksHistory || []).filter((network) => !networks.find(({ id }) => id === network.id)),
+          ...(networksHistory || [])
+            .filter((network) => !networks.find(({ id }) => id === network.id))
+            .map((network) => ({ ...network, status: 'DISCONNECTED' }) as Network),
         ]
         set((state) => ({ ...state, networks: mergedNetworks }))
         set((state) => ({ ...state, config: { ...state.config, [ZerotierConfig.NETWORKS]: mergedNetworks } }))
