@@ -62,7 +62,7 @@ function NetworksTable({
   const statusChip: Record<NetworkStatus | 'UNKNOWN', { label: string; color: ChipProps['color'] }> = {
     OK: { label: 'Connected', color: 'success' },
     DISCONNECTED: { label: 'Disconnected', color: 'secondary' },
-    REQUESTING_CONFIGURATION: { label: 'Requesting Config', color: 'default' },
+    REQUESTING_CONFIGURATION: { label: 'Requesting', color: 'default' },
     ACCESS_DENIED: { label: 'Access Denied', color: 'warning' },
     NOT_FOUND: { label: 'Not Found', color: 'danger' },
     PORT_ERROR: { label: 'Port Error', color: 'danger' },
