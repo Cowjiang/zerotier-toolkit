@@ -1,6 +1,6 @@
 import { mockIPC } from '@tauri-apps/api/mocks'
 
-import { copyToClipboard, invokeCommand, readTextFile, showWindow, writeTextFile } from '../tauriHelpers.ts'
+import { copyToClipboard, invokeCommand, readTextFile, showWindow, writeTextFile } from '../index'
 
 const copyTextMock = vi.fn()
 const writeFileMock = vi.fn()

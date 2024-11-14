@@ -4,8 +4,8 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { AppConfig, ConfigType } from '../typings/config.ts'
 import { InvokeEvent } from '../typings/enum.ts'
+import { invokeCommand } from '../utils/helpers'
 import { createConfigStorage } from '../utils/helpers/configHelpers.ts'
-import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 export type AppState = {
   hasHydrated: boolean

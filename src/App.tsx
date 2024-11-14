@@ -20,7 +20,7 @@ import ZerotierService from './pages/Zerotier/Service/ZerotierService.tsx'
 import ZerotierStatus from './pages/Zerotier/Status/ZerotierStatus.tsx'
 import { useAppStore } from './store/app'
 import { useZeroTierStore } from './store/zerotier'
-import { showWindow } from './utils/helpers/tauriHelpers.ts'
+import { showWindow } from './utils/helpers'
 import useTauriEventListener from './utils/hooks/useTauriEventListener.ts'
 
 function App() {

@@ -2,7 +2,7 @@ import { Tooltip } from '@nextui-org/react'
 import classNames from 'classnames'
 import { ReactNode, useState } from 'react'
 
-import { copyToClipboard } from '../../utils/helpers/tauriHelpers.ts'
+import { copyToClipboard } from '../../utils/helpers'
 
 function CopyText({
   copyValue,

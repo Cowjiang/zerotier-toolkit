@@ -2,7 +2,7 @@ import { StateStorage, StorageValue } from 'zustand/middleware'
 
 import { AppConfig, ConfigType, ZeroTierConfig } from '../../typings/config.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
-import { invokeCommand } from './tauriHelpers.ts'
+import { invokeCommand } from './index'
 
 export const getConfig = async <T extends AppConfig | ZeroTierConfig>(name: ConfigType): Promise<T> => {
   const config = (await invokeCommand(InvokeEvent.GET_CONFIGURATIONS, { name }))?.data || {}

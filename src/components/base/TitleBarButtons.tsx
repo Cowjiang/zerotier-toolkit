@@ -1,6 +1,6 @@
 import { Button } from '@nextui-org/react'
 
-import { closeWindow, minimizeWindow } from '../../utils/helpers/tauriHelpers.ts'
+import { closeWindow, minimizeWindow } from '../../utils/helpers'
 import { CloseIcon, MinusIcon } from './Icon.tsx'
 
 const TitleBarButtons = () => (

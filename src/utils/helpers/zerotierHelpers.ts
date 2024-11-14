@@ -3,7 +3,7 @@ import { Body, HttpVerb, Response } from '@tauri-apps/api/http'
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
 import { ZerotierConfig } from '../../typings/config.ts'
-import { httpRequest } from './tauriHelpers.ts'
+import { httpRequest } from './index'
 
 type RequestOptions = {
   path: string

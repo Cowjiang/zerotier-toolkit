@@ -5,8 +5,8 @@ import { getNetworks, getStatus, leaveNetwork } from '../services/zerotierServic
 import { ConfigType, ZeroTierConfig, ZerotierConfig } from '../typings/config.ts'
 import { InvokeEvent, ServiceStartType, ServiceStatus } from '../typings/enum.ts'
 import { Network, ServerInfo, Status } from '../typings/zerotier.ts'
+import { invokeCommand } from '../utils/helpers'
 import { createConfigStorage } from '../utils/helpers/configHelpers.ts'
-import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 export type ZeroTierState = {
   serviceState: ServiceStatus

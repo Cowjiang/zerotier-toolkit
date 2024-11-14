@@ -8,7 +8,7 @@ import { useAppStore } from '../store/app.ts'
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { ZerotierConfig } from '../typings/config.ts'
 import { InvokeEvent, ServiceStatus } from '../typings/enum.ts'
-import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
+import { invokeCommand } from '../utils/helpers'
 
 type CheckListItem = {
   key: string

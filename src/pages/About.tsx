@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import zerotierLogo from '../assets/zerotier_orange.svg'
 import { BugIcon, GithubIcon, TagsIcon } from '../components/base/Icon.tsx'
-import { getAppVersion, openInSystem } from '../utils/helpers/tauriHelpers.ts'
+import { getAppVersion, openInSystem } from '../utils/helpers'
 
 const developers = [
   {

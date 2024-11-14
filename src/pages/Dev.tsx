@@ -10,7 +10,7 @@ import i18n from '../i18n/index.ts'
 import { getNetworks, getStatus } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
 import { InvokeEvent } from '../typings/enum.ts'
-import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
+import { invokeCommand } from '../utils/helpers'
 
 function Dev() {
   const { restartAsAdmin } = useAppStore()

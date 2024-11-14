@@ -5,7 +5,7 @@ import { useNotification } from '../../../components/providers/NotificationProvi
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { ZerotierConfig } from '../../../typings/config.ts'
 import { InvokeEvent } from '../../../typings/enum.ts'
-import { invokeCommand } from '../../../utils/helpers/tauriHelpers.ts'
+import { invokeCommand } from '../../../utils/helpers'
 
 function SecretTooltip() {
   return (

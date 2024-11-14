@@ -5,7 +5,7 @@ import { useNotification } from '../../components/providers/NotificationProvider
 import { useAppStore } from '../../store/app.ts'
 import { GeneralConfig } from '../../typings/config.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
-import { invokeCommand } from '../../utils/helpers/tauriHelpers.ts'
+import { invokeCommand } from '../../utils/helpers'
 
 function GeneralSetting() {
   const { config, setConfig } = useAppStore()
