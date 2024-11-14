@@ -40,12 +40,11 @@ export const useAppStore = create<AppState & AppAction>()(
         return isAdmin
       },
       restartAsAdmin: async () => {
-        try {
-          const { success } = await invokeCommand(InvokeEvent.RESTART_AS_ADMIN)
-          success && (await exit(1))
-        } catch (e) {
-          console.error(e)
+        const { success, message } = await invokeCommand(InvokeEvent.RESTART_AS_ADMIN)
+        if (!success) {
+          throw message
         }
+        await exit(1)
       },
       setConfig: (config) => {
         set((state) => ({ ...state, config: { ...state.config, ...config } }))
