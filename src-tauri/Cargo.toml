@@ -1,10 +1,9 @@
 [package]
 name = "zerotier-toolkit"
 version = "0.0.1"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+description = "A cross-platform ZeroTier desktop application"
+license = "MIT"
+repository = "https://github.com/Cowjiang/zerotier-toolkit"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

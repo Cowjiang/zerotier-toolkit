@@ -2,6 +2,7 @@ use std::io;
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::process::{Command, Output};
+use log::error;
 
 #[cfg(windows)]
 use winapi::um::winbase::CREATE_NO_WINDOW;
@@ -10,13 +11,21 @@ use crate::r::{self};
 
 pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
     let cmd_str: Vec<&str> = cmds.iter().map(|s| s.as_str()).collect();
-    let final_cmd = std::iter::once("/C").chain(cmd_str);
+    let final_cmd = std::iter::once("/C").chain(cmd_str.clone());
     let mut command = Command::new("cmd");
 
     #[cfg(windows)]
     command.creation_flags(CREATE_NO_WINDOW);
-
-    command.args(final_cmd).output()
+    let result = command.args(final_cmd).output();
+    match result {
+        Ok(output) => {
+            if !output.status.success() {
+                error!("执行命令错误: command=>{} 错误信息:{}", cmd_str.join(" "), parse_output(output.clone().stderr));
+            }
+            return Ok(output);
+        }
+        Err(error) => Err(error)
+    }
 }
 
 pub(crate) fn parse_output(output: Vec<u8>) -> String {

@@ -1,7 +1,9 @@
 {
   "name": "zerotier-toolkit",
-  "private": true,
+  "description": "A cross-platform ZeroTier desktop application",
   "version": "0.0.2",
+  "license": "MIT",
+  "repository": "https://github.com/Cowjiang/zerotier-toolkit",
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
