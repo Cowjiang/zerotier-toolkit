@@ -50,10 +50,10 @@ lazy_static! {
                 String::from("zerotier-one.exe")
             ]
         }
-        // TODO fill this list
         #[cfg(target_os = "macos")]
         {
             vec![
+                String::from("zerotier-one")
             ]
         }
         #[cfg(target_os = "linux")]
