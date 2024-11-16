@@ -35,6 +35,26 @@ You can use the toolkit as a functionality supplement of [ZeroTier Desktop UI](h
 - Self-hosted Moon Support (Todo)
 - Multiple language support (Todo)
 
+## Q&A
+
+### 1. I did install ZeroTier One but the toolkit can't recognize it on macOS
+
+If you installed ZeroTier One in the default location, then you need to grant permission to access the application
+directory for the current user.
+
+You can run this command in the terminal: `sudo chown-R $USER ~/Library/Application\ support/ZeroTier`
+
+### 2. How to use my custom planet or moons
+
+1. Open the toolkit --> Experimental --> Open Zerotier One Folder
+2. Backup your planet or moons.d file and replace it
+3. Restart ZeroTier service or process
+
+### 3. How to restart ZeroTier service/process on macOS and Linux?
+
+1. MacOS: `cat /Library/Application\ Support/ZeroTier/One/zerotier-one.pid | sudo xargs kill`
+2. Linux: `service zerotier-one restart`
+
 ## Copyright
 
 - Logo from `ZeroTier, Inc.`, icons from [FLATICON](https://www.flaticon.com/)
