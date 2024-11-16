@@ -55,6 +55,10 @@ You can run this command in the terminal: `sudo chown-R $USER ~/Library/Applicat
 1. MacOS: `cat /Library/Application\ Support/ZeroTier/One/zerotier-one.pid | sudo xargs kill`
 2. Linux: `service zerotier-one restart`
 
+### 4. Got 'Cannot Be Opened Because the Developer Cannot be Verified' on macOS
+
+`sudo xattr -r -d com.apple.quarantine /Applications/zerotier-toolkit`
+
 ## Copyright
 
 - Logo from `ZeroTier, Inc.`, icons from [FLATICON](https://www.flaticon.com/)
