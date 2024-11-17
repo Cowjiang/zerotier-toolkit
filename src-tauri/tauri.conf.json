@@ -32,7 +32,8 @@
         "readFile": true,
         "writeFile": true,
         "scope": [
-          "$RESOURCE/resources/*"
+          "$RESOURCE/resources/*",
+          "$RESOURCE/config/*"
         ]
       },
       "clipboard": {

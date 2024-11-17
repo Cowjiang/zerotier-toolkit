@@ -9,10 +9,10 @@ use serde_json::Value;
 use tauri::{AppHandle, Manager};
 
 use crate::r::success_json;
-use crate::util::resources_file_util::{get_path_buf_from_resource, open_config_file_default, open_config_file_truncate};
+use crate::util::resources_file_util::{get_path_buf_from_home_dir, open_file_from_home_dir_default, open_file_from_home_dir_truncate};
 
 pub const EVENT_CONFIG_CHANGE: &str = "event_config_change";
-const CONFIG_DIR: &str = "config";
+const CONFIG_DIR: &str = ".zerotier-toolkit/config";
 
 #[derive(Clone)]
 pub struct ConfigurationContext {
@@ -64,15 +64,15 @@ impl ConfigurationContext {
         &mut self,
         file_name: &str,
     ) -> Result<HashMap<String, Value>, String> {
-        let file_path_buf = get_path_buf_from_resource(&self.app_handle, file_name).unwrap();
+        let file_path_buf = get_path_buf_from_home_dir(file_name).unwrap();
         if !file_path_buf.exists() {
             debug!("{file_name} is not exist. skip!");
             return Err(format!("{file_name} is not exist."));
         }
-        let opt_file = open_config_file_default(&self.app_handle, file_name);
+        let opt_file = open_file_from_home_dir_default(file_name);
         if opt_file.is_err() {
             let opt_err = opt_file.err().unwrap();
-            debug!("{file_name} open fail {opt_err}. ");
+            debug!("{} open fail {opt_err}. ",file_path_buf.to_str().unwrap());
             return Err(opt_err.to_string());
         }
         debug!("{file_name} is exist. start to resolve");
@@ -93,7 +93,7 @@ impl ConfigurationContext {
         HashMap::new()
     }
     pub fn store_config_to_file(&mut self, file: &str) {
-        let opt_file = open_config_file_truncate(&self.app_handle, file);
+        let opt_file = open_file_from_home_dir_truncate(file);
         if opt_file.is_err() {
             let opt_err = opt_file.err().unwrap();
             debug!("{file} open fail {opt_err}. fail to store config");
