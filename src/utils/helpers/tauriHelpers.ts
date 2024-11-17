@@ -62,5 +62,5 @@ export const getAppVersion = async () => {
 }
 
 export const openInSystem = async (argument: string) => {
-  argument && (await invokeCommand(InvokeEvent.OPEN_SOMETHING, { something: argument }))
+  argument && (await invokeCommand(InvokeEvent.OPEN_IN_OPERATION_SYSTEM, { something: argument }))
 }

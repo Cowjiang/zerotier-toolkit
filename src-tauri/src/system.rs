@@ -43,7 +43,7 @@ pub(crate) fn restart_as_admin() -> String {
 }
 
 #[tauri::command]
-pub(crate) fn open_something(something: String) -> String {
+pub(crate) fn open_in_operation_system(something: String) -> String {
     return match open::that(something) {
         Ok(_) => success_json("success"),
         Err(err) => fail_message_json(&err.to_string()),

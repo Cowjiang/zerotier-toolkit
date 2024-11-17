@@ -33,7 +33,8 @@ export enum InvokeEvent {
   GET_CONFIGURATIONS = 'get_configurations',
   PUT_CONFIGURATIONS = 'put_configurations',
   RESET_CONFIGURATIONS = 'reset_configurations',
-  OPEN_SOMETHING = 'open_something',
+  OPEN_IN_OPERATION_SYSTEM = 'open_in_operation_system',
+  GET_LATEST_VERSION = 'get_latest_version_command',
 }
 
 export enum Theme {

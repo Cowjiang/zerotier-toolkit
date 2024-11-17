@@ -64,9 +64,10 @@ function Dev() {
     invokeCommandButton(InvokeEvent.OPEN_ZEROTIER_ONE_DIR),
     invokeCommandButton(InvokeEvent.GET_CONFIGURATIONS, { name: 'system' }),
     invokeCommandButton(InvokeEvent.RESET_CONFIGURATIONS, { name: 'all' }),
-    invokeCommandButton(InvokeEvent.OPEN_SOMETHING, {
+    invokeCommandButton(InvokeEvent.OPEN_IN_OPERATION_SYSTEM, {
       something: 'https://github.com/Cowjiang/zerotier-toolkit',
     }),
+    invokeCommandButton(InvokeEvent.GET_LATEST_VERSION),
   ]
 
   function ass(): JSX.Element {
