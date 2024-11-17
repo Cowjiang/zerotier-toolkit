@@ -15,6 +15,7 @@ pub fn open_config_file(
     let json_file_path = opt_configuration_json_file.unwrap();
     let dir = json_file_path.parent().unwrap();
     if !dir.exists() {
+        debug!("config dir is not exist,create dir:{}",dir.to_str().unwrap());
         std::fs::create_dir_all(dir)?;
     }
     let mut open_options = OpenOptions::new();
