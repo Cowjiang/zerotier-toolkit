@@ -27,7 +27,7 @@ lazy_static! {
     {
         vec![
             from_home_dir("/Library/Application Support/ZeroTier/One"),
-            from_home_dir("/Library/Application Support/ZeroTier")
+            from_home_dir("/Library/Application Support/ZeroTier"),
             String::from("/Library/Application Support/ZeroTier/One"),
             String::from("/Library/Application Support/ZeroTier"),
         ]
