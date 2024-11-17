@@ -198,7 +198,6 @@ pub(crate) mod api {
                 String::from("findstr"),
                 String::from("STATE"),
             ];
-            debug!("exec command:{:?}", commands.join(" "));
             let output = execute_cmd(commands);
             return match Self::deal_with_cmd_result(output) {
                 Ok(start_type) => {

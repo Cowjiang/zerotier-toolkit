@@ -1,5 +1,5 @@
 use std::env;
-
+use log::debug;
 use crate::{
     execute_cmd,
     r::{fail_message_json, success_json},
@@ -19,17 +19,12 @@ pub(crate) fn restart_as_admin() -> String {
         let output = execute_cmd(vec![
             String::from("powershell"),
             String::from("-Command"),
-            String::from("Start-Process"),
-            String::from("-FilePath"),
-            String::from(exec_path),
-            String::from("-Verb"),
-            String::from("\"RunAs\""),
-            String::from("-WindowStyle"),
-            String::from("Hidden"),
+            format!("Start-Process -FilePath '{}' -Verb RunAs -WindowStyle Hidden", exec_path)
         ]);
         match output {
             Ok(value) => {
                 let status = value.status;
+                debug!("restart as admin status: {:?}", status);
                 if !status.success() {
                     return fail_message_json("restart failed, please restart manually");
                 }

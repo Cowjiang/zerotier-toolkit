@@ -2,7 +2,7 @@ use std::io;
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::process::{Command, Output};
-use log::error;
+use log::{debug, error};
 
 #[cfg(windows)]
 use winapi::um::winbase::CREATE_NO_WINDOW;
@@ -13,7 +13,7 @@ pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
     let cmd_str: Vec<&str> = cmds.iter().map(|s| s.as_str()).collect();
     let final_cmd = std::iter::once("/C").chain(cmd_str.clone());
     let mut command = Command::new("cmd");
-
+    debug!("exec command:{:?}", cmd_str.join(" "));
     #[cfg(windows)]
     command.creation_flags(CREATE_NO_WINDOW);
     let result = command.args(final_cmd).output();
