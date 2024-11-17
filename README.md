@@ -37,27 +37,27 @@ You can use the toolkit as a functionality supplement of [ZeroTier Desktop UI](h
 
 ## Q&A
 
-### 1. I did install ZeroTier One but the toolkit can't recognize it on macOS
-
-If you installed ZeroTier One in the default location, then you need to grant permission to access the application
-directory for the current user.
-
-You can run this command in the terminal: `sudo chown-R $USER ~/Library/Application\ support/ZeroTier`
-
-### 2. How to use my custom planet or moons
+### 1. How to use my custom planet or moons
 
 1. Open the toolkit --> Experimental --> Open Zerotier One Folder
 2. Backup your planet or moons.d file and replace it
 3. Restart ZeroTier service or process
 
-### 3. How to restart ZeroTier service/process on macOS and Linux?
+### 2. How to restart ZeroTier service/process on macOS and Linux?
 
 1. MacOS: `cat /Library/Application\ Support/ZeroTier/One/zerotier-one.pid | sudo xargs kill`
 2. Linux: `service zerotier-one restart`
 
-### 4. Got 'Cannot Be Opened Because the Developer Cannot be Verified' on macOS
+### 3. Got 'Cannot Be Opened Because the Developer Cannot be Verified' on macOS
 
-`sudo xattr -r -d com.apple.quarantine /Applications/zerotier-toolkit`
+`sudo xattr -r -d com.apple.quarantine /Applications/ZeroTier\ Toolkit`
+
+### 4. I did install ZeroTier One but the toolkit can't recognize it on macOS
+
+If you installed ZeroTier One in the default location, then you need to grant permission to access the application
+directory for the current user.
+
+You can run this command in the terminal: `sudo chown-R $USER ~/Library/Application\ support/ZeroTier`
 
 ## Copyright
 
