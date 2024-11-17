@@ -53,8 +53,7 @@
       "targets": "all",
       "identifier": "com.cj.dev",
       "icon": [
-        "icons/32x32.ico",
-        "icons/icon.ico"
+        "icons/icon_64x64.png"
       ],
       "windows": {
         "nsis": {
@@ -69,7 +68,7 @@
       "csp": null
     },
     "systemTray": {
-      "iconPath": "icons/32x32.ico",
+      "iconPath": "icons/icon_64x64.png",
       "menuOnLeftClick": true
     },
     "macOSPrivateApi": true
