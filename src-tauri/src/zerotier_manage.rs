@@ -7,12 +7,13 @@ use std::string::ToString;
 use lazy_static::lazy_static;
 use log::{debug, error};
 use serde::Serialize;
-
+use tauri::api::path::home_dir;
 use crate::command::execute_cmd;
 use crate::r::{fail_message_json, success_json, unsupported_platform};
 #[cfg(target_os = "windows")]
 use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
 
+const DEFAULT_PORT: &str = "9993";
 lazy_static! {
     static ref GLOBAL_TRY_HOME: Vec<String> = {
     #[cfg(target_os = "windows")]
@@ -25,6 +26,8 @@ lazy_static! {
     #[cfg(target_os = "macos")]
     {
         vec![
+            from_home_dir("/Library/Application Support/ZeroTier/One"),
+            from_home_dir("/Library/Application Support/ZeroTier")
             String::from("/Library/Application Support/ZeroTier/One"),
             String::from("/Library/Application Support/ZeroTier"),
         ]
@@ -78,9 +81,9 @@ lazy_static! {
         #[cfg(target_os = "macos")]
         {
             vec![
+                from_home_dir("/Library/Application Support/ZeroTier/authtoken.secret"),
                 String::from("/Library/Application Support/ZeroTier/authtoken.secret"),
-                String::from("/Library/Application Support/ZeroTier/authtoken.secret"),
-                String::from("/Library/Application Support/ZeroTier/One/authtoken.secret"),
+                from_home_dir("/Library/Application Support/ZeroTier/One/authtoken.secret"),
                 String::from("/Library/Application Support/ZeroTier/One/authtoken.secret"),
 
             ]
@@ -195,24 +198,31 @@ pub(crate) fn get_zerotier_state() -> String {
 
 #[tauri::command]
 pub(crate) fn get_zerotier_server_info() -> String {
-    let mut res_port = Ok(String::from(""));
-    for home_dir in &GLOBAL_TRY_HOME.clone() {
-        let home_dir_path = Path::new(&home_dir);
+    let mut res_port = try_read_port();
+    let res_secret = try_read_files(&GLOBAL_TRY_SECRET_FILES.clone());
+    if res_secret.is_err() {
+        return fail_message_json("resolve secret fail");
+    }
+    success_json(ZerotierServerInfo {
+        port: res_port,
+        secret: res_secret.unwrap(),
+    })
+}
+
+pub fn try_read_port() -> String {
+    for app_home_dir in &GLOBAL_TRY_HOME.clone() {
+        let home_dir_path = Path::new(&app_home_dir);
         for port_file_name in &GLOBAL_TRY_PROT_FILES.clone() {
             let port_file_path = home_dir_path.join(&port_file_name);
             if port_file_path.exists() {
-                res_port = try_read_file(port_file_path.as_path().to_str().unwrap().to_string());
+                let res_port = try_read_file(port_file_path.as_path().to_str().unwrap().to_string());
+                if res_port.is_ok() {
+                    return res_port.unwrap();
+                }
             }
         }
     }
-    let res_secret = try_read_files(&GLOBAL_TRY_SECRET_FILES.clone());
-    if res_port.is_err() || res_secret.is_err() {
-        return fail_message_json("resolve port and secret fail");
-    }
-    success_json(ZerotierServerInfo {
-        port: res_port.unwrap(),
-        secret: res_secret.unwrap(),
-    })
+    DEFAULT_PORT.to_string()
 }
 
 pub fn get_zerotier_one_path() -> Result<ZerotierPathInfo, String> {
@@ -280,21 +290,16 @@ fn try_read_file(file_url: String) -> Result<String, Error> {
 }
 
 fn from_home_dir<'a>(path: &str) -> String {
-    let home_dir = get_user_home_dir().unwrap();
+    let home_dir = get_user_home_dir();
     let home_dir = Path::new(&home_dir);
 
     let result = home_dir.join(path);
-    return result.into_os_string().into_string().unwrap();
+    result.into_os_string().into_string().unwrap()
 }
 
-pub fn get_user_home_dir() -> Result<String, VarError> {
-    #[cfg(windows)]
-        let home = std::env::var("USERPROFILE");
-
-    #[cfg(not(windows))]
-        let home = std::env::var("HOME");
-
-    home
+pub fn get_user_home_dir() -> String {
+    let homedir = home_dir().unwrap();
+    homedir.to_str().unwrap().to_string()
 }
 
 #[cfg(test)]
