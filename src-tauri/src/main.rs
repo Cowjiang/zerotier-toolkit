@@ -20,6 +20,7 @@ use crate::configurations::system_configurations::{
     GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME,
 };
 use crate::logger::init_logger_main;
+use crate::update_check::get_latest_version_command;
 use crate::window::{close_main_window, do_hide_main_window, hide_main_window, show_main_window};
 use crate::zerotier_manage::*;
 
@@ -36,6 +37,7 @@ mod window;
 #[cfg(windows)]
 mod windows_service_manage;
 mod zerotier_manage;
+mod update_check;
 
 fn main() {
     start_tauri();
@@ -110,7 +112,8 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
         // other handlers
         is_admin,
         restart_as_admin,
-        open_something
+        open_in_operation_system,
+        get_latest_version_command
     ]);
     builder
 }
