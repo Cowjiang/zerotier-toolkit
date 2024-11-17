@@ -75,7 +75,7 @@ jobs:
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: ${{ env.PACKAGE_NAME }} v__VERSION__
-          releaseBody: 'TODO: placeholder for changelog.'
+          releaseBody: 'Bug fixes and new features.'
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
