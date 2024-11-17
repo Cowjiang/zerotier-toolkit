@@ -50,7 +50,7 @@ You can use the toolkit as a functionality supplement of [ZeroTier Desktop UI](h
 
 ### 3. Got 'Cannot Be Opened Because the Developer Cannot be Verified' on macOS
 
-`sudo xattr -r -d com.apple.quarantine /Applications/ZeroTier\ Toolkit`
+`sudo xattr -r -d com.apple.quarantine /Applications/ZeroTier\ Toolkit.app`
 
 ### 4. I did install ZeroTier One but the toolkit can't recognize it on macOS
 
