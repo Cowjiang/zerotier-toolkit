@@ -53,7 +53,8 @@
       "targets": "all",
       "identifier": "com.cj.dev",
       "icon": [
-        "icons/icon_64x64.png"
+        "icons/icon_64x64.png",
+        "icons/icon.ico"
       ],
       "windows": {
         "nsis": {
