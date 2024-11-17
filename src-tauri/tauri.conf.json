@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "zerotier-toolkit",
+    "productName": "Zerotier Toolkit",
     "version": "../package.json"
   },
   "tauri": {
