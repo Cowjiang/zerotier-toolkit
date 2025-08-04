@@ -3,7 +3,9 @@ use parking_lot::RwLock;
 use serde_json::Value;
 use tauri::AppHandle;
 
-use crate::configurations::configuration_base::{ConfigurationContext, ConfigurationDef, ExpectType};
+use crate::configurations::configuration_base::{
+    ConfigurationContext, ConfigurationDef, ExpectType,
+};
 
 pub const ZEROTIER_CONFIGURATION_NAME: &str = "zerotier";
 lazy_static! {
@@ -24,7 +26,8 @@ lazy_static! {
     ));
 }
 pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
-    let mut context = ConfigurationContext::new(app_handle.clone(), ZEROTIER_CONFIGURATION_NAME.to_string());
+    let mut context =
+        ConfigurationContext::new(app_handle.clone(), ZEROTIER_CONFIGURATION_NAME.to_string());
     let zerotier_token = ZEROTIER_TOKEN.write();
     zerotier_token.register_to_context(&mut context);
     let zerotier_port = ZEROTIER_PORT.write();

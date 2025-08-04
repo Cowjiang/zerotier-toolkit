@@ -5,7 +5,9 @@ use serde_json::Value;
 use tauri::AppHandle;
 
 use crate::auto_launch::init_and_set_auto_launch;
-use crate::configurations::configuration_base::{ConfigurationContext, ConfigurationDef, ExpectType};
+use crate::configurations::configuration_base::{
+    ConfigurationContext, ConfigurationDef, ExpectType,
+};
 use crate::system_tray::{destroy_system_tray, init_system_tray};
 
 pub const SYSTEM_CONFIGURATION_NAME: &str = "system";
@@ -15,27 +17,39 @@ lazy_static! {
         Value::from("dark"),
         ExpectType::String
     ));
-    static ref THEME_SYNC_WITH_SYSTEM: RwLock<ConfigurationDef> = RwLock::new(
-        ConfigurationDef::new("Theme.IsSyncWithSystem".to_string(), Value::from(true),ExpectType::Boolean)
-    );
+    static ref THEME_SYNC_WITH_SYSTEM: RwLock<ConfigurationDef> =
+        RwLock::new(ConfigurationDef::new(
+            "Theme.IsSyncWithSystem".to_string(),
+            Value::from(true),
+            ExpectType::Boolean
+        ));
     static ref GENERAL_AUTO_START: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
         "General.AutoStart".to_string(),
         Value::from(false),
         ExpectType::Boolean
     ));
-    pub static ref GENERAL_ENABLE_TRAY: RwLock<ConfigurationDef> = RwLock::new(
-        ConfigurationDef::new("General.EnableTray".to_string(), Value::from(false),ExpectType::Boolean)
-    );
-    pub static ref GENERAL_MINIMIZE_TO_TRAY: RwLock<ConfigurationDef> = RwLock::new(
-        ConfigurationDef::new("General.MinimizeToTray".to_string(), Value::from(false),ExpectType::Boolean)
-    );
-    static ref LANGUAGE_UI: RwLock<ConfigurationDef> = RwLock::new(
-        ConfigurationDef::new("Language.UI".to_string(), Value::from("en"),ExpectType::String)
-    );
+    pub static ref GENERAL_ENABLE_TRAY: RwLock<ConfigurationDef> =
+        RwLock::new(ConfigurationDef::new(
+            "General.EnableTray".to_string(),
+            Value::from(false),
+            ExpectType::Boolean
+        ));
+    pub static ref GENERAL_MINIMIZE_TO_TRAY: RwLock<ConfigurationDef> =
+        RwLock::new(ConfigurationDef::new(
+            "General.MinimizeToTray".to_string(),
+            Value::from(false),
+            ExpectType::Boolean
+        ));
+    static ref LANGUAGE_UI: RwLock<ConfigurationDef> = RwLock::new(ConfigurationDef::new(
+        "Language.UI".to_string(),
+        Value::from("en"),
+        ExpectType::String
+    ));
 }
 
 pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
-    let mut context = ConfigurationContext::new(app_handle.clone(), SYSTEM_CONFIGURATION_NAME.to_string());
+    let mut context =
+        ConfigurationContext::new(app_handle.clone(), SYSTEM_CONFIGURATION_NAME.to_string());
     debug!("start to init configuration");
     // == area for put configuration ande register the on-change-callback
     // ==== demo for set a configuration item

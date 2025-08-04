@@ -1,48 +1,46 @@
-use std::env::VarError;
+use std::env::home_dir;
 use std::fs;
 use std::io::Error;
 use std::path::Path;
 use std::string::ToString;
 
-use lazy_static::lazy_static;
-use log::{debug, error};
-use serde::Serialize;
-use tauri::api::path::home_dir;
-use crate::command::execute_cmd;
 use crate::r::{fail_message_json, success_json, unsupported_platform};
 #[cfg(target_os = "windows")]
 use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
+use lazy_static::lazy_static;
+use log::{debug, error};
+use serde::Serialize;
 
 const DEFAULT_PORT: &str = "9993";
 lazy_static! {
     static ref GLOBAL_TRY_HOME: Vec<String> = {
-    #[cfg(target_os = "windows")]
-    {
-         vec![
+        #[cfg(target_os = "windows")]
+        {
+            vec![
                 String::from("C:\\ProgramData\\ZeroTier\\One"),
-                String::from("C:\\ProgramData\\ZeroTier")
-        ]
-    }
-    #[cfg(target_os = "macos")]
-    {
-        vec![
-            from_home_dir("Library/Application Support/ZeroTier/One"),
-            from_home_dir("Library/Application Support/ZeroTier"),
-            String::from("/Library/Application Support/ZeroTier/One"),
-            String::from("/Library/Application Support/ZeroTier"),
-        ]
-    }
-    #[cfg(target_os = "linux")]
-    {
-        vec![
-            String::from("/var/lib/zerotier-one"),
-            String::from("/var/lib/zerotier"),
-        ]
-    }
+                String::from("C:\\ProgramData\\ZeroTier"),
+            ]
+        }
+        #[cfg(target_os = "macos")]
+        {
+            vec![
+                from_home_dir("Library/Application Support/ZeroTier/One"),
+                from_home_dir("Library/Application Support/ZeroTier"),
+                String::from("/Library/Application Support/ZeroTier/One"),
+                String::from("/Library/Application Support/ZeroTier"),
+            ]
+        }
+        #[cfg(target_os = "linux")]
+        {
+            vec![
+                String::from("/var/lib/zerotier-one"),
+                String::from("/var/lib/zerotier"),
+            ]
+        }
     };
-    static ref GLOBAL_TRY_PROT_FILES: Vec<String> =  vec![
-            String::from("zerotier-one.port"),
-            String::from("zerotier.port"),
+    static ref GLOBAL_TRY_PROT_FILES: Vec<String> = vec![
+        String::from("zerotier-one.port"),
+        String::from("zerotier.port"),
     ];
     static ref GLOBAL_TRY_EXECUTE_FILE: Vec<String> = {
         #[cfg(windows)]
@@ -50,20 +48,16 @@ lazy_static! {
             vec![
                 String::from("zerotier-one_x64.exe"),
                 String::from("zerotier-one_x86.exe"),
-                String::from("zerotier-one.exe")
+                String::from("zerotier-one.exe"),
             ]
         }
         #[cfg(target_os = "macos")]
         {
-            vec![
-                String::from("zerotier-one")
-            ]
+            vec![String::from("zerotier-one")]
         }
         #[cfg(target_os = "linux")]
         {
-            vec![
-                String::from("zerotier-one")
-            ]
+            vec![String::from("zerotier-one")]
         }
     };
     static ref GLOBAL_TRY_SECRET_FILES: Vec<String> = {
@@ -75,7 +69,7 @@ lazy_static! {
                 String::from("C:\\ProgramData\\ZeroTier\\One\\authtoken.secret"),
                 String::from("C:\\ProgramData\\ZeroTier\\One\\authtoken.secret"),
                 String::from("C:\\ProgramData\\ZeroTier\\authtoken.secret"),
-                String::from("C:\\ProgramData\\ZeroTier\\authtoken.secret")
+                String::from("C:\\ProgramData\\ZeroTier\\authtoken.secret"),
             ]
         }
         #[cfg(target_os = "macos")]
@@ -85,7 +79,6 @@ lazy_static! {
                 String::from("/Library/Application Support/ZeroTier/authtoken.secret"),
                 from_home_dir("Library/Application Support/ZeroTier/One/authtoken.secret"),
                 String::from("/Library/Application Support/ZeroTier/One/authtoken.secret"),
-
             ]
         }
         #[cfg(target_os = "linux")]
@@ -99,7 +92,6 @@ lazy_static! {
                 String::from("/var/lib/zerotier-one/authtoken.secret"),
             ]
         }
-
     };
 }
 
@@ -118,7 +110,8 @@ pub struct ZerotierPathInfo {
 #[cfg(target_os = "windows")]
 lazy_static! {
     static ref ZEROTIER_SERVICE_NAME: String = String::from("ZeroTierOneService");
-    static ref ZEROTIER_SERVICE_MANAGE: WindowsServiceManage = WindowsServiceManage::new(ZEROTIER_SERVICE_NAME.to_string());
+    static ref ZEROTIER_SERVICE_MANAGE: WindowsServiceManage =
+        WindowsServiceManage::new(ZEROTIER_SERVICE_NAME.to_string());
 }
 
 #[tauri::command]
@@ -215,7 +208,8 @@ pub fn try_read_port() -> String {
         for port_file_name in &GLOBAL_TRY_PROT_FILES.clone() {
             let port_file_path = home_dir_path.join(&port_file_name);
             if port_file_path.exists() {
-                let res_port = try_read_file(port_file_path.as_path().to_str().unwrap().to_string());
+                let res_port =
+                    try_read_file(port_file_path.as_path().to_str().unwrap().to_string());
                 if res_port.is_ok() {
                     return res_port.unwrap();
                 }
@@ -231,7 +225,12 @@ pub fn get_zerotier_one_path() -> Result<ZerotierPathInfo, String> {
         for execute_file_name in &GLOBAL_TRY_EXECUTE_FILE.clone() {
             let execute_file_path = home_dir_path.join(&execute_file_name);
             if execute_file_path.exists() {
-                let file_name = execute_file_path.file_name().unwrap().to_str().unwrap().to_string();
+                let file_name = execute_file_path
+                    .file_name()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_string();
                 return Ok(ZerotierPathInfo {
                     file_dir: home_dir_path.to_str().unwrap().to_string(),
                     file_name,

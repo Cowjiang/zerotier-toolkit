@@ -1,42 +1,22 @@
-use std::env::current_exe;
 
-use auto_launch::AutoLaunch;
 use log::debug;
 use tauri::AppHandle;
+use tauri_plugin_autostart::ManagerExt;
 
 use crate::r::success_json;
 
-fn init_auto(app_handle: &AppHandle) -> AutoLaunch {
-    let config = app_handle.config();
-    let package = &config.package;
-    let default = "".to_string();
-    let product_name = package.product_name.as_ref().unwrap_or(&default);
-    let version = package.version.as_ref().unwrap_or(&default);
-    let app_name = format!("{}@{}", product_name, version);
-    let mut current_exe = current_exe().unwrap();
-    let app_path = current_exe.to_str().unwrap();
-    #[cfg(not(target_os = "macos"))]
-        let auto = AutoLaunch::new(
-        app_name.as_str(),
-        app_path,
-        &[] as &[&str],
-    );
-    #[cfg(target_os = "macos")]
-        let auto = AutoLaunch::new(&*app_name, app_path, false, &[] as &[&str]);
-    auto
-}
+
 
 pub fn init_and_set_auto_launch(app_handle: &AppHandle, enable: bool) -> auto_launch::Result<()> {
-    let auto = init_auto(&app_handle);
+    let auto =  app_handle.autolaunch();
     if enable {
-        auto.enable()?;
+        auto.enable();
     } else {
-        auto.disable()?;
+        auto.disable();
     }
     debug!(
-        "set auto launch:{} exe:{}",
-        auto.is_enabled().unwrap(),
-        auto.get_app_path().to_string()
+        "set auto launch:{} ",
+        auto.is_enabled().unwrap()
     );
     Ok(())
 }

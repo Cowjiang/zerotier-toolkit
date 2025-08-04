@@ -1,4 +1,4 @@
-import { exit } from '@tauri-apps/api/process'
+import { exit } from '@tauri-apps/plugin-process'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 

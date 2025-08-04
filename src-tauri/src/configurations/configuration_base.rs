@@ -6,10 +6,12 @@ use std::path::MAIN_SEPARATOR;
 use log::{debug, error};
 use serde::Serialize;
 use serde_json::Value;
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Emitter, Manager};
 
 use crate::r::success_json;
-use crate::util::resources_file_util::{get_path_buf_from_home_dir, open_file_from_home_dir_default, open_file_from_home_dir_truncate};
+use crate::util::resources_file_util::{
+    get_path_buf_from_home_dir, open_file_from_home_dir_default, open_file_from_home_dir_truncate,
+};
 
 pub const EVENT_CONFIG_CHANGE: &str = "event_config_change";
 const CONFIG_DIR: &str = ".zerotier-toolkit/config";
@@ -60,10 +62,7 @@ impl ConfigurationContext {
     pub fn put_config_def(&mut self, key: String, def: ConfigurationDef) {
         self.configuration_def_map.insert(key, def);
     }
-    fn read_config_from_file(
-        &mut self,
-        file_name: &str,
-    ) -> Result<HashMap<String, Value>, String> {
+    fn read_config_from_file(&mut self, file_name: &str) -> Result<HashMap<String, Value>, String> {
         let file_path_buf = get_path_buf_from_home_dir(file_name).unwrap();
         if !file_path_buf.exists() {
             debug!("{file_name} is not exist. skip!");
@@ -72,11 +71,12 @@ impl ConfigurationContext {
         let opt_file = open_file_from_home_dir_default(file_name);
         if opt_file.is_err() {
             let opt_err = opt_file.err().unwrap();
-            debug!("{} open fail {opt_err}. ",file_path_buf.to_str().unwrap());
+            debug!("{} open fail {opt_err}. ", file_path_buf.to_str().unwrap());
             return Err(opt_err.to_string());
         }
         debug!("{file_name} is exist. start to resolve");
-        let config: HashMap<String, Value> = serde_json::from_reader(opt_file.unwrap()).expect("json serialize fail");
+        let config: HashMap<String, Value> =
+            serde_json::from_reader(opt_file.unwrap()).expect("json serialize fail");
         Ok(config)
     }
     pub fn try_read_config_from_file(&mut self) -> HashMap<String, Value> {
@@ -136,10 +136,12 @@ impl ConfigurationContext {
         }
         let config_def = config_def.unwrap();
         if !config_def.expect_type.check_value(&value) {
-            error!("configuration item {} expect type {:?} but get {:?}",
+            error!(
+                "configuration item {} expect type {:?} but get {:?}",
                 key.clone(),
                 config_def.expect_type,
-                value.clone());
+                value.clone()
+            );
             return;
         }
         self.on_change(config_def, value.clone());
@@ -155,7 +157,7 @@ impl ConfigurationContext {
         }
         let app_handle = self.app_handle.clone();
         app_handle
-            .emit_all(
+            .emit(
                 EVENT_CONFIG_CHANGE,
                 success_json(ConfigurationChangeEvent {
                     key: config_def.key.clone(),
@@ -205,12 +207,17 @@ impl ConfigurationContext {
     }
 
     pub fn reset_to_default(&mut self) {
-        debug!("reset configurations [{}] to default",self.name.clone());
+        debug!("reset configurations [{}] to default", self.name.clone());
         self.configuration_def_map
             .clone()
             .values()
             .for_each(|value| {
-                debug!("reset config:{}:{} to default {}", value.key.clone(),self.name.clone(),value.default_value.clone());
+                debug!(
+                    "reset config:{}:{} to default {}",
+                    value.key.clone(),
+                    self.name.clone(),
+                    value.default_value.clone()
+                );
                 self.put_config(value.key.clone(), value.default_value.clone())
             });
     }
@@ -265,4 +272,3 @@ impl ExpectType {
         }
     }
 }
-

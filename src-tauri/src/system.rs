@@ -1,10 +1,10 @@
-use std::env;
-use log::debug;
+use crate::r::unsupported_platform;
 use crate::{
     execute_cmd,
     r::{fail_message_json, success_json},
 };
-use crate::r::unsupported_platform;
+use log::debug;
+use std::env;
 
 #[tauri::command]
 pub(crate) fn restart_as_admin() -> String {
@@ -19,7 +19,10 @@ pub(crate) fn restart_as_admin() -> String {
         let output = execute_cmd(vec![
             String::from("powershell"),
             String::from("-Command"),
-            format!("Start-Process -FilePath '{}' -Verb RunAs -WindowStyle Hidden", exec_path)
+            format!(
+                "Start-Process -FilePath '{}' -Verb RunAs -WindowStyle Hidden",
+                exec_path
+            ),
         ]);
         match output {
             Ok(value) => {

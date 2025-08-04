@@ -1,4 +1,4 @@
-import { Body, HttpVerb, Response } from '@tauri-apps/api/http'
+import { Body, HttpVerb, Response } from '@tauri-apps/plugin-http'
 
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'

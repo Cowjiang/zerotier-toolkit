@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react'
-import { Response } from '@tauri-apps/api/http'
+import { Response } from '@tauri-apps/plugin-http'
 import { Key, useCallback, useRef, useState } from 'react'
 
 import CopyText from '../../../components/base/CopyText.tsx'

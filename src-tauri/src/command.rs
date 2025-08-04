@@ -1,8 +1,8 @@
+use log::{debug, error};
 use std::io;
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::process::{Command, Output};
-use log::{debug, error};
 
 #[cfg(windows)]
 use winapi::um::winbase::CREATE_NO_WINDOW;
@@ -20,11 +20,15 @@ pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
     match result {
         Ok(output) => {
             if !output.status.success() {
-                error!("执行命令错误: command=>{} 错误信息:{}", cmd_str.join(" "), parse_output(output.clone().stderr));
+                error!(
+                    "执行命令错误: command=>{} 错误信息:{}",
+                    cmd_str.join(" "),
+                    parse_output(output.clone().stderr)
+                );
             }
             return Ok(output);
         }
-        Err(error) => Err(error)
+        Err(error) => Err(error),
     }
 }
 

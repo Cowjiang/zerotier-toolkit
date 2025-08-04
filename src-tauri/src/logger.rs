@@ -1,16 +1,16 @@
 extern crate env_logger;
 
-use std::{env, io};
 use std::collections::LinkedList;
 use std::fs::{File, OpenOptions};
 use std::io::Write;
 use std::sync::Once;
+use std::{env, io};
 
 use chrono::Local;
 use env_logger::Builder;
-use log::{info, LevelFilter};
 use log::LevelFilter::Info;
-use tauri::AppHandle;
+use log::{info, LevelFilter};
+use tauri::{AppHandle, Manager};
 
 use crate::logger;
 
@@ -84,26 +84,20 @@ pub fn init_logger() {
 }
 
 pub fn init_logger_main(app_handle: &AppHandle) {
-    let opt_log_file = app_handle.path_resolver().resolve_resource("system.log");
+    let mut opt_log_file = app_handle.path().resource_dir().unwrap();
+    opt_log_file.push("system.log");
     let mut opt_open_log_file: Option<File> = None;
-    match opt_log_file {
-        Some(value) => {
-            let file = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .write(true)
-                .open(value);
-            match file {
-                Ok(file) => {
-                    let _ = opt_open_log_file.insert(file);
-                }
-                Err(error) => {
-                    println!("loading log file fail:{}", error.to_string())
-                }
-            }
+    let file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .write(true)
+        .open(opt_log_file);
+    match file {
+        Ok(file) => {
+            let _ = opt_open_log_file.insert(file);
         }
-        None => {
-            println!("loading log file fail:{:?}", opt_log_file)
+        Err(error) => {
+            println!("loading log file fail:{}", error.to_string())
         }
     }
     #[cfg(debug_assertions)]

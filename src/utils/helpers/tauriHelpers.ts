@@ -1,14 +1,19 @@
 import { getVersion } from '@tauri-apps/api/app'
-import { writeText } from '@tauri-apps/api/clipboard'
-import { FsOptions, readTextFile as tauriReadTextFile, writeTextFile as tauriWriteTextFile } from '@tauri-apps/api/fs'
-import { getClient, HttpOptions } from '@tauri-apps/api/http'
+import { invoke, InvokeArgs } from '@tauri-apps/api/core'
 import { resolveResource } from '@tauri-apps/api/path'
-import { invoke, InvokeArgs } from '@tauri-apps/api/tauri'
-import { appWindow } from '@tauri-apps/api/window'
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { writeText } from '@tauri-apps/plugin-clipboard-manager'
+import {
+  FsOptions,
+  readTextFile as tauriReadTextFile,
+  writeTextFile as tauriWriteTextFile,
+} from '@tauri-apps/plugin-fs'
+import { getClient, HttpOptions } from '@tauri-apps/plugin-http'
 
 import { CONFIGURATION_FILE_PATH } from '../../constant.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
 import { InvokeResponse } from '../../typings/global.ts'
+const appWindow = getCurrentWebviewWindow()
 
 export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<InvokeResponse & { success: boolean }> => {
   const result: string = await invoke(cmd, args)

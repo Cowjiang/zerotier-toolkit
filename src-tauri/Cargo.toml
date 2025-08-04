@@ -9,26 +9,18 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5.4", features = [] }
+tauri-build = { version = "2", features = [] }
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "zerotier_toolkit_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
-tauri = { version = "1.7.2", features = [
-    "macos-private-api",
-    "window-minimize",
-    "window-hide",
-    "window-start-dragging",
-    "window-close",
-    "window-unminimize",
-    "window-show",
-    "clipboard-write-text",
-    "system-tray",
-    "fs-write-file",
-    "fs-read-file",
-    "path-all",
-    "http-request",
-    "process-exit",
-    "shell-open",
-    "process-command-api",
+tauri = { version = "2", features = [
+    "macos-private-api", "tray-icon",
 ] }
 serde = { version = "1.0.210", features = ["derive"] }
 serde_json = "1.0.128"
@@ -46,6 +38,11 @@ open = "5.3.0"
 reqwest = { version = "0.11.7", features = ["blocking"] }
 futures = "0.3.30"
 tokio = { version = "1.40.0", features = ["full"] }
+tauri-plugin-process = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-http = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
 
 [dev-dependencies]
 tokio = { version = "1.40.0", features = ["full"] }
@@ -55,3 +52,6 @@ tokio = { version = "1.40.0", features = ["full"] }
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-autostart = "2"

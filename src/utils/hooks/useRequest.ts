@@ -1,5 +1,5 @@
 import { Link } from '@nextui-org/react'
-import { Response } from '@tauri-apps/api/http'
+import { Response } from '@tauri-apps/plugin-http'
 import { createElement } from 'react'
 
 import { useNotification } from '../../components/providers/NotificationProvider.tsx'

@@ -1,12 +1,9 @@
-use std::process;
-
 use lazy_static::lazy_static;
 use log::debug;
 use parking_lot::RwLock;
-use tauri::{
-    AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
-    SystemTrayMenuItem,
-};
+use tauri::menu::{Menu, MenuEvent, MenuItem};
+use tauri::tray::{TrayIcon, TrayIconBuilder, TrayIconEvent};
+use tauri::{AppHandle, Emitter};
 
 use crate::show_main_window;
 use crate::window::exit_app;
@@ -30,49 +27,85 @@ lazy_static! {
 }
 
 pub fn init_system_tray(app_handle: &AppHandle) {
-    let status_item = CustomMenuItem::new(String::from(STATUS_ITEM_ID), STATUS_ITEM_TITLE);
-    let networks_item = CustomMenuItem::new(String::from(NETWORKS_ITEM_ID), NETWORKS_ITEM_TITLE);
-    let settings_item = CustomMenuItem::new(String::from(SETTINGS_ITEM_ID), SETTINGS_ITEM_TITLE);
-    let quit_item = CustomMenuItem::new(String::from(QUIT_ITEM_ID), QUIT_ITEM_TITLE);
-    let tray_menu = SystemTrayMenu::new()
-        .add_item(status_item)
-        .add_item(networks_item)
-        .add_native_item(SystemTrayMenuItem::Separator)
-        .add_item(settings_item)
-        .add_item(quit_item);
-    let mut system_tray = SystemTray::new().with_menu(tray_menu);
-    system_tray = handle_system_tray_event(app_handle.clone(), system_tray);
-    system_tray.with_id(TRAY_ID).build(&app_handle.clone()).unwrap();
+    let status_item = MenuItem::with_id(
+        app_handle,
+        String::from(STATUS_ITEM_ID),
+        STATUS_ITEM_TITLE,
+        true,
+        None::<&str>,
+    )
+    .unwrap();
+    let networks_item = MenuItem::with_id(
+        app_handle,
+        String::from(NETWORKS_ITEM_ID),
+        NETWORKS_ITEM_TITLE,
+        true,
+        None::<&str>,
+    )
+    .unwrap();
+    let settings_item = MenuItem::with_id(
+        app_handle,
+        String::from(SETTINGS_ITEM_ID),
+        SETTINGS_ITEM_TITLE,
+        true,
+        None::<&str>,
+    )
+    .unwrap();
+    let quit_item = MenuItem::with_id(
+        app_handle,
+        String::from(QUIT_ITEM_ID),
+        QUIT_ITEM_TITLE,
+        true,
+        None::<&str>,
+    )
+    .unwrap();
+    let menu = Menu::with_items(
+        app_handle,
+        &[&status_item, &networks_item, &settings_item, &quit_item],
+    )
+    .unwrap();
+
+    let _ = TrayIconBuilder::with_id(TRAY_ID)
+        .menu(&menu)
+        .show_menu_on_left_click(true)
+        .on_tray_icon_event(|icon, event| {
+            handle_tray_event(icon, event);
+        })
+        .on_menu_event(|app, event| {
+            handle_tray_menu_event(app.clone(), event);
+        })
+        .build(app_handle);
 }
 
 pub fn destroy_system_tray(app_handle: &AppHandle) {
-    let _ = app_handle
-        .tray_handle_by_id(TRAY_ID)
-        .is_some_and(|tray_handle| {
-            let result = tray_handle.destroy().is_ok();
-            debug!(
-                "destory tray is {:?} and tray is {:?}",
-                result,
-                app_handle.tray_handle_by_id(TRAY_ID).is_some()
-            );
-            result
-        });
+    let _ = app_handle.tray_by_id(TRAY_ID).is_some_and(|icon| {
+        let result = icon.set_visible(false).is_ok();
+        debug!(
+            "destory tray is {:?} and tray is {:?}",
+            result,
+            app_handle.tray_by_id(TRAY_ID).is_some()
+        );
+        result
+    });
 }
 
-pub fn handle_system_tray_event(app_handle: AppHandle, system_tray: SystemTray) -> SystemTray {
-    system_tray.on_event(move |e| match e {
-        SystemTrayEvent::DoubleClick { .. } => {
-            show_main_window(app_handle.clone());
+fn handle_tray_event(tray: &TrayIcon, event: TrayIconEvent) {
+    match event {
+        TrayIconEvent::DoubleClick { .. } => {
+            show_main_window(tray.app_handle().clone());
         }
-        SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
-            QUIT_ITEM_ID => {
-                exit_app(&app_handle);
-            }
-            _ => {
-                show_main_window(app_handle.clone());
-                app_handle.emit_all("NAVIGATE", id).unwrap();
-            }
-        },
         _ => {}
-    })
+    }
+}
+
+pub fn handle_tray_menu_event(app_handle: AppHandle, event: MenuEvent) {
+    match event.id.as_ref().to_string().as_str() {
+        QUIT_ITEM_ID => {
+            exit_app(&app_handle);
+        }
+        event => {
+            show_main_window(app_handle.clone());
+            app_handle.emit("NAVIGATE", event);
+        }
+    }
 }

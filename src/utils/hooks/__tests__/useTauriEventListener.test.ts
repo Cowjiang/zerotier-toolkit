@@ -1,5 +1,5 @@
+import { invoke } from '@tauri-apps/api/core'
 import { mockIPC } from '@tauri-apps/api/mocks'
-import { invoke } from '@tauri-apps/api/tauri'
 import { renderHook } from '@testing-library/react'
 
 import useTauriEventListener from '../useTauriEventListener.ts'

@@ -1,14 +1,13 @@
 use serde::Serialize;
 
-
 static SUCCESS: i8 = 0;
 static FAIL: i8 = -1;
 static UNSUPPORTED_PLATFORM: i8 = -2;
 
 #[derive(Debug, Serialize)]
 pub struct R<T>
-    where
-        T: Serialize,
+where
+    T: Serialize,
 {
     code: i8,
     message: String,
@@ -16,8 +15,8 @@ pub struct R<T>
 }
 
 pub(crate) fn success<T>(data: T) -> R<T>
-    where
-        T: Serialize,
+where
+    T: Serialize,
 {
     R {
         code: 0,
@@ -28,8 +27,8 @@ pub(crate) fn success<T>(data: T) -> R<T>
 
 #[allow(unused)]
 pub(crate) fn fail<T>(data: T) -> R<T>
-    where
-        T: Serialize,
+where
+    T: Serialize,
 {
     R {
         code: SUCCESS,
@@ -39,8 +38,8 @@ pub(crate) fn fail<T>(data: T) -> R<T>
 }
 
 pub(crate) fn success_json<T>(data: T) -> String
-    where
-        T: Serialize,
+where
+    T: Serialize,
 {
     let result = success(data);
     serde_json::to_string(&result).unwrap()
@@ -61,7 +60,6 @@ pub(crate) fn fail_json() -> String {
     let result = fail_message("fail");
     serde_json::to_string(&result).unwrap()
 }
-
 
 pub(crate) fn fail_message(message: &str) -> R<Option<String>> {
     R {

@@ -2,80 +2,41 @@
   "build": {
     "beforeDevCommand": "pnpm vite:dev",
     "beforeBuildCommand": "pnpm vite:build",
-    "devPath": "http://localhost:8000",
-    "distDir": "../dist"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:8000"
   },
-  "package": {
-    "productName": "ZeroTier Toolkit",
-    "version": "../package.json"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "process": {
-        "exit": true
-      },
-      "http": {
-        "request": true,
-        "scope": [
-          "http://127.0.0.1*"
-        ]
-      },
-      "path": {
-        "all": true
-      },
-      "fs": {
-        "readFile": true,
-        "writeFile": true,
-        "scope": [
-          "$RESOURCE/resources/*",
-          "$RESOURCE/config/*"
-        ]
-      },
-      "clipboard": {
-        "writeText": true
-      },
-      "window": {
-        "all": false,
-        "close": true,
-        "unminimize": true,
-        "minimize": true,
-        "startDragging": true,
-        "show": true,
-        "hide": true
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "resources": [
+      "./resources"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "installMode": "perMachine"
       }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.cj.dev",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "windows": {
-        "nsis": {
-          "installMode": "perMachine"
-        }
-      },
-      "resources": [
-        "resources/*"
-      ]
-    },
-    "security": {
-      "csp": null
-    },
-    "systemTray": {
+    }
+  },
+  "productName": "ZeroTier Toolkit",
+  "mainBinaryName": "ZeroTier Toolkit",
+  "version": "../package.json",
+  "identifier": "com.cj.dev",
+  "plugins": {},
+  "app": {
+    "macOSPrivateApi": true,
+    "trayIcon": {
       "iconPath": "icons/32x32.png",
       "menuOnLeftClick": true
     },
-    "macOSPrivateApi": true
+    "security": {
+      "csp": null
+    }
   }
 }
