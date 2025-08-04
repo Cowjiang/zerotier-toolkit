@@ -68,6 +68,7 @@ function Dev() {
       something: 'https://github.com/Cowjiang/zerotier-toolkit',
     }),
     invokeCommandButton(InvokeEvent.GET_LATEST_VERSION),
+    invokeCommandButton(InvokeEvent.GET_EMBEDDING_ZEROTIER_VERSION),
   ]
 
   function ass(): JSX.Element {

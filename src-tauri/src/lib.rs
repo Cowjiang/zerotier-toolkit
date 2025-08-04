@@ -17,6 +17,7 @@ use crate::configurations::configurations_service::{
 use crate::configurations::system_configurations::{
     GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME,
 };
+use crate::embedding_zerotier::get_embedding_zerotier_version;
 use crate::logger::init_logger_main;
 use crate::update_check::get_latest_version_command;
 use crate::window::{close_main_window, do_hide_main_window, hide_main_window, show_main_window};
@@ -36,6 +37,7 @@ mod window;
 #[cfg(windows)]
 mod windows_service_manage;
 mod zerotier_manage;
+mod embedding_zerotier;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -47,10 +49,11 @@ fn start_tauri() {
         std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
     }
     let mut builder = tauri::Builder::default()
+        // .plugin(tauri_plugin_log::Builder::new().build())
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             // what's args?
-             Some(vec!["--flag1", "--flag2"]),
+            Some(vec!["--flag1", "--flag2"]),
         ))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
@@ -66,7 +69,7 @@ fn start_tauri() {
 }
 
 fn register_window_event_handler(builder: Builder<Wry>) -> Builder<Wry> {
-    let builder = builder.on_window_event(|window,global_window_event| {
+    let builder = builder.on_window_event(|window, global_window_event| {
         let app_handle = window.app_handle();
         match global_window_event {
             WindowEvent::CloseRequested { api, .. } => {
@@ -118,6 +121,8 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
         get_configurations,
         put_configurations,
         reset_configurations,
+        // embedding zerotier
+        get_embedding_zerotier_version,
         // other handlers
         is_admin,
         restart_as_admin,

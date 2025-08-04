@@ -22,7 +22,10 @@
       "nsis": {
         "installMode": "perMachine"
       }
-    }
+    },
+    "externalBin":[
+      "binaries/zerotier-core"
+    ]
   },
   "productName": "ZeroTier Toolkit",
   "mainBinaryName": "ZeroTier Toolkit",

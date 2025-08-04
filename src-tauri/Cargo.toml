@@ -43,6 +43,7 @@ tauri-plugin-clipboard-manager = "2"
 tauri-plugin-http = "2"
 tauri-plugin-fs = "2"
 tauri-plugin-shell = "2"
+tauri-plugin-log = "2"
 
 [dev-dependencies]
 tokio = { version = "1.40.0", features = ["full"] }
