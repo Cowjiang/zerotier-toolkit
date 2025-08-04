@@ -4,15 +4,16 @@ import { resolveResource } from '@tauri-apps/api/path'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 import {
-  FsOptions,
+  ReadFileOptions,
   readTextFile as tauriReadTextFile,
+  WriteFileOptions,
   writeTextFile as tauriWriteTextFile,
 } from '@tauri-apps/plugin-fs'
-import { getClient, HttpOptions } from '@tauri-apps/plugin-http'
 
 import { CONFIGURATION_FILE_PATH } from '../../constant.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
 import { InvokeResponse } from '../../typings/global.ts'
+
 const appWindow = getCurrentWebviewWindow()
 
 export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<InvokeResponse & { success: boolean }> => {
@@ -26,19 +27,14 @@ export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<Inv
   }
 }
 
-export const httpRequest = async <T>(options: HttpOptions) => {
-  const client = await getClient()
-  return await client.request<T>(options)
-}
-
-export const readTextFile = async (path = CONFIGURATION_FILE_PATH, options?: FsOptions) => {
+export const readTextFile = async (path = CONFIGURATION_FILE_PATH, options?: ReadFileOptions) => {
   const filePath = await resolveResource(path)
   const content = await tauriReadTextFile(filePath, options)
   console.log('[ReadTextFile]', filePath, content, options)
   return content
 }
 
-export const writeTextFile = async (contents: string, path = CONFIGURATION_FILE_PATH, options?: FsOptions) => {
+export const writeTextFile = async (contents: string, path = CONFIGURATION_FILE_PATH, options?: WriteFileOptions) => {
   const filePath = await resolveResource(path)
   const response = await tauriWriteTextFile(filePath, contents, options)
   console.log('[WriteTextFile]', filePath, contents, options)

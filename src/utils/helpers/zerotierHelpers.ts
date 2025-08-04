@@ -1,18 +1,22 @@
-import { Body, HttpVerb, Response } from '@tauri-apps/plugin-http'
+import { fetch } from '@tauri-apps/plugin-http'
 
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
 import { ZerotierConfig } from '../../typings/config.ts'
-import { httpRequest } from './tauriHelpers.ts'
 
 type RequestOptions = {
   path: string
-  method: HttpVerb
+  method: string
   query?: Record<string, any>
-  body?: Body
+  body?: BodyInit
+}
+type HttpResponse<T> = {
+  ok: boolean
+  status: number
+  data: T
 }
 
-const request = async <T>({ path, method, ...options }: RequestOptions) => {
+const request = async <T>({ path, method, ...options }: RequestOptions): Promise<HttpResponse<T>> => {
   const { serverInfo, config } = useZeroTierStore.getState()
   const { port, secret } = serverInfo
   const { [ZerotierConfig.PORT]: overridePort, [ZerotierConfig.TOKEN]: overrideToken } = config
@@ -22,20 +26,24 @@ const request = async <T>({ path, method, ...options }: RequestOptions) => {
       ok: false,
       status: 401,
       data: 'Invalid port or secret for the ZeroTier service',
-    } as Response<T>
+    } as HttpResponse<T>
   }
   const httpOptions = {
-    url: `${ZEROTIER_SERVICE_HOST}:${overridePort || port}${path}`,
     method,
     headers: {
-      'X-ZT1-Auth': overrideToken || secret,
+      'X-ZT1-Auth': overrideToken || secret || '',
     },
     ...options,
-  }
-  const res: Response<T> = await httpRequest<T>(httpOptions)
-  console.log('[Request]', httpOptions, res)
+  } as RequestInit
+  const url = `${ZEROTIER_SERVICE_HOST}:${overridePort || port}${path}`
+  const res = await fetch(url, httpOptions)
+  console.log('[Request]', path, httpOptions, res)
   !res.ok && (await Promise.reject(res))
-  return res
+  return {
+    ok: res.ok,
+    status: res.status,
+    data: JSON.parse(await res.text()) as T,
+  }
 }
 
 export const zerotierService = {
@@ -47,6 +55,6 @@ export const zerotierService = {
     await request<R>({
       method: 'POST',
       path,
-      body: Body.json({ ...body }),
+      body: JSON.stringify(body),
     }),
 }

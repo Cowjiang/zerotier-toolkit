@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import PreprocessorDirectives from 'unplugin-preprocessor-directives/vite'
+import { defineConfig } from 'vite'
 
 function checkPlatform() {
   const { platform, env } = process
