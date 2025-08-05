@@ -23,7 +23,7 @@
         "installMode": "perMachine"
       }
     },
-    "externalBin":[
+    "externalBin": [
       "binaries/zerotier-core"
     ]
   },
@@ -34,10 +34,6 @@
   "plugins": {},
   "app": {
     "macOSPrivateApi": true,
-    "trayIcon": {
-      "iconPath": "icons/32x32.png",
-      "menuOnLeftClick": true
-    },
     "security": {
       "csp": null
     }

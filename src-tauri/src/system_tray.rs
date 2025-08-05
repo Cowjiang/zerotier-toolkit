@@ -26,7 +26,15 @@ lazy_static! {
     static ref SYSTEM_TRAY_STATUS: RwLock<bool> = RwLock::new(false);
 }
 
-pub fn init_system_tray(app_handle: &AppHandle) {
+pub fn show_system_tray(app_handle: &AppHandle) {
+    let current_tray = app_handle.tray_by_id(TRAY_ID);
+    if current_tray.is_some() {
+        debug!("show tray");
+        let _ = current_tray.unwrap().set_visible(true);
+        return;
+    }
+
+    debug!("init tray");
     let status_item = MenuItem::with_id(
         app_handle,
         String::from(STATUS_ITEM_ID),
@@ -34,7 +42,7 @@ pub fn init_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-    .unwrap();
+        .unwrap();
     let networks_item = MenuItem::with_id(
         app_handle,
         String::from(NETWORKS_ITEM_ID),
@@ -42,7 +50,7 @@ pub fn init_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-    .unwrap();
+        .unwrap();
     let settings_item = MenuItem::with_id(
         app_handle,
         String::from(SETTINGS_ITEM_ID),
@@ -50,7 +58,7 @@ pub fn init_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-    .unwrap();
+        .unwrap();
     let quit_item = MenuItem::with_id(
         app_handle,
         String::from(QUIT_ITEM_ID),
@@ -58,12 +66,12 @@ pub fn init_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-    .unwrap();
+        .unwrap();
     let menu = Menu::with_items(
         app_handle,
         &[&status_item, &networks_item, &settings_item, &quit_item],
     )
-    .unwrap();
+        .unwrap();
 
     let _ = TrayIconBuilder::with_id(TRAY_ID)
         .menu(&menu)
@@ -74,7 +82,8 @@ pub fn init_system_tray(app_handle: &AppHandle) {
         .on_menu_event(|app, event| {
             handle_tray_menu_event(app.clone(), event);
         })
-        .build(app_handle);
+        .icon(app_handle.default_window_icon().unwrap().clone())
+        .build(app_handle).unwrap().set_visible(true);
 }
 
 pub fn destroy_system_tray(app_handle: &AppHandle) {
