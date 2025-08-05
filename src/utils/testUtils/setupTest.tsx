@@ -1,4 +1,4 @@
-import { clearMocks, mockIPC, mockWindows } from '@tauri-apps/api/mocks'
+import { clearMocks, mockWindows } from '@tauri-apps/api/mocks'
 import { Queries, queries, render, renderHook, RenderHookOptions, RenderOptions } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
@@ -11,20 +11,6 @@ vi.mock('zustand')
 
 beforeEach(() => {
   useZeroTierStore.setState({ serverInfo: { port: 9999, secret: 'test' } })
-  mockIPC(async (cmd, args) => {
-    if (cmd === 'tauri' && (args.message as any)?.cmd === 'httpRequest') {
-      const { url, method } = (args.message as any).options
-      const res = await fetch(url, {
-        method,
-      })
-      return {
-        url,
-        status: res.status,
-        ok: res.ok,
-        data: JSON.stringify(await res.json()),
-      }
-    }
-  })
   mockWindows('main')
 })
 beforeAll(() => {

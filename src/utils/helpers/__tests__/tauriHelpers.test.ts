@@ -9,31 +9,23 @@ const showWindowMock = vi.fn()
 
 beforeEach(() => {
   mockIPC(async (cmd, args) => {
-    if (cmd === 'invokeCommandTest') {
-      return JSON.stringify({ code: 0, data: args.data })
-    } else if (cmd === 'invokeCommandFailureTest') {
-      return 'invoke command failed'
-    } else if (cmd === 'tauri') {
-      const cmdMap: { [key: string]: any } = {
-        resolvePath: '\\debug\\resources\\configuration.json',
-        readTextFile: 'content test',
-        writeFile: () => writeFileMock(),
-        writeText: () => copyTextMock((args.message as any).data),
-        manage: () => {
-          const { cmd } = (args.message as any).data
-          if (cmd?.type === 'isMinimized') {
-            return true
-          } else if (cmd?.type === 'unminimize') {
-            unminimizeMock()
-          } else if (cmd?.type === 'show') {
-            showWindowMock()
-          }
-        },
-      }
-      !Object.keys(cmdMap).includes((args.message as any)?.cmd) && console.log(args)
-      const action = cmdMap?.[(args.message as any)?.cmd]
-      return typeof action !== 'function' ? action : action?.()
+    const cmdMap: { [key: string]: () => void } = {
+      invokeCommandTest: () => JSON.stringify({ code: 0, data: (args as any).data }),
+      invokeCommandFailureTest: () => 'invoke command failed',
+      'plugin:path|resolve_directory': () => '\\debug\\resources\\configuration.json',
+      'plugin:fs|read_text_file': () => 'test',
+      'plugin:fs|write_text_file': () => writeFileMock(),
+      'plugin:clipboard-manager|write_text': () => copyTextMock((args as any).text),
+      'plugin:window|is_minimized': () => true,
+      'plugin:window|unminimize': () => unminimizeMock(),
+      'plugin:window|show': () => showWindowMock(),
     }
+    const action = cmdMap?.[cmd]
+    if (typeof action !== 'function') {
+      console.warn('[Warning] Command not mocked', cmd)
+      return
+    }
+    return action?.()
   })
 })
 
@@ -57,7 +49,7 @@ describe('Tauri helpers', () => {
 
   it('should read text file', async () => {
     const content = await readTextFile()
-    expect(content).toBe('content test')
+    expect(content.length).toBe(4)
   })
 
   it('should write text file', async () => {

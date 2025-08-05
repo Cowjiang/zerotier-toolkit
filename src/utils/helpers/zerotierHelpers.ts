@@ -42,7 +42,7 @@ const request = async <T>({ path, method, ...options }: RequestOptions): Promise
   return {
     ok: res.ok,
     status: res.status,
-    data: JSON.parse(await res.text()) as T,
+    data: (await res.json()) as T,
   }
 }
 

@@ -5,12 +5,18 @@ import { expect, vi } from 'vitest'
 import { render } from '../../../utils/testUtils/setupTest.tsx'
 import CopyText from '../CopyText.tsx'
 
-const writeText = vi.fn()
+const copyTextMock = vi.fn()
 beforeEach(() => {
   mockIPC((cmd, args) => {
-    if (cmd === 'tauri' && (args.message as any)?.cmd === 'writeText') {
-      writeText((args.message as any)?.data)
+    const cmdMap: { [key: string]: () => void } = {
+      'plugin:clipboard-manager|write_text': () => copyTextMock((args as any).text),
     }
+    const action = cmdMap?.[cmd]
+    if (typeof action !== 'function') {
+      console.warn('[Warning] Command not mocked', cmd)
+      return
+    }
+    return action?.()
   })
 })
 
@@ -19,12 +25,12 @@ describe('CopyTest', () => {
     const copyValue = 'test'
     const { getByText } = render(<CopyText copyValue={copyValue}>content</CopyText>)
     fireEvent.click(getByText('content'))
-    expect(writeText).toBeCalledWith(copyValue)
+    expect(copyTextMock).toBeCalledWith(copyValue)
   })
 
   it('should not copy if value not provided', async () => {
     const { getByText } = render(<CopyText>content</CopyText>)
     fireEvent.click(getByText('content'))
-    expect(writeText).not.toBeCalled()
+    expect(copyTextMock).not.toBeCalled()
   })
 })

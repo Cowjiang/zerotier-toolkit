@@ -1,7 +1,7 @@
 import { getVersion } from '@tauri-apps/api/app'
 import { invoke, InvokeArgs } from '@tauri-apps/api/core'
 import { resolveResource } from '@tauri-apps/api/path'
-import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 import {
   ReadFileOptions,
@@ -13,8 +13,6 @@ import {
 import { CONFIGURATION_FILE_PATH } from '../../constant.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
 import { InvokeResponse } from '../../typings/global.ts'
-
-const appWindow = getCurrentWebviewWindow()
 
 export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<InvokeResponse & { success: boolean }> => {
   const result: string = await invoke(cmd, args)
@@ -46,7 +44,7 @@ export const copyToClipboard = async (text: string) => {
 }
 
 export const minimizeWindow = async () => {
-  await appWindow.minimize()
+  await getCurrentWindow().minimize()
 }
 
 export const closeWindow = async () => {
@@ -54,6 +52,7 @@ export const closeWindow = async () => {
 }
 
 export const showWindow = async () => {
+  const appWindow = getCurrentWindow()
   ;(await appWindow.isMinimized()) && (await appWindow.unminimize())
   await appWindow.show()
 }
