@@ -81,7 +81,7 @@ pub fn destroy_system_tray(app_handle: &AppHandle) {
     let _ = app_handle.tray_by_id(TRAY_ID).is_some_and(|icon| {
         let result = icon.set_visible(false).is_ok();
         debug!(
-            "destory tray is {:?} and tray is {:?}",
+            "destroy tray is {:?} and tray is {:?}",
             result,
             app_handle.tray_by_id(TRAY_ID).is_some()
         );
@@ -105,7 +105,7 @@ pub fn handle_tray_menu_event(app_handle: AppHandle, event: MenuEvent) {
         }
         event => {
             show_main_window(app_handle.clone());
-            app_handle.emit("NAVIGATE", event);
+            let _ = app_handle.emit("NAVIGATE", event).unwrap();
         }
     }
 }

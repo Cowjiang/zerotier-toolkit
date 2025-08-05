@@ -1,4 +1,4 @@
-use crate::r::{fail_message_json, success_json};
+use crate::r::{success_json};
 use tauri::AppHandle;
 use tauri_plugin_shell::process::CommandEvent;
 use tauri_plugin_shell::ShellExt;
@@ -6,7 +6,7 @@ use tauri_plugin_shell::ShellExt;
 #[tauri::command]
 pub(crate) async fn get_embedding_zerotier_version(app: AppHandle) -> String {
     let sidecar_command = app.shell().sidecar("zerotier-core").unwrap();
-    let (mut rx, mut _child) = sidecar_command
+    let (mut rx, _child) = sidecar_command
         .args(["-v"])
         .spawn()
         .expect("Failed to spawn zerotier-core");
@@ -20,5 +20,5 @@ pub(crate) async fn get_embedding_zerotier_version(app: AppHandle) -> String {
             output.push('\n'); // 保持换行符
         }
     }
-    return success_json(output);
+    success_json(output)
 }

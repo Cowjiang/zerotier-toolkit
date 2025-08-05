@@ -31,9 +31,7 @@ lazy_static = { version = "1.5.0", features = [] }
 chrono = "0.4.38"
 winapi = { version = "0.3.9", features = ["winsvc", "winbase", "errhandlingapi", "ntdef", "processthreadsapi", "synchapi"] }
 parking_lot = "0.12.3"
-auto-launch = "0.5.0"
 thiserror = "1.0.63"
-window-shadows = "0.2.2"
 open = "5.3.0"
 reqwest = { version = "0.11.7", features = ["blocking"] }
 futures = "0.3.30"

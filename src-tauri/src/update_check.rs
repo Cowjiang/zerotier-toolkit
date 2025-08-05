@@ -29,9 +29,7 @@ struct LatestVersionResult {
 }
 
 impl LatestVersionResult {
-    pub fn latest_version(&self) -> &Option<String> {
-        &self.latest_version
-    }
+   
 }
 
 impl Clone for LatestVersionResult {

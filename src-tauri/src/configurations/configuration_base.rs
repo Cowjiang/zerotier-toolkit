@@ -1,12 +1,11 @@
 use std::collections::HashMap;
-use std::error::Error;
 use std::io::Write;
 use std::path::MAIN_SEPARATOR;
 
 use log::{debug, error};
 use serde::Serialize;
 use serde_json::Value;
-use tauri::{AppHandle, Emitter, Manager};
+use tauri::{AppHandle, Emitter};
 
 use crate::r::success_json;
 use crate::util::resources_file_util::{
@@ -184,10 +183,10 @@ impl ConfigurationContext {
     }
 
     pub fn get_config(&self, key: &str) -> Option<&Value> {
-        return self.configurations.get(key).or_else(|| {
+        self.configurations.get(key).or_else(|| {
             let config_def = self.get_config_def(key.to_string());
             config_def.map(|config_def| &config_def.default_value)
-        });
+        })
     }
 
     pub fn get_config_by_def(&self, configuration_def: &ConfigurationDef) -> Value {
@@ -250,7 +249,7 @@ impl ConfigurationDef {
 }
 
 #[derive(Clone, Debug)]
-#[warn(dead_code)]
+#[allow(dead_code)]
 pub enum ExpectType {
     Number,
     String,

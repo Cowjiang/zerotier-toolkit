@@ -92,7 +92,7 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     enable_tray.callback_anyway(true);
     enable_tray.register_to_context(&mut context);
     // ==
-    let mut language_ui = LANGUAGE_UI.write();
+    let language_ui = LANGUAGE_UI.write();
     language_ui.register_to_context(&mut context);
     context.sync_from_file();
     context.store_config();
