@@ -50,6 +50,7 @@ pub(crate) fn fail_message_json(message: &str) -> String {
     serde_json::to_string(&result).unwrap()
 }
 
+#[allow(unused)]
 pub(crate) fn fail_code_message_json(code: i8, message: &str) -> String {
     let result = fail_code_message(code, message);
     serde_json::to_string(&result).unwrap()
@@ -68,7 +69,7 @@ pub(crate) fn fail_message(message: &str) -> R<Option<String>> {
         data: None,
     }
 }
-
+#[allow(unused)]
 pub(crate) fn fail_code_message(code: i8, message: &str) -> R<Option<String>> {
     R {
         code,
@@ -77,6 +78,7 @@ pub(crate) fn fail_code_message(code: i8, message: &str) -> R<Option<String>> {
     }
 }
 
+#[allow(unused)]
 pub(crate) fn unsupported_platform() -> String {
     fail_code_message_json(UNSUPPORTED_PLATFORM, "unsupported platform")
 }

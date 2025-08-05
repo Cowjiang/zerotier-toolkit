@@ -4,7 +4,12 @@ use std::io::Error;
 use std::path::Path;
 use std::string::ToString;
 
-use crate::r::{fail_message_json, success_json, unsupported_platform};
+use crate::r::{
+    fail_message_json,
+    success_json,
+};
+#[cfg(not(windows))]
+use crate::r::unsupported_platform;
 #[cfg(target_os = "windows")]
 use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
 use lazy_static::lazy_static;
@@ -191,7 +196,7 @@ pub(crate) fn get_zerotier_state() -> String {
 
 #[tauri::command]
 pub(crate) fn get_zerotier_server_info() -> String {
-    let mut res_port = try_read_port();
+    let res_port = try_read_port();
     let res_secret = try_read_files(&GLOBAL_TRY_SECRET_FILES.clone());
     if res_secret.is_err() {
         return fail_message_json("resolve secret fail");
@@ -251,13 +256,13 @@ pub(crate) fn get_zerotier_one_dir() -> String {
 
 #[tauri::command]
 pub(crate) fn open_zerotier_one_dir() -> String {
-    return match get_zerotier_one_path() {
+    match get_zerotier_one_path() {
         Ok(zerotier_one_path) => {
             open::that(zerotier_one_path.file_dir).unwrap();
             success_json("")
         }
         Err(..) => fail_message_json("Failed to get ZeroTier One program path"),
-    };
+    }
 }
 
 fn try_read_files(file_paths: &[String]) -> Result<String, Error> {
@@ -307,30 +312,23 @@ mod tests {
     use std::time::Duration;
 
     use log::info;
-    use log::LevelFilter::Debug;
+    
 
-    use crate::logger::init_logger_with_level;
     use crate::zerotier_manage::*;
 
-    fn setup() {
-        init_logger_with_level(Debug)
-    }
 
     #[test]
     fn test_get_zerotier_services() {
-        setup();
         info!("test_get_zerotier_services:{:?}", get_zerotier_services())
     }
 
     #[test]
     fn test_get_zerotier_state() {
-        setup();
         info!("test_get_zerotier_state:{:?}", get_zerotier_state())
     }
 
     #[test]
     fn test_get_zerotier_start_type() {
-        setup();
         info!(
             "test_get_zerotier_start_type:{:?}",
             get_zerotier_start_type()
@@ -339,7 +337,6 @@ mod tests {
 
     #[test]
     fn test_set_zerotier_start_type() {
-        setup();
         info!(
             "test_set_zerotier_start_type:{:?}",
             set_zerotier_start_type(String::from("DemandStart"))
@@ -352,7 +349,6 @@ mod tests {
 
     #[tokio::test]
     async fn test_start_zerotier() {
-        setup();
         info!("test_start_zerotier:{:?}", start_zerotier().await);
         let state = get_zerotier_state();
         info!("test_start_zerotier:{:?}", state);
@@ -360,7 +356,6 @@ mod tests {
 
     #[tokio::test]
     async fn test_stop_zerotier() {
-        setup();
         info!("test_stop_zerotier:{:?}", stop_zerotier().await);
         let state = get_zerotier_state();
         info!("test_stop_zerotier:{:?}", state);
@@ -368,7 +363,6 @@ mod tests {
 
     #[test]
     fn test_state_listener() {
-        setup();
         info!(
             "test_get_zerotier_start_type:{:?}",
             get_zerotier_start_type()
@@ -381,7 +375,6 @@ mod tests {
 
     #[test]
     fn test_get_zerotier_server_info() {
-        setup();
         info!(
             "test_get_zerotier_server_info:{:?}",
             get_zerotier_server_info()

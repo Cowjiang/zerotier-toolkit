@@ -4,7 +4,6 @@ use std::ops::Deref;
 
 use log::error;
 use tauri::{AppHandle, Manager};
-use window_shadows::set_shadow;
 
 use crate::configurations::configurations_service::{backup_all, get_configuration_context};
 use crate::configurations::system_configurations::{

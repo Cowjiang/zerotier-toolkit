@@ -1,4 +1,4 @@
-use crate::r::unsupported_platform;
+
 use crate::{
     execute_cmd,
     r::{fail_message_json, success_json},
@@ -37,7 +37,10 @@ pub(crate) fn restart_as_admin() -> String {
         }
     }
     #[cfg(not(windows))]
-    unsupported_platform()
+    {
+        use crate::r::unsupported_platform;
+        unsupported_platform()
+    }
 }
 
 #[tauri::command]

@@ -18,7 +18,7 @@ use crate::configurations::system_configurations::{
     GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME,
 };
 use crate::embedding_zerotier::get_embedding_zerotier_version;
-use crate::logger::init_logger_main;
+// use crate::logger::init_logger_main;
 use crate::update_check::get_latest_version_command;
 use crate::window::{close_main_window, do_hide_main_window, hide_main_window, show_main_window};
 use crate::zerotier_manage::*;
@@ -27,7 +27,6 @@ mod command;
 
 mod auto_launch;
 mod configurations;
-mod logger;
 mod r;
 mod system;
 mod system_tray;
@@ -49,7 +48,7 @@ fn start_tauri() {
         std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
     }
     let mut builder = tauri::Builder::default()
-        // .plugin(tauri_plugin_log::Builder::new().build())
+        .plugin(tauri_plugin_log::Builder::new().build())
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             // what's args?
@@ -86,7 +85,7 @@ fn register_window_event_handler(builder: Builder<Wry>) -> Builder<Wry> {
 fn setup(builder: Builder<Wry>) -> Builder<Wry> {
     let builder = builder.setup(|app| {
         let app_handle = app.handle();
-        init_logger_main(&app_handle);
+        // init_logger_main(&app_handle);
         init_configuration_context(&app_handle);
         init_window(&app_handle);
 
