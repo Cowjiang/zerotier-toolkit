@@ -13,7 +13,7 @@ const serializedConfig = { 'Theme.Current': 'light', 'Theme.IsSyncWithSystem': t
 beforeEach(() => {
   mockIPC(async (cmd, args) => {
     if (cmd === InvokeEvent.PUT_CONFIGURATIONS) {
-      return JSON.stringify({ code: 0, data: args.payload })
+      return JSON.stringify({ code: 0, data: (args as any).payload })
     } else if (cmd === InvokeEvent.GET_CONFIGURATIONS) {
       return JSON.stringify({ code: 0, data: serializedConfig })
     }

@@ -1,8 +1,8 @@
-import { Link } from '@nextui-org/react'
-import { Response } from '@tauri-apps/plugin-http'
+import { Link } from '@heroui/react'
 import { createElement } from 'react'
 
 import { useNotification } from '../../components/providers/NotificationProvider.tsx'
+import { HttpResponse } from '../../typings/global.ts'
 
 const useRequest = () => {
   const { setNotification } = useNotification()
@@ -11,7 +11,7 @@ const useRequest = () => {
       try {
         return await request
       } catch (e) {
-        if ((e as Response<T>)?.status === 401) {
+        if ((e as HttpResponse<T>)?.status === 401) {
           setNotification({
             children: createElement(
               Link,

@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Select, SelectItem } from '@nextui-org/react'
+import { Button, ButtonProps, Select, SelectItem } from '@heroui/react'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 
 import { useAppStore } from '../../../store/app.ts'
@@ -108,7 +108,7 @@ function ZerotierService() {
               items={startTypes}
             >
               {(type) => (
-                <SelectItem key={type.value} value={type.value} test-id="option">
+                <SelectItem key={type.value} test-id="option">
                   {type.label}
                 </SelectItem>
               )}

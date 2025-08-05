@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react'
+import { Button } from '@heroui/react'
 
 import { closeWindow, minimizeWindow } from '../../utils/helpers/tauriHelpers.ts'
 import { CloseIcon, MinusIcon } from './Icon.tsx'

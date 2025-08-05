@@ -1,4 +1,4 @@
-import { Button, Code, Input, Tooltip } from '@nextui-org/react'
+import { Button, Code, Input, Tooltip } from '@heroui/react'
 
 import { InterrogationIcon } from '../../../components/base/Icon.tsx'
 import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
@@ -102,7 +102,7 @@ function ZerotierExperiments() {
             <p>ZeroTier One Directory</p>
           </div>
           <div className="ml-auto flex gap-4">
-            <Button className="bg-default-100" onClick={openZeroTierOneDir}>
+            <Button className="bg-default-100" onPress={openZeroTierOneDir}>
               Open Folder
             </Button>
           </div>

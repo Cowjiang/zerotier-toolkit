@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, CardProps } from '@nextui-org/react'
+import { Card, CardBody, CardHeader, CardProps } from '@heroui/react'
 import { ReactElement, useMemo } from 'react'
 
 import { CheckIcon, CloseCircleIcon, InfoIcon, WarningTriangleIcon } from './Icon.tsx'
@@ -7,11 +7,11 @@ export type StatusCardProps = {
   type?: 'success' | 'warning' | 'danger' | 'info'
   title?: string
   content?: ReactElement | string
-  onClick?: CardProps['onClick']
+  onPress?: CardProps['onPress']
   cardProps?: CardProps
 }
 
-function StatusCard({ type = 'info', title, content, onClick, cardProps }: StatusCardProps) {
+function StatusCard({ type = 'info', title, content, onPress, cardProps }: StatusCardProps) {
   const cardBaseClassNames = useMemo(() => {
     const classnameMap: { [key: string]: string } = {
       success: 'bg-success/20 text-success-600',
@@ -39,8 +39,8 @@ function StatusCard({ type = 'info', title, content, onClick, cardProps }: Statu
         body: 'pt-0 text-sm',
       }}
       shadow="none"
-      isPressable={!!onClick}
-      onClick={onClick}
+      isPressable={!!onPress}
+      onPress={onPress}
       {...cardProps}
     >
       <CardHeader>

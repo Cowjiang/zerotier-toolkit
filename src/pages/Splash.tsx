@@ -1,4 +1,4 @@
-import { Button, Image, Spinner } from '@nextui-org/react'
+import { Button, Image, Spinner } from '@heroui/react'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
@@ -84,7 +84,7 @@ function Splash() {
         )}
         {showSetupButton && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
-            <Button className="min-w-48 font-semibold" color="primary" variant="flat" size="lg" onClick={setupZeroTier}>
+            <Button className="min-w-48 font-semibold" color="primary" variant="flat" size="lg" onPress={setupZeroTier}>
               Setup ZeroTier
             </Button>
           </motion.div>

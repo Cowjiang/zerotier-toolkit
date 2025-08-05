@@ -1,5 +1,4 @@
-import { listen } from '@tauri-apps/api/event'
-import type { UnlistenFn } from '@tauri-apps/api/helpers/event'
+import { listen, UnlistenFn } from '@tauri-apps/api/event'
 import { useEffect, useRef } from 'react'
 
 const useTauriEventListener = (eventName: string, handler?: (payload: any) => void) => {

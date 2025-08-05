@@ -1,4 +1,4 @@
-import { Button, Input, useDisclosure } from '@nextui-org/react'
+import { Button, Input, useDisclosure } from '@heroui/react'
 
 import { PlusIcon, SearchIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'

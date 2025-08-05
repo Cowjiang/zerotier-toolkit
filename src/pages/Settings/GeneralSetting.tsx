@@ -1,4 +1,4 @@
-import { Button, Divider, Switch } from '@nextui-org/react'
+import { Button, Divider, Switch } from '@heroui/react'
 import { useEffect } from 'react'
 
 import { useNotification } from '../../components/providers/NotificationProvider.tsx'

@@ -1,7 +1,6 @@
-import { Button } from '@nextui-org/react'
+import { Button } from '@heroui/react'
 import { InvokeArgs } from '@tauri-apps/api/core'
 import { emit } from '@tauri-apps/api/event'
-import { Response } from '@tauri-apps/plugin-http'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -10,6 +9,7 @@ import i18n from '../i18n/index.ts'
 import { getNetworks, getStatus } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
 import { InvokeEvent } from '../typings/enum.ts'
+import { HttpResponse } from '../typings/global.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
 function Dev() {
@@ -19,16 +19,16 @@ function Dev() {
 
   const invokeCommandButton = (command: string, args?: InvokeArgs) => ({
     text: `[Invoke] ${command}`,
-    onClick: () => {
+    onPress: () => {
       invokeCommand(command, args)
         .then((res) => console.log(res))
         .catch((err) => console.error(err))
     },
   })
 
-  const apiButton = (func: () => Promise<Response<any>>) => ({
+  const apiButton = (func: () => Promise<HttpResponse<any>>) => ({
     text: `[Api] ${func.name}`,
-    onClick: async () => console.log(await func()),
+    onPress: async () => console.log(await func()),
   })
 
   const btnList = [
@@ -38,23 +38,23 @@ function Dev() {
     apiButton(getStatus),
     {
       text: '[i18n]: translation',
-      onClick: () => console.log(`hello => ${i18n.t('hello')}`),
+      onPress: () => console.log(`hello => ${i18n.t('hello')}`),
     },
     {
       text: 'Restart As Admin',
-      onClick: restartAsAdmin,
+      onPress: restartAsAdmin,
     },
     {
       text: 'Zerotier Page',
-      onClick: () => navigate('/zerotier'),
+      onPress: () => navigate('/zerotier'),
     },
     {
       text: 'Setting Page',
-      onClick: () => navigate('/setting'),
+      onPress: () => navigate('/setting'),
     },
     {
       text: '[event] config changed',
-      onClick: () => emit('event_config_change', { 'System.AutoLaunch': true }),
+      onPress: () => emit('event_config_change', { 'System.AutoLaunch': true }),
     },
     invokeCommandButton(InvokeEvent.GET_CONFIG),
     invokeCommandButton(InvokeEvent.PUT_CONFIG_COMMAND, { payload: JSON.stringify({ 'System.Theme': 'light' }) }),
@@ -87,7 +87,7 @@ function Dev() {
   const kissMyAssBtn = (
     <div className={'relative'}>
       <Button
-        onClick={() => {
+        onPress={() => {
           const newAssList = [...assList]
           newAssList.push(ass())
           setAssList(newAssList)
@@ -114,8 +114,8 @@ function Dev() {
         <img src="/zerotier.png" className="w-40" />
       </div>
       <div className="w-full mt-5 flex flex-wrap ">
-        {btnList.map(({ text, onClick }) => (
-          <Button size="lg" className="font-bold mt-2 ml-2 flex-grow" color="primary" onClick={onClick} key={text}>
+        {btnList.map(({ text, onPress }) => (
+          <Button size="lg" className="font-bold mt-2 ml-2 flex-grow" color="primary" onPress={onPress} key={text}>
             {text}
           </Button>
         ))}

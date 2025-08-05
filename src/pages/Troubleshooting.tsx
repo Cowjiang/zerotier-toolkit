@@ -47,7 +47,7 @@ function Troubleshooting() {
           401: {
             type: 'danger',
             content: 'Authentication is invalid or missing, click here to modify',
-            onClick: () => navigate('/zerotier/experiments'),
+            onPress: () => navigate('/zerotier/experiments'),
           },
           500: { type: 'danger', content: 'Failed to connect to ZeroTier service' },
         }
@@ -77,7 +77,7 @@ function Troubleshooting() {
         return {
           type: isRunning ? 'success' : 'danger',
           content: isRunning ? '' : 'ZeroTier service is not running, click here to run',
-          onClick: isRunning ? undefined : () => navigate('/zerotier/service'),
+          onPress: isRunning ? undefined : () => navigate('/zerotier/service'),
         }
       }, [serviceState]),
     },
@@ -86,7 +86,7 @@ function Troubleshooting() {
       checkResult: {
         type: isAdmin ? 'success' : 'warning',
         content: isAdmin ? '' : 'Click here to relaunch as Administrator',
-        onClick: isAdmin ? undefined : () => restart(),
+        onPress: isAdmin ? undefined : () => restart(),
       },
     },
     // #endif

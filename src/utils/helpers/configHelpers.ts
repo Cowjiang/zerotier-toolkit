@@ -15,7 +15,8 @@ export const updateConfig = async (name: ConfigType, config: AppConfig | ZeroTie
 }
 
 export const createConfigStorage = <T extends AppConfig | ZeroTierConfig>(configType: ConfigType): StateStorage => {
-  const isTauri = !!window.__TAURI_IPC__
+  const isTauri =
+    typeof (window as any).__TAURI_IPC__ !== 'undefined' || typeof (window as any).__TAURI_INTERNALS__ !== 'undefined'
   let configTemp = ''
   return {
     getItem: async () => {

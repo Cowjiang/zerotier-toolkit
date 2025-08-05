@@ -1,5 +1,4 @@
-import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes'
-import { ThemeProviderProps, UseThemeProps } from 'next-themes/dist/types'
+import { ThemeProvider as NextThemesProvider, ThemeProviderProps, useTheme, UseThemeProps } from 'next-themes'
 import { ReactElement, useEffect, useMemo } from 'react'
 
 import { useAppStore } from '../../store/app.ts'

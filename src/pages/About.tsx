@@ -1,4 +1,4 @@
-import { Avatar, Divider, Image, Link, Listbox, ListboxItem, ListboxSection } from '@nextui-org/react'
+import { Avatar, Divider, Image, Link, Listbox, ListboxItem, ListboxSection } from '@heroui/react'
 import { useState } from 'react'
 
 import zerotierLogo from '../assets/zerotier_orange.svg'
@@ -85,7 +85,7 @@ function About() {
                 aria-label={link.title}
                 description={link.description}
                 startContent={link.startContent}
-                onClick={() => openInSystem(link.link)}
+                onPress={() => openInSystem(link.link)}
               >
                 {link.title}
               </ListboxItem>
@@ -95,7 +95,7 @@ function About() {
         <Listbox variant="flat" aria-label="Developers">
           <ListboxSection title="Developers">
             {developers.map((user) => (
-              <ListboxItem key={user.userId} aria-label={user.name} onClick={() => openInSystem(user.link)}>
+              <ListboxItem key={user.userId} aria-label={user.name} onPress={() => openInSystem(user.link)}>
                 <div className="flex gap-2 items-center">
                   <Avatar
                     className="flex-shrink-0"
@@ -121,7 +121,7 @@ function About() {
           <span>
             {poweredBy.map((item, index) => (
               <span key={index}>
-                <Link size="sm" showAnchorIcon className="cursor-pointer" onClick={() => openInSystem(item.link)}>
+                <Link size="sm" showAnchorIcon className="cursor-pointer" onPress={() => openInSystem(item.link)}>
                   {item.title}
                 </Link>
                 {index < poweredBy.length - 1 && ' / '}

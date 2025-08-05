@@ -1,4 +1,4 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalProps } from '@nextui-org/react'
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalProps } from '@heroui/react'
 import { useState } from 'react'
 
 import { joinNetwork } from '../../../services/zerotierService.ts'

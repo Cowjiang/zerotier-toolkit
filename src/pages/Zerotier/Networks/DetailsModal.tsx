@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxGroup, Divider, Modal, ModalBody, ModalContent, ModalProps } from '@nextui-org/react'
+import { Checkbox, CheckboxGroup, Divider, Modal, ModalBody, ModalContent, ModalProps } from '@heroui/react'
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 

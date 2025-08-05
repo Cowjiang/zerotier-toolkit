@@ -14,8 +14,7 @@ import {
   TableColumnProps,
   TableHeader,
   TableRow,
-} from '@nextui-org/react'
-import { Response } from '@tauri-apps/plugin-http'
+} from '@heroui/react'
 import { Key, useCallback, useRef, useState } from 'react'
 
 import CopyText from '../../../components/base/CopyText.tsx'
@@ -31,6 +30,7 @@ import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
 import { joinNetwork } from '../../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
+import { HttpResponse } from '../../../typings/global.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
 import DetailsModal from './DetailsModal.tsx'
@@ -79,7 +79,7 @@ function NetworksTable({
         await request(getNetworks())
       }
     } catch (e) {
-      if ((e as Response<void>)?.status !== 401) {
+      if ((e as HttpResponse<void>)?.status !== 401) {
         setNotification({
           type: 'danger',
           children: 'Failed to disconnect, please try again later',
@@ -98,7 +98,7 @@ function NetworksTable({
         await request(getNetworks())
       }
     } catch (e) {
-      if ((e as Response<void>)?.status !== 401) {
+      if ((e as HttpResponse<void>)?.status !== 401) {
         setNotification({
           type: 'danger',
           children: 'Failed to connect, please try again later',
@@ -152,9 +152,15 @@ function NetworksTable({
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Actions">
-                  <DropdownItem startContent={<InfoIcon {...iconProps} />} title="Details" onPress={openDetailsModal} />
+                  <DropdownItem
+                    key="details"
+                    startContent={<InfoIcon {...iconProps} />}
+                    title="Details"
+                    onPress={openDetailsModal}
+                  />
                   {network.status === 'DISCONNECTED' ? (
                     <DropdownItem
+                      key="connect"
                       className="text-success"
                       variant="flat"
                       startContent={<ConnectIcon {...iconProps} />}
@@ -163,6 +169,7 @@ function NetworksTable({
                     />
                   ) : (
                     <DropdownItem
+                      key="disconnect"
                       className="text-danger"
                       variant="flat"
                       startContent={<DisconnectIcon {...iconProps} />}
@@ -171,6 +178,7 @@ function NetworksTable({
                     />
                   )}
                   <DropdownItem
+                    key="delete"
                     className={network.status === 'DISCONNECTED' ? 'text-danger' : 'hidden'}
                     variant="flat"
                     startContent={<TrashIcon {...iconProps} />}

@@ -1,6 +1,6 @@
 import './App.css'
 
-import { NextUIProvider } from '@nextui-org/react'
+import { HeroUIProvider } from '@heroui/react'
 import { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
@@ -64,10 +64,10 @@ function App() {
   // #endif
 
   return (
-    <NextUIProvider navigate={navigate}>
+    <HeroUIProvider navigate={navigate}>
       <ThemeProvider>
         <NotificationProvider>
-          <div className="text-foreground">
+          <div className="bg-background text-foreground">
             <Routes>
               <Route path="/" element={<RootLayout />}>
                 <Route path="/home" element={<ZerotierNetworks />} />
@@ -89,7 +89,7 @@ function App() {
           </div>
         </NotificationProvider>
       </ThemeProvider>
-    </NextUIProvider>
+    </HeroUIProvider>
   )
 }
 

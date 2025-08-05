@@ -1,4 +1,4 @@
-import { Listbox, ListboxItem, ListboxItemProps, ListboxSection, ListboxSectionProps } from '@nextui-org/react'
+import { Listbox, ListboxItem, ListboxItemProps, ListboxSection, ListboxSectionProps } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 

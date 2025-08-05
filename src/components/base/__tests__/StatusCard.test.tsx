@@ -5,16 +5,16 @@ import StatusCard, { StatusCardProps } from '../StatusCard.tsx'
 
 describe('StatusCard', () => {
   it('should render status card properly', () => {
-    const onclick = vi.fn()
+    const onPress = vi.fn()
     const cardProps: StatusCardProps = {
       type: 'success',
       title: 'test title',
       content: 'test content',
-      onClick: onclick,
+      onPress,
     }
     const { container } = render(<StatusCard {...cardProps} />)
     const btn = container.querySelector('button')
     btn && fireEvent.click(btn)
-    expect(onclick).toBeCalled()
+    expect(onPress).toBeCalled()
   })
 })

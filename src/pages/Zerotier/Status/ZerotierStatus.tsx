@@ -1,4 +1,4 @@
-import { Code, Snippet, Spinner } from '@nextui-org/react'
+import { Code, Snippet, Spinner } from '@heroui/react'
 import { useCallback, useEffect, useState } from 'react'
 
 import { RefreshIcon } from '../../../components/base/Icon.tsx'

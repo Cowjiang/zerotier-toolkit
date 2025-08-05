@@ -1,4 +1,4 @@
-import { Tooltip } from '@nextui-org/react'
+import { Tooltip } from '@heroui/react'
 import classNames from 'classnames'
 import { ReactNode, useState } from 'react'
 

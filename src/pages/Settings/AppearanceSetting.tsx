@@ -1,6 +1,5 @@
-import { Button, Divider, Select, SelectItem, Switch } from '@nextui-org/react'
-import { useTheme } from 'next-themes'
-import { UseThemeProps } from 'next-themes/dist/types'
+import { Button, Divider, Select, SelectItem, Switch } from '@heroui/react'
+import { useTheme, UseThemeProps } from 'next-themes'
 import { useMemo } from 'react'
 
 import { CheckIcon, DarkThemeIcon, LightThemeIcon } from '../../components/base/Icon.tsx'
@@ -105,11 +104,7 @@ function AppearanceSetting() {
                 setConfig({ [LanguageConfig.UI]: keys === 'all' ? languages[0].value : keys.values().next().value })
               }}
             >
-              {(language) => (
-                <SelectItem key={language.value} value={language.value}>
-                  {language.label}
-                </SelectItem>
-              )}
+              {(language) => <SelectItem key={language.value}>{language.label}</SelectItem>}
             </Select>
           </div>
         </div>

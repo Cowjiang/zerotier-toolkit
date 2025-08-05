@@ -3,6 +3,7 @@ import { fetch } from '@tauri-apps/plugin-http'
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
 import { ZerotierConfig } from '../../typings/config.ts'
+import { HttpResponse } from '../../typings/global.ts'
 
 type RequestOptions = {
   path: string
@@ -10,23 +11,17 @@ type RequestOptions = {
   query?: Record<string, any>
   body?: BodyInit
 }
-type HttpResponse<T> = {
-  ok: boolean
-  status: number
-  data: T
-}
 
 const request = async <T>({ path, method, ...options }: RequestOptions): Promise<HttpResponse<T>> => {
   const { serverInfo, config } = useZeroTierStore.getState()
   const { port, secret } = serverInfo
   const { [ZerotierConfig.PORT]: overridePort, [ZerotierConfig.TOKEN]: overrideToken } = config
   if ((!overridePort || !overrideToken) && (!port || !secret)) {
-    // throw new Error('Invalid port or secret for the ZeroTier service')
     throw {
       ok: false,
       status: 401,
       data: 'Invalid port or secret for the ZeroTier service',
-    } as HttpResponse<T>
+    } satisfies HttpResponse<string>
   }
   const httpOptions = {
     method,
@@ -42,7 +37,7 @@ const request = async <T>({ path, method, ...options }: RequestOptions): Promise
   return {
     ok: res.ok,
     status: res.status,
-    data: (await res.json()) as T,
+    data: (await res.json()) satisfies T,
   }
 }
 
