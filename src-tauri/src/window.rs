@@ -66,18 +66,18 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
 
 #[tauri::command]
 pub fn hide_main_window(app_handle: AppHandle) -> String {
-    return match do_hide_main_window(&app_handle) {
+    match do_hide_main_window(&app_handle) {
         Ok(_) => success_json("success"),
         Err(err) => {
             error!("{}", err);
             fail_message_json("failed to hide window")
         }
-    };
+    }
 }
 
 pub fn do_hide_main_window(app_handle: &AppHandle) -> Result<()> {
     let main_window = app_handle.get_webview_window("main");
-    return match main_window {
+    match main_window {
         Some(window) => {
             #[cfg(windows)]
             let result = window.hide();
@@ -86,18 +86,19 @@ pub fn do_hide_main_window(app_handle: &AppHandle) -> Result<()> {
             result.map_err(|err| Error::HideWindowError(err.to_string()))
         }
         None => Err(Error::WindowNotFound("main window not found".to_string())),
-    };
+    }
 }
 
 #[tauri::command]
 pub fn show_main_window(app_handle: AppHandle) -> String {
     let main_window = app_handle.get_webview_window("main");
-    return match main_window {
+    match main_window {
         Some(window) => {
+            let _ = window.unminimize();
             let _ = window.show();
             let _ = window.set_focus();
             success_json("success")
         }
         None => fail_message_json("failed to show window"),
-    };
+    }
 }

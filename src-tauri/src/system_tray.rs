@@ -1,5 +1,5 @@
 use lazy_static::lazy_static;
-use log::debug;
+use log::{debug};
 use parking_lot::RwLock;
 use tauri::menu::{Menu, MenuEvent, MenuItem};
 use tauri::tray::{TrayIcon, TrayIconBuilder, TrayIconEvent};
@@ -75,7 +75,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
 
     let _ = TrayIconBuilder::with_id(TRAY_ID)
         .menu(&menu)
-        .show_menu_on_left_click(true)
+        .show_menu_on_left_click(false)
         .on_tray_icon_event(|icon, event| {
             handle_tray_event(icon, event);
         })
@@ -90,7 +90,7 @@ pub fn destroy_system_tray(app_handle: &AppHandle) {
     let _ = app_handle.tray_by_id(TRAY_ID).is_some_and(|icon| {
         let result = icon.set_visible(false).is_ok();
         debug!(
-            "destroy tray is {:?} and tray is {:?}",
+            "hide tray is {:?} and tray is {:?}",
             result,
             app_handle.tray_by_id(TRAY_ID).is_some()
         );
@@ -101,6 +101,7 @@ pub fn destroy_system_tray(app_handle: &AppHandle) {
 fn handle_tray_event(tray: &TrayIcon, event: TrayIconEvent) {
     match event {
         TrayIconEvent::DoubleClick { .. } => {
+            debug!("double click tray");
             show_main_window(tray.app_handle().clone());
         }
         _ => {}
