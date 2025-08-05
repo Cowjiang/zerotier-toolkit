@@ -27,8 +27,8 @@
       "binaries/zerotier-core"
     ]
   },
-  "productName": "ZeroTier Toolkit",
-  "mainBinaryName": "ZeroTier Toolkit",
+  "productName": "zerotier-toolkit",
+  "mainBinaryName": "zerotier-toolkit",
   "version": "../package.json",
   "identifier": "com.cj.dev",
   "plugins": {},
