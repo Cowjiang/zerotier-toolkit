@@ -64,12 +64,8 @@ mod tests {
 
     use crate::{
         command::{execute_cmd, is_admin, parse_output},
-        logger::init_logger_with_level,
     };
 
-    fn setup() {
-        init_logger_with_level(log::LevelFilter::Debug)
-    }
     #[test]
     fn test_execute_cmd() {
         let output = execute_cmd(vec![String::from("echo"), String::from("hello")]);
@@ -86,7 +82,6 @@ mod tests {
 
     #[test]
     fn test_is_admin() {
-        setup();
         info!("{}", is_admin());
     }
 }

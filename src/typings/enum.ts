@@ -44,6 +44,10 @@ export enum Theme {
 }
 
 export enum Language {
-  CN = 'cn',
+  zh_CN = 'zh_CN',
+  en_US = 'en_US',
+  /**
+   * @deprecated Use {@link Language.en_US} instead
+   */
   EN = 'en',
 }

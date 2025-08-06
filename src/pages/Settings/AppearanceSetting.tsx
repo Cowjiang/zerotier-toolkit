@@ -9,8 +9,12 @@ import { Language, Theme } from '../../typings/enum.ts'
 
 const languages = [
   {
-    label: 'English',
-    value: Language.EN,
+    label: 'English(US)',
+    value: Language.en_US,
+  },
+  {
+    label: '简体中文',
+    value: Language.zh_CN,
   },
 ]
 
@@ -30,7 +34,11 @@ function AppearanceSetting() {
 
   const currentLanguage = useMemo(() => {
     try {
-      return new Set([config[LanguageConfig.UI] ?? languages[0].value])
+      let currentLang = config[LanguageConfig.UI] ?? languages[0].value
+      if (!languages.map(({ value }) => value).find((lang) => lang === currentLang)) {
+        currentLang = languages[0].value
+      }
+      return new Set([currentLang])
     } catch (_) {
       return new Set([languages[0].value])
     }
