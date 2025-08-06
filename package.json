@@ -20,12 +20,13 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
+    "src/**/*": [
+      "eslint --fix",
+      "test:no-watch"
     ]
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "@heroui/react": "2.8.2",
