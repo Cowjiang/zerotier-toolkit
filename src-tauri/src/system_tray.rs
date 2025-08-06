@@ -1,20 +1,20 @@
 use lazy_static::lazy_static;
-use log::{debug};
+use log::debug;
 use parking_lot::RwLock;
-use tauri::menu::{Menu, MenuEvent, MenuItem};
-use tauri::tray::{TrayIcon, TrayIconBuilder, TrayIconEvent};
 use tauri::{AppHandle, Emitter};
+use tauri::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
+use tauri::tray::{TrayIcon, TrayIconBuilder, TrayIconEvent};
 
 use crate::show_main_window;
 use crate::window::exit_app;
 
 const TRAY_ID: &str = "TRAY";
 
-const STATUS_ITEM_ID: &str = "/zerotier/status";
-const STATUS_ITEM_TITLE: &str = "Status";
-
 const NETWORKS_ITEM_ID: &str = "/zerotier/networks";
 const NETWORKS_ITEM_TITLE: &str = "Networks";
+
+const STATUS_ITEM_ID: &str = "/zerotier/status";
+const STATUS_ITEM_TITLE: &str = "Status";
 
 const SETTINGS_ITEM_ID: &str = "/settings";
 const SETTINGS_ITEM_TITLE: &str = "Settings";
@@ -35,18 +35,18 @@ pub fn show_system_tray(app_handle: &AppHandle) {
     }
 
     debug!("init tray");
-    let status_item = MenuItem::with_id(
-        app_handle,
-        String::from(STATUS_ITEM_ID),
-        STATUS_ITEM_TITLE,
-        true,
-        None::<&str>,
-    )
-        .unwrap();
     let networks_item = MenuItem::with_id(
         app_handle,
         String::from(NETWORKS_ITEM_ID),
         NETWORKS_ITEM_TITLE,
+        true,
+        None::<&str>,
+    )
+        .unwrap();
+    let status_item = MenuItem::with_id(
+        app_handle,
+        String::from(STATUS_ITEM_ID),
+        STATUS_ITEM_TITLE,
         true,
         None::<&str>,
     )
@@ -67,9 +67,11 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         None::<&str>,
     )
         .unwrap();
+    let separator_item = PredefinedMenuItem::separator(app_handle).unwrap();
+
     let menu = Menu::with_items(
         app_handle,
-        &[&status_item, &networks_item, &settings_item, &quit_item],
+        &[&networks_item, &status_item, &settings_item, &separator_item, &quit_item],
     )
         .unwrap();
 
