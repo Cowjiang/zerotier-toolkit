@@ -2,7 +2,7 @@ import { fireEvent } from '@testing-library/react'
 
 import { useAppStore } from '../../../store/app.ts'
 import { ThemeConfig } from '../../../typings/config.ts'
-import { Theme } from '../../../typings/enum.ts'
+import { Language, Theme } from '../../../typings/enum.ts'
 import { render } from '../../../utils/testUtils/setupTest.tsx'
 import AppearanceSetting from '../AppearanceSetting.tsx'
 
@@ -11,8 +11,8 @@ beforeEach(() => {
     hasHydrated: true,
     config: {
       [ThemeConfig.CURRENT]: Theme.LIGHT,
-      [ThemeConfig.IS_SYNC_WITH_SYSTEM]: true,
-    },
+      [ThemeConfig.IS_SYNC_WITH_SYSTEM]: true
+    }
   })
 })
 
@@ -30,6 +30,14 @@ describe('AppearanceSetting', () => {
       const darkThemeButton = getByLabelText('Dark Theme')
       fireEvent.click(darkThemeButton)
       expect(useAppStore.getState().config[ThemeConfig.IS_SYNC_WITH_SYSTEM]).toBeFalsy()
+    })
+  })
+
+  describe('Language settings', () => {
+    it('should be set to English by default', async () => {
+      const { getByTestId } = render(<AppearanceSetting />)
+      const selector = getByTestId('hidden-select-container').querySelector('select') as HTMLSelectElement
+      expect(selector.value).toBe(Language.en_US)
     })
   })
 })

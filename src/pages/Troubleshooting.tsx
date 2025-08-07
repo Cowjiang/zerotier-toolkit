@@ -10,6 +10,8 @@ import { ZerotierConfig } from '../typings/config.ts'
 import { InvokeEvent, ServiceStatus } from '../typings/enum.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 import useRestartAsAdmin from '../utils/hooks/useRestartAsAdmin.ts'
+import { t } from 'i18next'
+import { Trans } from 'react-i18next'
 
 type CheckListItem = {
   key: string
@@ -37,7 +39,7 @@ function Troubleshooting() {
       check: async () => {
         const { success } = await invokeCommand(InvokeEvent.GET_ZEROTIER_ONE_DIR)
         return success ? { type: 'success' } : { type: 'danger', content: 'Could not find ZeroTier One Directory' }
-      },
+      }
     },
     {
       key: 'Check if ZeroTier can be managed',
@@ -47,9 +49,9 @@ function Troubleshooting() {
           401: {
             type: 'danger',
             content: 'Authentication is invalid or missing, click here to modify',
-            onPress: () => navigate('/zerotier/experiments'),
+            onPress: () => navigate('/zerotier/experiments')
           },
-          500: { type: 'danger', content: 'Failed to connect to ZeroTier service' },
+          500: { type: 'danger', content: 'Failed to connect to ZeroTier service' }
         }
         const { port, secret } = serverInfo
         const { [ZerotierConfig.PORT]: overridePort, [ZerotierConfig.TOKEN]: overrideToken } = config
@@ -64,7 +66,7 @@ function Troubleshooting() {
           return e?.status ? statusMap?.[e.status] : statusMap[500]
         }
       },
-      checkResult: { type: 'info', content: 'Trying to connect to ZeroTier service...' },
+      checkResult: { type: 'info', content: 'Trying to connect to ZeroTier service...' }
     },
     // #if WINDOWS
     {
@@ -77,18 +79,18 @@ function Troubleshooting() {
         return {
           type: isRunning ? 'success' : 'danger',
           content: isRunning ? '' : 'ZeroTier service is not running, click here to run',
-          onPress: isRunning ? undefined : () => navigate('/zerotier/service'),
+          onPress: isRunning ? undefined : () => navigate('/zerotier/service')
         }
-      }, [serviceState]),
+      }, [serviceState])
     },
     {
       key: 'Check if the toolkit is running as Admin',
       checkResult: {
         type: isAdmin ? 'success' : 'warning',
         content: isAdmin ? '' : 'Click here to relaunch as Administrator',
-        onPress: isAdmin ? undefined : () => restart(),
-      },
-    },
+        onPress: isAdmin ? undefined : () => restart()
+      }
+    }
     // #endif
   ]
 
@@ -110,8 +112,15 @@ function Troubleshooting() {
       <div className="overflow-x-hidden overflow-y-auto pb-4">
         <div className="flex flex-col gap-2">
           {checkList.map(({ key, checkResult }) => {
-            const result = overrideResult[key] ?? checkResult
-            return result && <StatusCard key={key} title={result?.title ?? key} {...result} />
+            const { title, content, ...result } = overrideResult[key] ?? checkResult ?? {}
+            return result && (
+              <StatusCard
+                key={key}
+                title={t(title ?? key)}
+                content={content ? <Trans>{content}</Trans> : undefined}
+                {...result}
+              />
+            )
           })}
         </div>
       </div>
@@ -121,7 +130,7 @@ function Troubleshooting() {
           buttonProps={{
             variant: 'shadow',
             color: 'secondary',
-            radius: 'full',
+            radius: 'full'
           }}
           isLoading={forceChecking}
           onRefresh={forceCheck}

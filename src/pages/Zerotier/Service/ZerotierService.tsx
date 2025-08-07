@@ -5,20 +5,21 @@ import { useAppStore } from '../../../store/app.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { ServiceStartType, ServiceStatus } from '../../../typings/enum.ts'
 import useRestartAsAdmin from '../../../utils/hooks/useRestartAsAdmin.ts'
+import { Trans } from 'react-i18next'
 
 const startTypes = [
   {
     label: 'Automatic',
-    value: ServiceStartType.AUTO_START,
+    value: ServiceStartType.AUTO_START
   },
   {
     label: 'Manual',
-    value: ServiceStartType.DEMAND_START,
+    value: ServiceStartType.DEMAND_START
   },
   {
     label: 'Disabled',
-    value: ServiceStartType.DISABLED,
-  },
+    value: ServiceStartType.DISABLED
+  }
 ]
 
 function ZerotierService() {
@@ -37,7 +38,7 @@ function ZerotierService() {
     return {
       label: statusBtnLoading ? '' : isRunning ? ServiceStatus.RUNNING : ServiceStatus.STOPPED,
       color: isRunning ? 'success' : 'danger',
-      startContent: statusBtnLoading ? <></> : <span className="w-2 h-2 ml-1 rounded-full bg-current"></span>,
+      startContent: statusBtnLoading ? <></> : <span className="w-2 h-2 ml-1 rounded-full bg-current"></span>
     } as {
       label: string
       color: ButtonProps['color']
@@ -72,11 +73,11 @@ function ZerotierService() {
             variant="flat"
             onPress={restart}
           >
-            Please click here to relaunch as Administrator for management
+            <Trans>Please click here to relaunch as Administrator for management</Trans>
           </Button>
         )}
         <div className="flex items-center">
-          <p className="text-default-700">Service status</p>
+          <p className="text-default-700"><Trans>Service status</Trans></p>
           <div className="ml-auto flex gap-4">
             <Button
               aria-label="switch the state of ZeroTier service"
@@ -88,16 +89,16 @@ function ZerotierService() {
               isDisabled={!isAdmin}
               onPress={handleServiceBtnClick}
             >
-              {serviceStatusButton.label}
+              <Trans>{serviceStatusButton.label}</Trans>
             </Button>
           </div>
         </div>
         <div className="mt-6 flex items-center">
-          <p className="text-default-700">Start type</p>
+          <p className="text-default-700"><Trans>Start type</Trans></p>
           <div className="ml-auto flex gap-4">
             <Select
               className="w-32"
-              label="change the start type of ZeroTier service"
+              label={<Trans>change the start type of ZeroTier service</Trans>}
               labelPlacement="outside"
               classNames={{ label: 'hidden', base: '!mt-0' }}
               selectionMode="single"

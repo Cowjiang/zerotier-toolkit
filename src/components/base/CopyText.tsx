@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { ReactNode, useState } from 'react'
 
 import { copyToClipboard } from '../../utils/helpers/tauriHelpers.ts'
+import { Trans } from 'react-i18next'
 
 function CopyText({
   copyValue,
@@ -25,7 +26,7 @@ function CopyText({
   }
 
   return (
-    <Tooltip isOpen={isOpen} content="Copied" color="foreground" closeDelay={750} placement="right">
+    <Tooltip isOpen={isOpen} content={<Trans>Copied</Trans>} color="foreground" closeDelay={750} placement="right">
       <div className={classNames('w-fit cursor-pointer hover:brightness-75', className)} onClick={handleCopy}>
         {children}
       </div>

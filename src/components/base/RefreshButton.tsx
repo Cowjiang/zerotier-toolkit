@@ -1,6 +1,7 @@
 import { Button, ButtonProps } from '@heroui/react'
 
 import { RefreshIcon } from './Icon.tsx'
+import { Trans } from 'react-i18next'
 
 type Props = {
   labelText?: string
@@ -20,7 +21,7 @@ function RefreshButton({ labelText, isLoading, onRefresh, buttonProps, showIcon 
       ) : (
         <>
           {showIcon && !isLoading && Icon}
-          {labelText || 'Refresh'}
+          <Trans>{labelText || 'Refresh'}</Trans>
         </>
       )}
     </Button>

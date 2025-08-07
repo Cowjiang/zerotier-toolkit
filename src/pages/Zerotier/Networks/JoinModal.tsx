@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { joinNetwork } from '../../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
+import { Trans } from 'react-i18next'
 
 function JoinModal(props: Omit<ModalProps, 'children'>) {
   const { request } = useRequest()
@@ -39,26 +40,26 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
   return (
     <Modal {...props} onClose={onModalClose}>
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">Join New Network</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1"><Trans>Join New Network</Trans></ModalHeader>
         <ModalBody>
           <Input
             isClearable
             className="w-full"
-            label="Enter 16-digit Network ID"
+            label={<Trans>Enter 16-digit Network ID</Trans>}
             value={inputValue}
             maxLength={16}
             isInvalid={isError}
-            errorMessage="Failed to join network, please check your Network ID"
+            errorMessage={<Trans>Failed to join network, please check your Network ID</Trans>}
             onClear={() => onInputValueChange('')}
             onValueChange={onInputValueChange}
           />
         </ModalBody>
         <ModalFooter>
           <Button color="danger" variant="light" onPress={onModalClose}>
-            Cancel
+            <Trans>Cancel</Trans>
           </Button>
           <Button color="warning" isLoading={joining} isDisabled={inputValue.length < 16} onPress={onJoinBtnClick}>
-            Join
+            <Trans>Join</Trans>
           </Button>
         </ModalFooter>
       </ModalContent>

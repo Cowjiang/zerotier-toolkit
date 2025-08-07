@@ -4,6 +4,8 @@ import { PlusIcon, SearchIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import JoinModal from './JoinModal.tsx'
+import { Trans } from 'react-i18next'
+import { t } from 'i18next'
 
 function ToolBar({
   filterValue,
@@ -29,7 +31,7 @@ function ToolBar({
       <Input
         isClearable
         className="w-full"
-        placeholder="Search by Network ID..."
+        placeholder={t('Search by Network ID...')}
         startContent={<SearchIcon width="18" height="18" />}
         value={filterValue}
         onClear={() => onFilterValueChange?.('')}
@@ -43,7 +45,7 @@ function ToolBar({
         />
       )}
       <Button className="flex-shrink-0 " color="warning" endContent={<PlusIcon />} onPress={onModalOpen}>
-        Join New
+        <Trans>Join New</Trans>
       </Button>
       <JoinModal isOpen={isModalOpen} backdrop="blur" onOpenChange={onModalOpenChange} onClose={onModalClose} />
     </div>

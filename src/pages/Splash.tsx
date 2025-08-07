@@ -10,6 +10,7 @@ import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { ZerotierConfig } from '../typings/config.ts'
 import { ServiceStatus } from '../typings/enum.ts'
+import { Trans } from 'react-i18next'
 
 function Splash() {
   const navigate = useNavigate()
@@ -85,7 +86,7 @@ function Splash() {
         {showSetupButton && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
             <Button className="min-w-48 font-semibold" color="primary" variant="flat" size="lg" onPress={setupZeroTier}>
-              Setup ZeroTier
+              <Trans>Setup ZeroTier</Trans>
             </Button>
           </motion.div>
         )}

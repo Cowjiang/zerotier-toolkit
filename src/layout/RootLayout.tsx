@@ -9,7 +9,7 @@ import {
   PaintIcon,
   ServiceIcon,
   StatusIcon,
-  WindowIcon,
+  WindowIcon
 } from '../components/base/Icon.tsx'
 import SideMenu, { MenuListItem, MenuListSection } from '../components/base/SideMenu.tsx'
 import TitleBar from '../components/base/TitleBar.tsx'
@@ -30,29 +30,29 @@ const routes: MenuListSection[] = [
         path: '/zerotier/networks',
         title: 'Networks',
         description: 'Manage ZeroTier Networks',
-        startContent: <NetworkIcon {...iconProps} />,
+        startContent: <NetworkIcon {...iconProps} />
       },
       {
         path: '/zerotier/status',
         title: 'Status',
         startContent: <StatusIcon {...iconProps} />,
-        description: 'My status of ZeroTier',
+        description: 'My status of ZeroTier'
       },
       // #if WINDOWS
       {
         path: '/zerotier/service',
         title: 'Service',
         startContent: <ServiceIcon {...iconProps} />,
-        description: 'Manage ZeroTier Service',
+        description: 'Manage ZeroTier Service'
       },
       // #endif
       {
         path: '/zerotier/experiments',
         title: 'Experimental',
         startContent: <FlaskIcon {...iconProps} />,
-        description: 'Experimental features to customize ZeroTier',
-      },
-    ],
+        description: 'Experimental features to customize ZeroTier'
+      }
+    ]
   },
   {
     key: 'Settings',
@@ -64,15 +64,15 @@ const routes: MenuListSection[] = [
         path: '/settings/appearance',
         title: 'Appearance',
         description: 'Customize the appearance of the application',
-        startContent: <PaintIcon {...iconProps} />,
+        startContent: <PaintIcon {...iconProps} />
       },
       {
         path: '/settings/general',
         title: 'General',
         description: 'Configure general settings of the application',
-        startContent: <WindowIcon {...iconProps} />,
-      },
-    ],
+        startContent: <WindowIcon {...iconProps} />
+      }
+    ]
   },
   {
     key: 'Others',
@@ -82,16 +82,16 @@ const routes: MenuListSection[] = [
         path: '/troubleshooting',
         title: 'Troubleshooting',
         description: 'Check ZeroTier status and troubleshoot issues',
-        startContent: <InterrogationIcon {...iconProps} />,
+        startContent: <InterrogationIcon {...iconProps} />
       },
       {
         path: '/about',
         title: 'About',
         description: '',
-        startContent: <CommandIcon {...iconProps} />,
-      },
-    ],
-  },
+        startContent: <CommandIcon {...iconProps} />
+      }
+    ]
+  }
 ]
 
 function RootLayout() {

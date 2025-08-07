@@ -34,6 +34,8 @@ import { HttpResponse } from '../../../typings/global.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
 import DetailsModal from './DetailsModal.tsx'
+import { Trans } from 'react-i18next'
+import { t } from 'i18next'
 
 function NetworksTable({
   networks,
@@ -122,7 +124,7 @@ function NetworksTable({
               size="sm"
               variant="flat"
             >
-              {statusChip?.[network?.status ?? 'UNKNOWN']?.label ?? cellValue}
+              <Trans>{statusChip?.[network?.status ?? 'UNKNOWN']?.label ?? cellValue}</Trans>
             </Chip>
           )
         case 'action':
@@ -155,7 +157,7 @@ function NetworksTable({
                   <DropdownItem
                     key="details"
                     startContent={<InfoIcon {...iconProps} />}
-                    title="Details"
+                    title={<Trans>Details</Trans>}
                     onPress={openDetailsModal}
                   />
                   {network.status === 'DISCONNECTED' ? (
@@ -164,7 +166,7 @@ function NetworksTable({
                       className="text-success"
                       variant="flat"
                       startContent={<ConnectIcon {...iconProps} />}
-                      title="Connect"
+                      title={<Trans>Connect</Trans>}
                       onPress={() => request(connect(network.id))}
                     />
                   ) : (
@@ -173,7 +175,7 @@ function NetworksTable({
                       className="text-danger"
                       variant="flat"
                       startContent={<DisconnectIcon {...iconProps} />}
-                      title="Disconnect"
+                      title={<Trans>Disconnect</Trans>}
                       onPress={() => request(disconnect(network.id))}
                     />
                   )}
@@ -182,7 +184,7 @@ function NetworksTable({
                     className={network.status === 'DISCONNECTED' ? 'text-danger' : 'hidden'}
                     variant="flat"
                     startContent={<TrashIcon {...iconProps} />}
-                    title="Delete"
+                    title={<Trans>Delete</Trans>}
                     onPress={() =>
                       network.status === 'DISCONNECTED' && network.id && request(deleteNetwork(network.id))
                     }
@@ -228,7 +230,7 @@ function NetworksTable({
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.key} maxWidth={column.maxWidth}>
-              {column.label}
+              <Trans>{column.label}</Trans>
             </TableColumn>
           )}
         </TableHeader>
@@ -237,12 +239,12 @@ function NetworksTable({
           items={networks}
           loadingContent={
             <div className="w-full flex flex-col justify-center items-center gap-4 h-[50vh]">
-              <Spinner label="Loading..." color="primary" />
+              <Spinner label={t('Loading...')} color="primary" />
             </div>
           }
           emptyContent={
             <div className="flex flex-col justify-center gap-4 h-[50vh]">
-              <span>No networks to display.</span>
+              <span><Trans>No networks to display.</Trans></span>
               <div>
                 <RefreshButton
                   buttonProps={{

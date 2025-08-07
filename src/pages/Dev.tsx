@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import i18n from '../i18n/index.ts'
 import { getNetworks, getStatus } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
 import { InvokeEvent } from '../typings/enum.ts'
@@ -36,10 +35,6 @@ function Dev() {
     invokeCommandButton(InvokeEvent.HIDE_MAIN_WINDOW),
     apiButton(getNetworks),
     apiButton(getStatus),
-    {
-      text: '[i18n]: translation',
-      onPress: () => console.log(`hello => ${i18n.t('hello')}`),
-    },
     {
       text: 'Restart As Admin',
       onPress: restartAsAdmin,

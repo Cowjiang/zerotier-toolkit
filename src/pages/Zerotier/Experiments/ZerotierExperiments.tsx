@@ -6,6 +6,8 @@ import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { ZerotierConfig } from '../../../typings/config.ts'
 import { InvokeEvent } from '../../../typings/enum.ts'
 import { invokeCommand } from '../../../utils/helpers/tauriHelpers.ts'
+import { t } from 'i18next'
+import { Trans } from 'react-i18next'
 
 function SecretTooltip() {
   return (
@@ -67,14 +69,14 @@ function ZerotierExperiments() {
         </div>
         <div className="mt-4 flex items-center">
           <div className="mr-4 flex gap-1.5 text-default-700">
-            <p>Secret Token</p>
+            <p><Trans>Secret Token</Trans></p>
             <SecretTooltip />
           </div>
           <div className="w-1/2 ml-auto flex gap-4">
             <Input
               isRequired
               isClearable
-              placeholder={serverInfo?.secret || 'Input your local auth token'}
+              placeholder={t(serverInfo?.secret || 'Input your local auth token')}
               value={config?.[ZerotierConfig.TOKEN] || ''}
               onClear={() => onTokenChanged('')}
               onValueChange={onTokenChanged}
@@ -83,7 +85,7 @@ function ZerotierExperiments() {
         </div>
         <div className="mt-4 flex items-center">
           <div className="mr-4 flex gap-1.5 text-default-700">
-            <p>Service Port</p>
+            <p><Trans>Service Port</Trans></p>
           </div>
           <div className="ml-auto flex gap-4">
             <Input
@@ -99,11 +101,11 @@ function ZerotierExperiments() {
         </div>
         <div className="mt-4 flex items-center">
           <div className="mr-4 flex gap-1.5 text-default-700">
-            <p>ZeroTier One Directory</p>
+            <p><Trans>ZeroTier One Directory</Trans></p>
           </div>
           <div className="ml-auto flex gap-4">
             <Button className="bg-default-100" onPress={openZeroTierOneDir}>
-              Open Folder
+              <Trans>Open Folder</Trans>
             </Button>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { createElement } from 'react'
 
 import { useNotification } from '../../components/providers/NotificationProvider.tsx'
 import { HttpResponse } from '../../typings/global.ts'
+import { t } from 'i18next'
 
 const useRequest = () => {
   const { setNotification } = useNotification()
@@ -20,7 +21,7 @@ const useRequest = () => {
                 color: 'danger',
                 href: '/zerotier/experiments',
               },
-              'Authentication is invalid, click here to configure',
+              t('Authentication is invalid, click here to configure'),
             ),
             type: 'danger',
           })

@@ -5,6 +5,7 @@ import { RefreshIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
+import { Trans } from 'react-i18next'
 
 function ZerotierStatus() {
   const { request } = useRequest()
@@ -51,7 +52,7 @@ function ZerotierStatus() {
           </Snippet>
           {isError ? (
             <div className="flex flex-col justify-center items-center gap-4 h-[50vh]">
-              <span>Failed to get status.</span>
+              <span><Trans>Failed to get status.</Trans></span>
               <div>
                 <RefreshButton
                   buttonProps={{

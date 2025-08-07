@@ -6,16 +6,18 @@ import { CheckIcon, DarkThemeIcon, LightThemeIcon } from '../../components/base/
 import { useAppStore } from '../../store/app.ts'
 import { LanguageConfig, ThemeConfig } from '../../typings/config.ts'
 import { Language, Theme } from '../../typings/enum.ts'
+import { Trans } from 'react-i18next'
+import { useLanguage } from '../../components/providers/LanguageProvider.tsx'
 
 const languages = [
   {
     label: 'English(US)',
-    value: Language.en_US,
+    value: Language.en_US
   },
   {
     label: '简体中文',
-    value: Language.zh_CN,
-  },
+    value: Language.zh_CN
+  }
 ]
 
 function AppearanceSetting() {
@@ -28,15 +30,16 @@ function AppearanceSetting() {
   const syncWithSystemTheme = async (isSyncWithSystem: boolean) => {
     setConfig({
       [ThemeConfig.IS_SYNC_WITH_SYSTEM]: isSyncWithSystem,
-      [ThemeConfig.CURRENT]: theme,
+      [ThemeConfig.CURRENT]: theme
     })
   }
 
+  const { setLanguage } = useLanguage()
   const currentLanguage = useMemo(() => {
     try {
       let currentLang = config[LanguageConfig.UI] ?? languages[0].value
       if (!languages.map(({ value }) => value).find((lang) => lang === currentLang)) {
-        currentLang = languages[0].value
+        setConfig({ [LanguageConfig.UI]: languages[0].value })
       }
       return new Set([currentLang])
     } catch (_) {
@@ -44,14 +47,18 @@ function AppearanceSetting() {
     }
   }, [config[LanguageConfig.UI]])
 
+  const changeLanguage = async (language: Language) => {
+    await setLanguage(language)
+  }
+
   return (
     <div className="flex flex-col">
       <section>
         <div>
-          <p className="font-bold text-large">Theme</p>
+          <p className="font-bold text-large"><Trans>Theme</Trans></p>
         </div>
         <div className="mt-4 flex items-center">
-          <p className="text-default-700">Sync with system</p>
+          <p className="text-default-700"><Trans>Sync with system</Trans></p>
           <div className="ml-auto flex gap-4">
             <Switch
               aria-label="Sync with system theme"
@@ -63,7 +70,7 @@ function AppearanceSetting() {
           </div>
         </div>
         <div className="mt-4 flex items-center">
-          <p className="text-default-700">Switch theme</p>
+          <p className="text-default-700"><Trans>Switch theme</Trans></p>
           <div className="ml-auto flex gap-3">
             <div className="flex flex-col items-center">
               <Button
@@ -95,10 +102,10 @@ function AppearanceSetting() {
       <Divider className="mt-8 mb-6" />
       <section>
         <div>
-          <p className="font-bold text-large">Language</p>
+          <p className="font-bold text-large"><Trans>Language</Trans></p>
         </div>
         <div className="mt-4 flex items-center">
-          <p className="text-default-700">Display Language</p>
+          <p className="text-default-700"><Trans>Display Language</Trans></p>
           <div className="ml-auto flex gap-4">
             <Select
               className="w-36"
@@ -108,9 +115,7 @@ function AppearanceSetting() {
               selectionMode="single"
               selectedKeys={currentLanguage}
               items={languages}
-              onSelectionChange={(keys) => {
-                setConfig({ [LanguageConfig.UI]: keys === 'all' ? languages[0].value : keys.values().next().value })
-              }}
+              onSelectionChange={(keys) => changeLanguage(keys === 'all' ? languages[0].value : keys.values().next().value)}
             >
               {(language) => <SelectItem key={language.value}>{language.label}</SelectItem>}
             </Select>
