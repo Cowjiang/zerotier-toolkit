@@ -1,1 +1,9 @@
-pnpm lint-staged
+#!/bin/bash
+set -e
+
+UI_CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep "^src/" || true)
+
+if [ -n "$UI_CHANGED_FILES" ]; then
+  pnpm lint-staged
+  pnpm run test:no-watch
+fi
