@@ -17,7 +17,8 @@
     "vite:dev": "vite",
     "vite:build": "tsc && vite build",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build:no-bundle": "tauri build --no-bundle"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
