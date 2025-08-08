@@ -62,9 +62,7 @@ pub(crate) fn is_admin() -> String {
 mod tests {
     use log::info;
 
-    use crate::{
-        command::{execute_cmd, is_admin, parse_output},
-    };
+    use crate::command::{execute_cmd, is_admin, parse_output};
 
     #[test]
     fn test_execute_cmd() {

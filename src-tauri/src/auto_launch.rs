@@ -17,7 +17,6 @@ pub fn init_and_set_auto_launch(app_handle: &AppHandle, enable: bool) -> Result<
 pub fn set_auto_launch(app_handle: AppHandle) -> String {
     let _ = init_and_set_auto_launch(&app_handle, true);
     success_json("success")
-
 }
 
 #[tauri::command]

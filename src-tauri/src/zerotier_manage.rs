@@ -4,17 +4,16 @@ use std::io::Error;
 use std::path::Path;
 use std::string::ToString;
 
-use crate::r::{
-    fail_message_json,
-    success_json,
-};
 #[cfg(not(windows))]
 use crate::r::unsupported_platform;
+use crate::r::{fail_message_json, success_json};
 #[cfg(target_os = "windows")]
 use crate::windows_service_manage::api::{StartType, WindowsServiceManage};
 use lazy_static::lazy_static;
 use log::{debug, error};
 use serde::Serialize;
+use tauri::AppHandle;
+use tauri_plugin_opener::OpenerExt;
 
 const DEFAULT_PORT: &str = "9993";
 lazy_static! {
@@ -255,10 +254,10 @@ pub(crate) fn get_zerotier_one_dir() -> String {
 }
 
 #[tauri::command]
-pub(crate) fn open_zerotier_one_dir() -> String {
+pub(crate) fn open_zerotier_one_dir(app: AppHandle) -> String {
     match get_zerotier_one_path() {
         Ok(zerotier_one_path) => {
-            open::that(zerotier_one_path.file_dir).unwrap();
+            app.opener().open_path(zerotier_one_path.file_dir,None::<&str>).unwrap();
             success_json("")
         }
         Err(..) => fail_message_json("Failed to get ZeroTier One program path"),
@@ -312,10 +311,8 @@ mod tests {
     use std::time::Duration;
 
     use log::info;
-    
 
     use crate::zerotier_manage::*;
-
 
     #[test]
     fn test_get_zerotier_services() {

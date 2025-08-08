@@ -1,9 +1,9 @@
 use lazy_static::lazy_static;
 use log::debug;
 use parking_lot::RwLock;
-use tauri::{AppHandle, Emitter};
 use tauri::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
 use tauri::tray::{TrayIcon, TrayIconBuilder, TrayIconEvent};
+use tauri::{AppHandle, Emitter};
 
 use crate::show_main_window;
 use crate::window::exit_app;
@@ -42,7 +42,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-        .unwrap();
+    .unwrap();
     let status_item = MenuItem::with_id(
         app_handle,
         String::from(STATUS_ITEM_ID),
@@ -50,7 +50,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-        .unwrap();
+    .unwrap();
     let settings_item = MenuItem::with_id(
         app_handle,
         String::from(SETTINGS_ITEM_ID),
@@ -58,7 +58,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-        .unwrap();
+    .unwrap();
     let quit_item = MenuItem::with_id(
         app_handle,
         String::from(QUIT_ITEM_ID),
@@ -66,14 +66,20 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-        .unwrap();
+    .unwrap();
     let separator_item = PredefinedMenuItem::separator(app_handle).unwrap();
 
     let menu = Menu::with_items(
         app_handle,
-        &[&networks_item, &status_item, &settings_item, &separator_item, &quit_item],
+        &[
+            &networks_item,
+            &status_item,
+            &settings_item,
+            &separator_item,
+            &quit_item,
+        ],
     )
-        .unwrap();
+    .unwrap();
 
     let _ = TrayIconBuilder::with_id(TRAY_ID)
         .menu(&menu)
@@ -85,7 +91,9 @@ pub fn show_system_tray(app_handle: &AppHandle) {
             handle_tray_menu_event(app.clone(), event);
         })
         .icon(app_handle.default_window_icon().unwrap().clone())
-        .build(app_handle).unwrap().set_visible(true);
+        .build(app_handle)
+        .unwrap()
+        .set_visible(true);
 }
 
 pub fn destroy_system_tray(app_handle: &AppHandle) {

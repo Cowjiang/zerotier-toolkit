@@ -27,6 +27,7 @@ mod command;
 
 mod auto_launch;
 mod configurations;
+mod embedding_zerotier;
 mod r;
 mod system;
 mod system_tray;
@@ -36,7 +37,6 @@ mod window;
 #[cfg(windows)]
 mod windows_service_manage;
 mod zerotier_manage;
-mod embedding_zerotier;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -48,6 +48,8 @@ fn start_tauri() {
         std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
     }
     let mut builder = tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_log::Builder::new().build())
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
@@ -125,7 +127,6 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
         // other handlers
         is_admin,
         restart_as_admin,
-        open_in_operation_system,
         get_latest_version_command
     ]);
     builder

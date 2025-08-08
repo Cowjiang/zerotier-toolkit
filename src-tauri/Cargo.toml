@@ -26,13 +26,11 @@ serde = { version = "1.0.210", features = ["derive"] }
 serde_json = "1.0.128"
 serde_with = "3.11.0"
 log = "0.4.22"
-env_logger = "0.11.5"
 lazy_static = { version = "1.5.0", features = [] }
 chrono = "0.4.38"
 winapi = { version = "0.3.9", features = ["winsvc", "winbase", "errhandlingapi", "ntdef", "processthreadsapi", "synchapi"] }
 parking_lot = "0.12.3"
 thiserror = "1.0.63"
-open = "5.3.0"
 reqwest = { version = "0.11.7", features = ["blocking"] }
 futures = "0.3.30"
 tokio = { version = "1.40.0", features = ["full"] }
@@ -42,6 +40,7 @@ tauri-plugin-http = "2"
 tauri-plugin-fs = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-log = "2"
+tauri-plugin-opener = "2.4.0"
 
 [dev-dependencies]
 tokio = { version = "1.40.0", features = ["full"] }

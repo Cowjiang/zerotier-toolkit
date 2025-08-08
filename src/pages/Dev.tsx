@@ -9,7 +9,7 @@ import { getNetworks, getStatus } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
 import { InvokeEvent } from '../typings/enum.ts'
 import { HttpResponse } from '../typings/global.ts'
-import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
+import { invokeCommand, openUrl } from '../utils/helpers/tauriHelpers.ts'
 
 function Dev() {
   const { restartAsAdmin } = useAppStore()
@@ -64,6 +64,10 @@ function Dev() {
     }),
     invokeCommandButton(InvokeEvent.GET_LATEST_VERSION),
     invokeCommandButton(InvokeEvent.GET_EMBEDDING_ZEROTIER_VERSION),
+    {
+      text: 'open url[website]',
+      onPress: async () => await openUrl('https://github.com/'),
+    },
   ]
 
   function ass(): JSX.Element {

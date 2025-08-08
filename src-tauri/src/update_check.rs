@@ -28,9 +28,7 @@ struct LatestVersionResult {
     latest_time: Option<DateTime<Local>>,
 }
 
-impl LatestVersionResult {
-   
-}
+impl LatestVersionResult {}
 
 impl Clone for LatestVersionResult {
     fn clone(&self) -> Self {

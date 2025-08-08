@@ -9,6 +9,8 @@ import {
   WriteFileOptions,
   writeTextFile as tauriWriteTextFile,
 } from '@tauri-apps/plugin-fs'
+// 别名
+import { openUrl as openUrlInTauri } from '@tauri-apps/plugin-opener'
 
 import { CONFIGURATION_FILE_PATH } from '../../constant.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
@@ -63,4 +65,13 @@ export const getAppVersion = async () => {
 
 export const openInSystem = async (argument: string) => {
   argument && (await invokeCommand(InvokeEvent.OPEN_IN_OPERATION_SYSTEM, { something: argument }))
+}
+
+/**
+ * # open url in browser
+ * the white list must be defined in  `src-tauri/capabilities/*.json`
+ *
+ */
+export const openUrl = async (url: string) => {
+  url && (await openUrlInTauri(url))
 }
