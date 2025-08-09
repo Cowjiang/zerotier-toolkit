@@ -1,7 +1,6 @@
 use std::collections::HashMap;
-
+use std::sync::RwLock;
 use lazy_static::lazy_static;
-use parking_lot::RwLock;
 use serde_json::Value;
 use tauri::AppHandle;
 
@@ -12,7 +11,7 @@ lazy_static! {
 }
 
 pub fn init_configuration_context(app_handle: &AppHandle) {
-    let mut configuration_groups = CONFIGURATION_GROUPS.write();
+    let mut configuration_groups = CONFIGURATION_GROUPS.write().unwrap();
     let system_config_context =
         crate::configurations::system_configurations::init_context(&app_handle);
     configuration_groups.push(system_config_context);
@@ -22,7 +21,7 @@ pub fn init_configuration_context(app_handle: &AppHandle) {
 }
 
 pub fn get_configuration_context(name: &str) -> Option<ConfigurationContext> {
-    let configuration_groups = CONFIGURATION_GROUPS.read();
+    let configuration_groups = CONFIGURATION_GROUPS.read().unwrap();
     for context in configuration_groups.iter() {
         if context.name() == name {
             return Some(context.clone());
@@ -35,7 +34,7 @@ pub fn put_configuration_context(
     name: &String,
     configs: HashMap<String, Value>,
 ) -> Result<(), String> {
-    let mut configuration_groups = CONFIGURATION_GROUPS.write();
+    let mut configuration_groups = CONFIGURATION_GROUPS.write().unwrap();
     for context in configuration_groups.iter_mut() {
         if context.name() == name {
             for (key, value) in &configs {
@@ -49,7 +48,7 @@ pub fn put_configuration_context(
 }
 
 pub fn reset_configurations_context_to_default(name: &String) {
-    let mut configuration_groups = CONFIGURATION_GROUPS.write();
+    let mut configuration_groups = CONFIGURATION_GROUPS.write().unwrap();
     if name.eq("all") {
         configuration_groups
             .iter_mut()
@@ -63,7 +62,7 @@ pub fn reset_configurations_context_to_default(name: &String) {
 }
 
 pub fn backup_all() {
-    let mut configuration_groups = CONFIGURATION_GROUPS.write();
+    let mut configuration_groups = CONFIGURATION_GROUPS.write().unwrap();
     configuration_groups
         .iter_mut()
         .for_each(|v| v.store_config_bak());

@@ -28,11 +28,7 @@ serde_with = "3.11.0"
 log = "0.4.22"
 lazy_static = { version = "1.5.0", features = [] }
 chrono = "0.4.38"
-winapi = { version = "0.3.9", features = ["winsvc", "winbase", "errhandlingapi", "ntdef", "processthreadsapi", "synchapi"] }
-parking_lot = "0.12.3"
 thiserror = "1.0.63"
-reqwest = { version = "0.11.7", features = ["blocking"] }
-futures = "0.3.30"
 tokio = { version = "1.40.0", features = ["full"] }
 tauri-plugin-process = "2"
 tauri-plugin-clipboard-manager = "2"
@@ -53,3 +49,14 @@ custom-protocol = ["tauri/custom-protocol"]
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-autostart = "2"
+
+# windwos only denpendencies
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3.9", features = ["winsvc", "winbase", "errhandlingapi", "ntdef", "processthreadsapi", "synchapi"] }
+
+[profile.release]
+codegen-units = 1 # Allows LLVM to perform better optimization.
+lto = true # Enables link-time-optimizations.
+opt-level = "s" # Prioritizes small binary size. Use `3` if you prefer speed.
+panic = "abort" # Higher performance by disabling panic handlers.
+strip = true # Ensures debug symbols are removed.

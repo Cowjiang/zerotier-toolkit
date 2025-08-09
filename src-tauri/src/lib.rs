@@ -159,7 +159,7 @@ fn init_window(app_handle: &AppHandle) {
     .build()
     .unwrap();
     let _ = get_configuration_context(SYSTEM_CONFIGURATION_NAME).is_some_and(|context| {
-        let minimize_to_tray_def = GENERAL_MINIMIZE_TO_TRAY.read();
+        let minimize_to_tray_def = GENERAL_MINIMIZE_TO_TRAY.read().unwrap();
         if context
             .get_config_by_def(minimize_to_tray_def.deref())
             .as_bool()

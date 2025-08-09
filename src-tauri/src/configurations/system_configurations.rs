@@ -1,6 +1,6 @@
+use std::sync::RwLock;
 use lazy_static::lazy_static;
 use log::{debug, error};
-use parking_lot::RwLock;
 use serde_json::Value;
 use tauri::AppHandle;
 
@@ -53,7 +53,7 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     debug!("start to init configuration");
     // == area for put configuration ande register the on-change-callback
     // ==== demo for set a configuration item
-    let mut system_theme = SYSTEM_THEME.write();
+    let mut system_theme = SYSTEM_THEME.write().unwrap();
     system_theme.register_on_change(|_this, _app_handle, _changed| {
         //  this is demo for config change handle
     });
@@ -63,10 +63,10 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     system_theme.register_to_context(&mut context);
     // ==== end demo
     // == init THEME_SYNC_WITH_SYSTEM
-    let theme_sync_with_system = THEME_SYNC_WITH_SYSTEM.write();
+    let theme_sync_with_system = THEME_SYNC_WITH_SYSTEM.write().unwrap();
     theme_sync_with_system.register_to_context(&mut context);
     // == init GENERAL_AUTO_START
-    let mut general_auto_start = GENERAL_AUTO_START.write();
+    let mut general_auto_start = GENERAL_AUTO_START.write().unwrap();
     general_auto_start.register_on_change(|_this, app_handle, changed| {
         debug!("auto start change to {}", changed);
         let enable = changed.as_bool().unwrap();
@@ -77,10 +77,10 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     });
     general_auto_start.register_to_context(&mut context);
     // == INIT GENERAL_MINIMIZE_TO_TRAY
-    let general_minimize_to_tray = GENERAL_MINIMIZE_TO_TRAY.write();
+    let general_minimize_to_tray = GENERAL_MINIMIZE_TO_TRAY.write().unwrap();
     general_minimize_to_tray.register_to_context(&mut context);
     // == INIT GENERAL_ENABLE_TRAY
-    let mut enable_tray = GENERAL_ENABLE_TRAY.write();
+    let mut enable_tray = GENERAL_ENABLE_TRAY.write().unwrap();
     enable_tray.register_on_change(|_this, app_handle, changed| {
         debug!("enable tray change to {}", changed);
         if changed.as_bool().unwrap() {
@@ -92,7 +92,7 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     enable_tray.callback_anyway(true);
     enable_tray.register_to_context(&mut context);
     // ==
-    let language_ui = LANGUAGE_UI.write();
+    let language_ui = LANGUAGE_UI.write().unwrap();
     language_ui.register_to_context(&mut context);
     context.sync_from_file();
     context.store_config();

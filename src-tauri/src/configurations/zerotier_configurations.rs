@@ -1,5 +1,5 @@
+use std::sync::RwLock;
 use lazy_static::lazy_static;
-use parking_lot::RwLock;
 use serde_json::Value;
 use tauri::AppHandle;
 
@@ -28,11 +28,11 @@ lazy_static! {
 pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     let mut context =
         ConfigurationContext::new(app_handle.clone(), ZEROTIER_CONFIGURATION_NAME.to_string());
-    let zerotier_token = ZEROTIER_TOKEN.write();
+    let zerotier_token = ZEROTIER_TOKEN.write().unwrap();
     zerotier_token.register_to_context(&mut context);
-    let zerotier_port = ZEROTIER_PORT.write();
+    let zerotier_port = ZEROTIER_PORT.write().unwrap();
     zerotier_port.register_to_context(&mut context);
-    let zerotier_networks = ZEROTIER_NETWORKS.write();
+    let zerotier_networks = ZEROTIER_NETWORKS.write().unwrap();
     zerotier_networks.register_to_context(&mut context);
     context.sync_from_file();
     context.store_config();

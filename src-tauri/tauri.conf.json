@@ -3,6 +3,7 @@
     "beforeDevCommand": "pnpm vite:dev",
     "beforeBuildCommand": "pnpm vite:build",
     "frontendDist": "../dist",
+    "removeUnusedCommands": true,
     "devUrl": "http://localhost:8000"
   },
   "bundle": {

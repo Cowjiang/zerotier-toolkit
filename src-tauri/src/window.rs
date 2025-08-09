@@ -45,7 +45,7 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
             let _ = window.hide();
             let _ = get_configuration_context(&SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(
                 |context| {
-                    let general_minimize_to_tray_def = GENERAL_ENABLE_TRAY.read();
+                    let general_minimize_to_tray_def = GENERAL_ENABLE_TRAY.read().unwrap();
                     if !context
                         .get_config_by_def(general_minimize_to_tray_def.deref())
                         .as_bool()

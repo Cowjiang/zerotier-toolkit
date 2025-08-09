@@ -1,6 +1,4 @@
-use lazy_static::lazy_static;
 use log::debug;
-use parking_lot::RwLock;
 use tauri::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
 use tauri::tray::{TrayIcon, TrayIconBuilder, TrayIconEvent};
 use tauri::{AppHandle, Emitter};
@@ -22,9 +20,6 @@ const SETTINGS_ITEM_TITLE: &str = "Settings";
 const QUIT_ITEM_ID: &str = "quit";
 const QUIT_ITEM_TITLE: &str = "Quit ZeroTier Toolkit";
 
-lazy_static! {
-    static ref SYSTEM_TRAY_STATUS: RwLock<bool> = RwLock::new(false);
-}
 
 pub fn show_system_tray(app_handle: &AppHandle) {
     let current_tray = app_handle.tray_by_id(TRAY_ID);
@@ -42,7 +37,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-    .unwrap();
+        .unwrap();
     let status_item = MenuItem::with_id(
         app_handle,
         String::from(STATUS_ITEM_ID),
@@ -50,7 +45,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-    .unwrap();
+        .unwrap();
     let settings_item = MenuItem::with_id(
         app_handle,
         String::from(SETTINGS_ITEM_ID),
@@ -58,7 +53,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-    .unwrap();
+        .unwrap();
     let quit_item = MenuItem::with_id(
         app_handle,
         String::from(QUIT_ITEM_ID),
@@ -66,7 +61,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
         true,
         None::<&str>,
     )
-    .unwrap();
+        .unwrap();
     let separator_item = PredefinedMenuItem::separator(app_handle).unwrap();
 
     let menu = Menu::with_items(
@@ -79,7 +74,7 @@ pub fn show_system_tray(app_handle: &AppHandle) {
             &quit_item,
         ],
     )
-    .unwrap();
+        .unwrap();
 
     let _ = TrayIconBuilder::with_id(TRAY_ID)
         .menu(&menu)
