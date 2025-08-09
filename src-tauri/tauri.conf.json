@@ -25,6 +25,7 @@
       }
     },
     "externalBin": [
+      "binaries/zerotier-core"
     ]
   },
   "productName": "ZeroTier Toolkit",

@@ -1,8 +1,10 @@
-import { createContext, ReactNode, useContext, useEffect } from 'react'
-import { Language } from '../../typings/enum.ts'
 import i18n from 'i18next'
+import { createContext, ReactNode, useContext, useEffect } from 'react'
+
 import { useAppStore } from '../../store/app.ts'
 import { LanguageConfig } from '../../typings/config.ts'
+import { Language } from '../../typings/enum.ts'
+import { TrayHelper } from '../../utils/helpers/tray'
 
 type LanguageContext = {
   language?: Language
@@ -23,8 +25,9 @@ function LanguageProvider({ children }: { children: ReactNode }) {
     try {
       await i18n.changeLanguage(language)
       setConfig({ [LanguageConfig.UI]: language })
-    } catch (error) {
-      console.error('[i18n]', error)
+      await TrayHelper.resetMenu()
+    } catch (e) {
+      console.error('[i18n]', e)
     }
   }
 

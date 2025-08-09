@@ -44,7 +44,7 @@ export const useAppStore = create<AppState & AppAction>()(
         if (!success) {
           throw message
         }
-        await exit(1)
+        await exit(0)
       },
       setConfig: (config) => {
         set((state) => ({ ...state, config: { ...state.config, ...config } }))

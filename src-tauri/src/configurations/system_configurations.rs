@@ -8,7 +8,7 @@ use crate::auto_launch::init_and_set_auto_launch;
 use crate::configurations::configuration_base::{
     ConfigurationContext, ConfigurationDef, ExpectType,
 };
-use crate::system_tray::{destroy_system_tray, show_system_tray};
+use crate::system_tray::{hide_system_tray, init_system_tray, show_system_tray};
 
 pub const SYSTEM_CONFIGURATION_NAME: &str = "system";
 lazy_static! {
@@ -84,9 +84,10 @@ pub fn init_context(app_handle: &AppHandle) -> ConfigurationContext {
     enable_tray.register_on_change(|_this, app_handle, changed| {
         debug!("enable tray change to {}", changed);
         if changed.as_bool().unwrap() {
-            show_system_tray(&app_handle);
+            init_system_tray(&app_handle);
+            show_system_tray(&app_handle)
         } else {
-            destroy_system_tray(&app_handle);
+            hide_system_tray(&app_handle);
         }
     });
     enable_tray.callback_anyway(true);
