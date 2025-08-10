@@ -42,6 +42,7 @@ function TrayProvider({ children }: { children: ReactNode }) {
         items,
       })
       await tray.setMenu(menu)
+      await tray.setShowMenuOnLeftClick(true)
     } catch (e) {
       console.error('[Tray]', e)
     }
