@@ -32,7 +32,7 @@ You can use the toolkit as a functionality supplement of [ZeroTier Desktop UI](h
 - Most of the features of official client
 - Networks filter and history
 - System service management
-- Multiple language support
+- Multiple language support (简体中文 | English)
 - Self-hosted Moon Support (Todo)
 - Android Support (Todo)
 
@@ -44,21 +44,25 @@ You can use the toolkit as a functionality supplement of [ZeroTier Desktop UI](h
 2. Backup your planet or moons.d file and replace it
 3. Restart ZeroTier service or process
 
-### 2. How to restart ZeroTier service/process on macOS and Linux?
+### 2. Got Error when launching the app on macOS
 
-1. MacOS: `cat /Library/Application\ Support/ZeroTier/One/zerotier-one.pid | sudo xargs kill`
-2. Linux: `service zerotier-one restart`
+If you get the error like below:
+- Cannot Be Opened Because the Developer Cannot be Verified
+- ZeroTier Toolkit is damaged and can't be opened
 
-### 3. Got 'Cannot Be Opened Because the Developer Cannot be Verified' on macOS
+Please run this command in the terminal: `sudo xattr -r -d com.apple.quarantine /Applications/ZeroTier\ Toolkit.app`
 
-`sudo xattr -r -d com.apple.quarantine /Applications/ZeroTier\ Toolkit.app`
-
-### 4. I did install ZeroTier One but the toolkit can't recognize it on macOS
+### 3. I did install ZeroTier One but the toolkit can't recognize it on macOS
 
 If you installed ZeroTier One in the default location, then you need to grant permission to access the application
 directory for the current user.
 
-You can run this command in the terminal: `sudo chown-R $USER ~/Library/Application\ support/ZeroTier`
+You can run this command in the terminal: `sudo chown -R $USER ~/Library/Application\ support/ZeroTier`
+
+### 4. How to restart ZeroTier service/process on macOS and Linux?
+
+1. MacOS: `cat /Library/Application\ Support/ZeroTier/One/zerotier-one.pid | sudo xargs kill`
+2. Linux: `service zerotier-one restart`
 
 ## Copyright
 
