@@ -7,6 +7,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom'
 import LanguageProvider from './components/providers/LanguageProvider.tsx'
 import NotificationProvider from './components/providers/NotificationProvider.tsx'
 import ThemeProvider from './components/providers/ThemeProvider.tsx'
+import TrayProvider from './components/providers/TrayProvider.tsx'
 import RootLayout from './layout/RootLayout.tsx'
 import About from './pages/About.tsx'
 // #if DEV
@@ -67,30 +68,32 @@ function App() {
   return (
     <HeroUIProvider navigate={navigate}>
       <LanguageProvider>
-        <ThemeProvider>
-          <NotificationProvider>
-            <div className="text-foreground">
-              <Routes>
-                <Route path="/" element={<RootLayout />}>
-                  <Route path="/home" element={<ZerotierNetworks />} />
-                  <Route path="/zerotier/networks" element={<ZerotierNetworks />} />
-                  <Route path="/zerotier/status" element={<ZerotierStatus />} />
-                  <Route path="/zerotier/service" element={<ZerotierService />} />
-                  <Route path="/zerotier/experiments" element={<ZerotierExperiments />} />
-                  <Route path="/settings" element={<AppearanceSetting />} />
-                  <Route path="/settings/appearance" element={<AppearanceSetting />} />
-                  <Route path="/settings/general" element={<GeneralSetting />} />
-                  <Route path="/troubleshooting" element={<Troubleshooting />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="*" element={<ZerotierNetworks />} />
-                </Route>
-                {/* #if DEV */}
-                <Route path="/dev" element={<Dev />} />
-                {/* #endif  */}
-              </Routes>
-            </div>
-          </NotificationProvider>
-        </ThemeProvider>
+        <TrayProvider>
+          <ThemeProvider>
+            <NotificationProvider>
+              <div className="text-foreground">
+                <Routes>
+                  <Route path="/" element={<RootLayout />}>
+                    <Route path="/home" element={<ZerotierNetworks />} />
+                    <Route path="/zerotier/networks" element={<ZerotierNetworks />} />
+                    <Route path="/zerotier/status" element={<ZerotierStatus />} />
+                    <Route path="/zerotier/service" element={<ZerotierService />} />
+                    <Route path="/zerotier/experiments" element={<ZerotierExperiments />} />
+                    <Route path="/settings" element={<AppearanceSetting />} />
+                    <Route path="/settings/appearance" element={<AppearanceSetting />} />
+                    <Route path="/settings/general" element={<GeneralSetting />} />
+                    <Route path="/troubleshooting" element={<Troubleshooting />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="*" element={<ZerotierNetworks />} />
+                  </Route>
+                  {/* #if DEV */}
+                  <Route path="/dev" element={<Dev />} />
+                  {/* #endif  */}
+                </Routes>
+              </div>
+            </NotificationProvider>
+          </ThemeProvider>
+        </TrayProvider>
       </LanguageProvider>
     </HeroUIProvider>
   )

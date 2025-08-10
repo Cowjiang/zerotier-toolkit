@@ -67,11 +67,6 @@ export const openInSystem = async (argument: string) => {
   argument && (await invokeCommand(InvokeEvent.OPEN_IN_OPERATION_SYSTEM, { something: argument }))
 }
 
-/**
- * # open url in browser
- * the white list must be defined in  `src-tauri/capabilities/*.json`
- *
- */
 export const openUrl = async (url: string) => {
   url && (await openUrlInTauri(url))
 }
