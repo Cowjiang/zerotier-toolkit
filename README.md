@@ -32,8 +32,9 @@ You can use the toolkit as a functionality supplement of [ZeroTier Desktop UI](h
 - Most of the features of official client
 - Networks filter and history
 - System service management
+- Multiple language support
 - Self-hosted Moon Support (Todo)
-- Multiple language support (Todo)
+- Android Support (Todo)
 
 ## Q&A
 
@@ -62,7 +63,7 @@ You can run this command in the terminal: `sudo chown-R $USER ~/Library/Applicat
 ## Copyright
 
 - Logo from `ZeroTier, Inc.`, icons from [FLATICON](https://www.flaticon.com/)
-- Build by Tauri and React, UI by NextUI
+- Build by Tauri and React, UI by HeroUI
 
 ## Contribute
 

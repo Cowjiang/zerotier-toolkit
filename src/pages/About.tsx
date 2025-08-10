@@ -47,8 +47,8 @@ const poweredBy = [
     link: 'https://tauri.app/',
   },
   {
-    title: 'NextUI',
-    link: 'https://nextui.org/',
+    title: 'HeroUI',
+    link: 'https://heroui.com/',
   },
   {
     title: 'Flaticon',
