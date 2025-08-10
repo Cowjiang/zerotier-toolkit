@@ -24,9 +24,7 @@
         "installMode": "perMachine"
       }
     },
-    "externalBin": [
-      "binaries/zerotier-core"
-    ]
+    "externalBin": []
   },
   "productName": "ZeroTier Toolkit",
   "mainBinaryName": "ZeroTier Toolkit",
