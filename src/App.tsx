@@ -4,6 +4,7 @@ import { HeroUIProvider } from '@heroui/react'
 import { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
+import LanguageProvider from './components/providers/LanguageProvider.tsx'
 import NotificationProvider from './components/providers/NotificationProvider.tsx'
 import ThemeProvider from './components/providers/ThemeProvider.tsx'
 import RootLayout from './layout/RootLayout.tsx'
@@ -22,7 +23,6 @@ import { useAppStore } from './store/app'
 import { useZeroTierStore } from './store/zerotier'
 import { showWindow } from './utils/helpers/tauriHelpers.ts'
 import useTauriEventListener from './utils/hooks/useTauriEventListener.ts'
-import LanguageProvider from './components/providers/LanguageProvider.tsx'
 
 function App() {
   const navigate = useNavigate()
@@ -69,7 +69,7 @@ function App() {
       <LanguageProvider>
         <ThemeProvider>
           <NotificationProvider>
-            <div className="bg-background text-foreground">
+            <div className="text-foreground">
               <Routes>
                 <Route path="/" element={<RootLayout />}>
                   <Route path="/home" element={<ZerotierNetworks />} />

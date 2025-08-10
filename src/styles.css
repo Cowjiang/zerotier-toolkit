@@ -10,8 +10,8 @@ html {
 #root {
   min-width: 800px;
   min-height: 500px;
-  background-color: hsl(var(--nextui-background));
-  border-radius: var(--nextui-radius-medium);
+  background-color: hsl(var(--heroui-background));
+  border-radius: var(--heroui-radius-medium);
 }
 
 ::-webkit-scrollbar-track {
@@ -28,6 +28,6 @@ html {
 :hover::-webkit-scrollbar-thumb {
   cursor: pointer;
   border-radius: 5px;
-  background: hsl(var(--nextui-foreground-300));
+  background: hsl(var(--heroui-foreground-300));
   transition: all .2s ease;
 }

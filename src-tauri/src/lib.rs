@@ -152,10 +152,10 @@ fn init_window(app_handle: &AppHandle) {
     .fullscreen(false)
     .transparent(true)
     .decorations(false)
+    .shadow(false)
     .center()
     .min_inner_size(800.0, 500.0)
     .inner_size(800.0, 500.0)
-    .shadow(true)
     .build()
     .unwrap();
     let _ = get_configuration_context(SYSTEM_CONFIGURATION_NAME).is_some_and(|context| {
