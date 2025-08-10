@@ -40,7 +40,7 @@ fn before_exit() {
 #[tauri::command]
 pub fn close_main_window(app_handle: AppHandle) -> String {
     let main_window = app_handle.get_webview_window("main");
-    return match main_window {
+    match main_window {
         Some(window) => {
             let _ = window.hide();
             let _ = get_configuration_context(&SYSTEM_CONFIGURATION_NAME.to_string()).is_some_and(
@@ -61,7 +61,7 @@ pub fn close_main_window(app_handle: AppHandle) -> String {
             success_json("success")
         }
         None => fail_message_json("failed to close window"),
-    };
+    }
 }
 
 #[tauri::command]
