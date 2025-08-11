@@ -1,11 +1,10 @@
 use log::debug;
 use tauri::tray::{TrayIcon, TrayIconBuilder, TrayIconEvent};
-use tauri::{AppHandle};
+use tauri::AppHandle;
 
 use crate::show_main_window;
 
 const TRAY_ID: &str = "TRAY";
-
 
 pub fn init_system_tray(app_handle: &AppHandle) {
     let current_tray = app_handle.tray_by_id(TRAY_ID);
@@ -15,13 +14,11 @@ pub fn init_system_tray(app_handle: &AppHandle) {
 
     debug!("init tray");
 
-
     let _ = TrayIconBuilder::with_id(TRAY_ID)
         .show_menu_on_left_click(false)
         .on_tray_icon_event(|icon, event| {
             handle_tray_event(icon, event);
         })
-
         .icon(app_handle.default_window_icon().unwrap().clone())
         .build(app_handle)
         .unwrap();
@@ -51,7 +48,6 @@ pub fn show_system_tray(app_handle: &AppHandle) {
     });
 }
 
-
 fn handle_tray_event(tray: &TrayIcon, event: TrayIconEvent) {
     match event {
         TrayIconEvent::DoubleClick { .. } => {
@@ -61,5 +57,3 @@ fn handle_tray_event(tray: &TrayIcon, event: TrayIconEvent) {
         _ => {}
     }
 }
-
-

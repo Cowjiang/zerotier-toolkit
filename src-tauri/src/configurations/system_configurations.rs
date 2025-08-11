@@ -1,7 +1,7 @@
-use std::sync::RwLock;
 use lazy_static::lazy_static;
 use log::{debug, error};
 use serde_json::Value;
+use std::sync::RwLock;
 use tauri::AppHandle;
 
 use crate::auto_launch::init_and_set_auto_launch;

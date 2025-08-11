@@ -257,7 +257,9 @@ pub(crate) fn get_zerotier_one_dir() -> String {
 pub(crate) fn open_zerotier_one_dir(app: AppHandle) -> String {
     match get_zerotier_one_path() {
         Ok(zerotier_one_path) => {
-            app.opener().open_path(zerotier_one_path.file_dir,None::<&str>).unwrap();
+            app.opener()
+                .open_path(zerotier_one_path.file_dir, None::<&str>)
+                .unwrap();
             success_json("")
         }
         Err(..) => fail_message_json("Failed to get ZeroTier One program path"),

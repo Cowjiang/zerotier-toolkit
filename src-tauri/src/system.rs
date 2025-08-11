@@ -42,8 +42,6 @@ pub(crate) fn restart_as_admin() -> String {
     }
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::restart_as_admin;
