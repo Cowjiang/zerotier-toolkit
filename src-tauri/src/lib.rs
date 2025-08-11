@@ -48,6 +48,9 @@ fn start_tauri() {
         std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
     }
     let mut builder = tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, _, _| {
+            show_main_window(app.app_handle().clone());
+        }))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_log::Builder::new().build())
