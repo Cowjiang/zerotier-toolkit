@@ -1,7 +1,7 @@
 {
   "name": "zerotier-toolkit",
   "description": "A cross-platform ZeroTier desktop client",
-  "version": "1.0.1",
+  "version": "0.0.9",
   "license": "MIT",
   "repository": "https://github.com/Cowjiang/zerotier-toolkit",
   "type": "module",
@@ -37,6 +37,7 @@
     "@tauri-apps/plugin-log": "^2.6.0",
     "@tauri-apps/plugin-opener": "^2.4.0",
     "@tauri-apps/plugin-process": "~2.3.0",
+    "@tauri-apps/plugin-updater": "~2",
     "classnames": "^2.5.1",
     "framer-motion": "^12.23.12",
     "i18next": "^25.3.2",
