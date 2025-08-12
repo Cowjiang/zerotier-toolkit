@@ -17,6 +17,7 @@
           "url": "https://**"
         }
       ]
-    }
+    },
+    "updater:default"
   ]
 }

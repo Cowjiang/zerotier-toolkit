@@ -9,7 +9,7 @@ import { getNetworks, getStatus } from '../services/zerotierService.ts'
 import { useAppStore } from '../store/app.ts'
 import { InvokeEvent } from '../typings/enum.ts'
 import { HttpResponse } from '../typings/global.ts'
-import { invokeCommand, openUrl } from '../utils/helpers/tauriHelpers.ts'
+import { checkUpdate, invokeCommand, openUrl } from '../utils/helpers/tauriHelpers.ts'
 
 function Dev() {
   const { restartAsAdmin } = useAppStore()
@@ -67,6 +67,42 @@ function Dev() {
     {
       text: 'open url[website]',
       onPress: async () => await openUrl('https://github.com/'),
+    },
+    {
+      text: 'check update',
+      onPress: async () => {
+        const update = await checkUpdate()
+        if (update) {
+          console.log(`found update ${update.version} from ${update.date} with notes ${update.body}`)
+        }
+      },
+    },
+    {
+      text: 'check update and install',
+      onPress: async () => {
+        const update = await checkUpdate()
+        if (update) {
+          console.log(`found update ${update.version} from ${update.date} with notes ${update.body}`)
+          let downloaded = 0
+          let contentLength: number | undefined = 0
+          await update.downloadAndInstall((event) => {
+            switch (event.event) {
+              case 'Started':
+                contentLength = event.data.contentLength
+                console.log(`started downloading ${event.data.contentLength} bytes`)
+                break
+              case 'Progress':
+                downloaded += event.data.chunkLength
+                console.log(`downloaded ${downloaded} from ${contentLength}`)
+                break
+              case 'Finished':
+                console.log('download finished')
+                break
+            }
+          })
+          console.log('update installed')
+        }
+      },
     },
   ]
 

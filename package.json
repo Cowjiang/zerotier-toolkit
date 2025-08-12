@@ -1,13 +1,14 @@
 {
   "name": "zerotier-toolkit",
   "description": "A cross-platform ZeroTier desktop client",
-  "version": "1.0.1",
+  "version": "0.0.9",
   "license": "MIT",
   "repository": "https://github.com/Cowjiang/zerotier-toolkit",
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
     "build": "tauri build",
+    "build:no-bundle": "tauri build --no-bundle",
     "info": "tauri info",
     "tauri": "tauri",
     "test": "vitest",
@@ -17,8 +18,7 @@
     "vite:dev": "vite",
     "vite:build": "tsc && vite build",
     "preview": "vite preview",
-    "prepare": "husky",
-    "build:no-bundle": "tauri build --no-bundle"
+    "prepare": "husky"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
@@ -37,6 +37,7 @@
     "@tauri-apps/plugin-log": "^2.6.0",
     "@tauri-apps/plugin-opener": "^2.4.0",
     "@tauri-apps/plugin-process": "~2.3.0",
+    "@tauri-apps/plugin-updater": "~2",
     "classnames": "^2.5.1",
     "framer-motion": "^12.23.12",
     "i18next": "^25.3.2",

@@ -48,6 +48,7 @@ fn start_tauri() {
         std::env::set_var("NO_PROXY", "127.0.0.1,localhost");
     }
     let mut builder = tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             show_main_window(app.app_handle().clone());
         }))
@@ -96,6 +97,9 @@ fn setup(builder: Builder<Wry>) -> Builder<Wry> {
 
         #[cfg(debug_assertions)]
         open_dev_tools(&app_handle);
+
+        #[cfg(desktop)]
+        app.handle().plugin(tauri_plugin_updater::Builder::new().build())?;
 
         Ok(())
     });
@@ -149,18 +153,18 @@ fn init_window(app_handle: &AppHandle) {
         "main",
         tauri::WebviewUrl::App("index.html".into()),
     )
-    .title("ZeroTier Toolkit - Build By Tauri")
-    .resizable(false)
-    .maximized(false)
-    .fullscreen(false)
-    .transparent(true)
-    .decorations(false)
-    .shadow(false)
-    .center()
-    .min_inner_size(800.0, 500.0)
-    .inner_size(800.0, 500.0)
-    .build()
-    .unwrap();
+        .title("ZeroTier Toolkit - Build By Tauri")
+        .resizable(false)
+        .maximized(false)
+        .fullscreen(false)
+        .transparent(true)
+        .decorations(false)
+        .shadow(false)
+        .center()
+        .min_inner_size(800.0, 500.0)
+        .inner_size(800.0, 500.0)
+        .build()
+        .unwrap();
     let _ = get_configuration_context(SYSTEM_CONFIGURATION_NAME).is_some_and(|context| {
         let minimize_to_tray_def = GENERAL_MINIMIZE_TO_TRAY.read().unwrap();
         if context

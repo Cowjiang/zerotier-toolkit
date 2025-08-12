@@ -9,8 +9,10 @@ import {
   WriteFileOptions,
   writeTextFile as tauriWriteTextFile,
 } from '@tauri-apps/plugin-fs'
+import { debug } from '@tauri-apps/plugin-log'
 // 别名
 import { openUrl as openUrlInTauri } from '@tauri-apps/plugin-opener'
+import { check } from '@tauri-apps/plugin-updater'
 
 import { CONFIGURATION_FILE_PATH } from '../../constant.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
@@ -69,4 +71,14 @@ export const openInSystem = async (argument: string) => {
 
 export const openUrl = async (url: string) => {
   url && (await openUrlInTauri(url))
+}
+
+export const checkUpdate = async () => {
+  const update = await check({
+    // proxy: 'http://127.0.0.1:10809',
+  })
+  if (update) {
+    debug(`found update ${update.version} from ${update.date} with notes ${update.body}`)
+  }
+  return update
 }

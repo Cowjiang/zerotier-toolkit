@@ -1,0 +1,16 @@
+{
+  "bundle": {
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDVEMTJBOTFBNEVDMzdBRApSV1N0Tit5a2tTclJCVjdPUFJ4SFhGSi9MSzB3N3dGbzcwU0ZRekRSZWd0U0Z0L21ETU1kT2llZAo=",
+      "endpoints": [
+        "https://github.com/Code-Agitator/tauri2-demo-app/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "basicUi"
+      }
+    }
+  }
+}

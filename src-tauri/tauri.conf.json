@@ -30,7 +30,9 @@
   "mainBinaryName": "ZeroTier Toolkit",
   "version": "../package.json",
   "identifier": "com.cj.dev",
-  "plugins": {},
+  "plugins": {
+
+  },
   "app": {
     "macOSPrivateApi": true,
     "security": {
