@@ -9,6 +9,7 @@
     "dev": "tauri dev",
     "build": "tauri build",
     "build:no-bundle": "tauri build --no-bundle",
+    "build:dev-updater": "tauri dev --config src-tauri/tauri.debug.conf.json",
     "info": "tauri info",
     "tauri": "tauri",
     "test": "vitest",
