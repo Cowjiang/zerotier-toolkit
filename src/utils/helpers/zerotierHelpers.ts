@@ -1,9 +1,8 @@
-import { fetch } from '@tauri-apps/plugin-http'
-
 import { ZEROTIER_SERVICE_HOST } from '../../constant.ts'
 import { useZeroTierStore } from '../../store/zerotier.ts'
 import { ZerotierConfig } from '../../typings/config.ts'
 import { HttpResponse } from '../../typings/global.ts'
+import { fetch } from './tauriHelpers.ts'
 
 type RequestOptions = {
   path: string

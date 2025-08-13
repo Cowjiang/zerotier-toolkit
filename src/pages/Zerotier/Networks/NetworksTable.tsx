@@ -15,7 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from '@heroui/react'
+import { t } from 'i18next'
 import { Key, useCallback, useRef, useState } from 'react'
+import { Trans } from 'react-i18next'
 
 import CopyText from '../../../components/base/CopyText.tsx'
 import {
@@ -34,17 +36,17 @@ import { HttpResponse } from '../../../typings/global.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
 import DetailsModal from './DetailsModal.tsx'
-import { Trans } from 'react-i18next'
-import { t } from 'i18next'
 
 function NetworksTable({
   networks,
   isLoading,
+  isError,
   isRefreshing,
   onRefresh,
 }: {
   networks: Network[]
   isLoading?: boolean
+  isError?: boolean
   isRefreshing?: boolean
   onRefresh?: () => void
 }) {
@@ -244,7 +246,9 @@ function NetworksTable({
           }
           emptyContent={
             <div className="flex flex-col justify-center gap-4 h-[50vh]">
-              <span><Trans>No networks to display.</Trans></span>
+              <span>
+                <Trans>{isError ? 'Failed to load networks' : 'No networks to display'}</Trans>
+              </span>
               <div>
                 <RefreshButton
                   buttonProps={{

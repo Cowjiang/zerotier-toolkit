@@ -9,12 +9,21 @@ import {
   WriteFileOptions,
   writeTextFile as tauriWriteTextFile,
 } from '@tauri-apps/plugin-fs'
-// 别名
+import { fetch as tauriFetch } from '@tauri-apps/plugin-http'
 import { openUrl as openUrlInTauri } from '@tauri-apps/plugin-opener'
 
 import { CONFIGURATION_FILE_PATH } from '../../constant.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
 import { InvokeResponse } from '../../typings/global.ts'
+
+export const fetch: typeof tauriFetch = async (url, options) => {
+  try {
+    return await tauriFetch(url, options)
+  } catch (e) {
+    console.error('[Fetch]', url, e)
+    throw e
+  }
+}
 
 export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<InvokeResponse & { success: boolean }> => {
   const result: string = await invoke(cmd, args)
@@ -69,4 +78,17 @@ export const openInSystem = async (argument: string) => {
 
 export const openUrl = async (url: string) => {
   url && (await openUrlInTauri(url))
+}
+
+export const forwardConsole = async (fn: 'log' | 'debug' | 'info' | 'warn' | 'error') => {
+  const original = console[fn]
+  try {
+    const logger = (await import('@tauri-apps/plugin-log'))[fn === 'log' ? 'debug' : fn]
+    console[fn] = (...args) => {
+      original(...args)
+      logger(args.join(' '))
+    }
+  } catch (e) {
+    console.error('[ForwardConsole]', e)
+  }
 }
