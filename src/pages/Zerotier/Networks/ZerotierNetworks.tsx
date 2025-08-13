@@ -10,11 +10,13 @@ function ZerotierNetworks() {
   const { networks, getNetworks } = useZeroTierStore()
 
   const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState(false)
   const init = () => {
     !isLoading && !networks.length && setIsLoading(true)
-    request(getNetworks()).finally(() => {
-      setIsLoading(false)
-    })
+    request(getNetworks())
+      .then(() => setIsError(false))
+      .catch(() => setIsError(true))
+      .finally(() => setIsLoading(false))
   }
   useEffect(init, [])
 
@@ -48,6 +50,7 @@ function ZerotierNetworks() {
       <NetworksTable
         networks={filteredNetworks}
         isLoading={isLoading}
+        isError={isError}
         isRefreshing={isRefreshing}
         onRefresh={onRefresh}
       />
