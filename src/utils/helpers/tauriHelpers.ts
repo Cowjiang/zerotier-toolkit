@@ -83,10 +83,10 @@ export const openUrl = async (url: string) => {
 export const forwardConsole = async (fn: 'log' | 'debug' | 'info' | 'warn' | 'error') => {
   const original = console[fn]
   try {
-    const logger = (await import('@tauri-apps/plugin-log'))[fn === 'log' ? 'debug' : fn]
+    const logger = (await import('@tauri-apps/plugin-log'))[fn === 'log' ? 'info' : fn]
     console[fn] = (...args) => {
       original(...args)
-      logger(args.join(' '))
+      logger(args.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg) : String(arg))).join(' '))
     }
   } catch (e) {
     console.error('[ForwardConsole]', e)
