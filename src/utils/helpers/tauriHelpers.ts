@@ -94,12 +94,11 @@ export const forwardConsole = async (fn: 'log' | 'debug' | 'info' | 'warn' | 'er
   }
 }
 
-export const checkUpdate = async () => {
-  const update = await check({
-    // proxy: 'http://127.0.0.1:10809',
-  })
-  if (update) {
-    console.error(`found update ${update.version} from ${update.date} with notes ${update.body}`)
+export const checkUpdate: typeof check = async (options) => {
+  const update = await check(options)
+  if (!update) {
+    return null
   }
+  console.log('[Check Update]', update)
   return update
 }

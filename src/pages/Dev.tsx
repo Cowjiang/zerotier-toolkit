@@ -1,8 +1,6 @@
 import { Button } from '@heroui/react'
 import { InvokeArgs } from '@tauri-apps/api/core'
 import { emit } from '@tauri-apps/api/event'
-import { motion } from 'framer-motion'
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { getNetworks, getStatus } from '../services/zerotierService.ts'
@@ -14,7 +12,6 @@ import { checkUpdate, invokeCommand, openUrl } from '../utils/helpers/tauriHelpe
 function Dev() {
   const { restartAsAdmin } = useAppStore()
   const navigate = useNavigate()
-  const [assList, setAssList] = useState<JSX.Element[]>([])
 
   const invokeCommandButton = (command: string, args?: InvokeArgs) => ({
     text: `[Invoke] ${command}`,
@@ -106,55 +103,14 @@ function Dev() {
     },
   ]
 
-  function ass(): JSX.Element {
-    return (
-      <motion.div
-        className={'absolute top-0 font-bold'}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, scale: 1.2, y: -10 }}
-        exit={{ opacity: 0 }}
-      >
-        kiss my ass!
-      </motion.div>
-    )
-  }
-
-  const kissMyAssBtn = (
-    <div className={'relative'}>
-      <Button
-        onPress={() => {
-          const newAssList = [...assList]
-          newAssList.push(ass())
-          setAssList(newAssList)
-          setTimeout(() => {
-            const newAssList = [...assList]
-            newAssList.shift()
-            setAssList(newAssList)
-          }, 1000)
-        }}
-        size="lg"
-        className="flowing-gradient bg-gradient-to-r from-[#f02fc2] to-[#6094ea]  font-bold py-2 px-4 m-1 relative"
-      >
-        🤩
-      </Button>
-      {assList.map((item, index) => (
-        <div key={index}>{item}</div>
-      ))}
-    </div>
-  )
-
   return (
     <div className="w-full min-h-[100vh] p-3">
-      <div className="flex flex-row justify-center">
-        <img src="/zerotier.png" className="w-40" />
-      </div>
-      <div className="w-full mt-5 flex flex-wrap ">
+      <div className="w-full flex flex-wrap gap-2">
         {btnList.map(({ text, onPress }) => (
-          <Button size="lg" className="font-bold mt-2 ml-2 flex-grow" color="primary" onPress={onPress} key={text}>
+          <Button className="flex-grow" color="default" onPress={onPress} key={text}>
             {text}
           </Button>
         ))}
-        {kissMyAssBtn}
       </div>
     </div>
   )
