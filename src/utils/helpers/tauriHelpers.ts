@@ -73,10 +73,6 @@ export const getAppVersion = async () => {
   return await getVersion()
 }
 
-export const openInSystem = async (argument: string) => {
-  argument && (await invokeCommand(InvokeEvent.OPEN_IN_OPERATION_SYSTEM, { something: argument }))
-}
-
 export const openUrl = async (url: string) => {
   url && (await openUrlInTauri(url))
 }
