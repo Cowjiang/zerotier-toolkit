@@ -74,10 +74,9 @@ function About() {
     try {
       if (!update) {
         await checkUpdate()
-      } else if (total !== 0 && downloaded === total) {
-        await installUpdate(update)
       } else {
-        await downloadUpdate(update)
+        total === 0 && (await downloadUpdate(update))
+        await installUpdate(update)
       }
     } catch (e) {
       console.error('[Update]', e)

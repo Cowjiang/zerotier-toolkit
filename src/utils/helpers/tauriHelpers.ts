@@ -91,7 +91,8 @@ export const forwardConsole = async (fn: 'log' | 'debug' | 'info' | 'warn' | 'er
 }
 
 export const checkUpdate: typeof check = async (options) => {
+  console.log('[Check Update]', 'Started checking')
   const update = await check(options)
-  console.log('[Check Update]', update)
+  console.log('[Check Update]', 'Available update found', update)
   return update
 }

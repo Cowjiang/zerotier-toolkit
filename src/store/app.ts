@@ -30,7 +30,7 @@ export type AppAction = {
   restartAsAdmin: () => Promise<void>
   setConfig: (config: Partial<AppConfig>) => void
   checkUpdate: () => Promise<Update | null>
-  downloadUpdate: (update: Update) => Promise<void>
+  downloadUpdate: (update: Update, event?: (progress: DownloadEvent) => void) => Promise<void>
   installUpdate: (update: Update) => Promise<void>
   resetUpdate: () => void
 }
