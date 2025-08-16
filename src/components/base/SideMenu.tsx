@@ -1,14 +1,15 @@
 import { Listbox, ListboxItem, ListboxItemProps, ListboxSection, ListboxSectionProps } from '@heroui/react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+
 import { useLanguage } from '../providers/LanguageProvider.tsx'
 
 export type MenuListItem = {
   path: string
   title: string
   description?: string
-} & Pick<ListboxItemProps, 'children' | 'startContent'>
+} & Partial<ListboxItemProps>
 
 export type MenuListSection = {
   items: MenuListItem[]
@@ -46,18 +47,13 @@ function SideMenu({ tabPath, items }: { tabPath?: string; items: MenuListSection
         onSelectionChange={handleSelectedKeysChange}
         items={items}
         itemClasses={{
-          base: 'data-[selected=true]:bg-default data-[hover=true]:bg-default/60 text-default-800'
+          base: 'data-[selected=true]:bg-default data-[hover=true]:bg-default/60 text-default-800',
         }}
       >
         {({ key, title, ...section }) => (
           <ListboxSection key={key} aria-label={title} title={t(title as string)} {...section}>
             {({ title, ...item }) => (
-              <ListboxItem
-                key={item.path}
-                aria-label={title}
-                {...item}
-                description=""
-              >
+              <ListboxItem key={item.path} aria-label={title} {...item} description="">
                 <Trans>{title || item.children}</Trans>
               </ListboxItem>
             )}

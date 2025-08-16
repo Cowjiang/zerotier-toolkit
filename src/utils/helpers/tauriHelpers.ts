@@ -92,9 +92,6 @@ export const forwardConsole = async (fn: 'log' | 'debug' | 'info' | 'warn' | 'er
 
 export const checkUpdate: typeof check = async (options) => {
   const update = await check(options)
-  if (!update) {
-    return null
-  }
   console.log('[Check Update]', update)
   return update
 }

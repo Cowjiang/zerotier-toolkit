@@ -32,7 +32,7 @@ function App() {
     await showWindow()
   })
 
-  const { setLoading, checkAdmin } = useAppStore()
+  const { setLoading, checkAdmin, checkUpdate } = useAppStore()
   const { getServiceState, getServiceStartType, getServerInfo } = useZeroTierStore()
 
   useEffect(() => {
@@ -44,6 +44,7 @@ function App() {
       // #endif
       getServerInfo(),
     ]).finally(() => setLoading(false))
+    checkUpdate().catch((_) => {})
   }, [])
 
   // #if DEV

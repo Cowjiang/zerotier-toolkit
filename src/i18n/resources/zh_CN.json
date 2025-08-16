@@ -91,5 +91,6 @@
   "ZeroTier service is not running, click here to run": "ZeroTier 系统服务未运行，请点击此处启动",
   "Click here to relaunch as Administrator": "点击此处以管理员身份重新启动",
   "Failed to restart, please restart manually": "重新启动失败，请手动重启",
-  "Authentication is invalid, click here to configure": "认证信息无效，请点击此处配置"
+  "Authentication is invalid, click here to configure": "认证信息无效，请点击此处配置",
+  "New Version": "新版本"
 }
