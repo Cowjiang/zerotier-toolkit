@@ -25,6 +25,9 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: '${{ secrets.AGITATOR_DISTRIBUTE_KEY_REPO_TOKEN }}'
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
         run: |
@@ -59,6 +62,10 @@ jobs:
         if: matrix.platform != 'windows-latest'
         run: |
           PACKAGE_NAME=$(npm pkg get name | tr -d '"')
+          TAURI_SIGNING_PRIVATE_KEY=$(cat zerotier-toolkit-distribute-key/secret.key)
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD=$(cat zerotier-toolkit-distribute-key/password)
+          echo "TAURI_SIGNING_PRIVATE_KEY_PASSWORD=$TAURI_SIGNING_PRIVATE_KEY_PASSWORD" >> $GITHUB_ENV
+          echo "TAURI_SIGNING_PRIVATE_KEY=$TAURI_SIGNING_PRIVATE_KEY" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
 
       - name: Get package name from windows
@@ -66,6 +73,10 @@ jobs:
         if: matrix.platform == 'windows-latest'
         run: |
           $packageName = (npm pkg get name).Trim('"')
+          $tauriSigningPrivateKey = Get-Content -Raw zerotier-toolkit-distribute-key/secret.key
+          $tauriSigningPrivateKeyPassword = Get-Content -Raw zerotier-toolkit-distribute-key/password
+          echo "TAURI_SIGNING_PRIVATE_KEY_PASSWORD=$tauriSigningPrivateKeyPassword" >> $env:GITHUB_ENV
+          echo "TAURI_SIGNING_PRIVATE_KEY=$tauriSigningPrivateKey" >> $env:GITHUB_ENV
           echo "PACKAGE_NAME=$packageName" >> $env:GITHUB_ENV
         shell: pwsh
 
@@ -78,4 +89,4 @@ jobs:
           releaseBody: 'Bug fixes and new features.'
           releaseDraft: false
           prerelease: false
-          args: ${{ matrix.args }}
+          args: ${{ matrix.args }} --config src-tauri/tauri.release.conf.json
