@@ -180,7 +180,13 @@ function About() {
           <span>
             {poweredBy.map((item, index) => (
               <span key={index}>
-                <Link size="sm" showAnchorIcon className="cursor-pointer" onPress={() => openUrl(item.link)}>
+                <Link
+                  color="primary"
+                  size="sm"
+                  showAnchorIcon
+                  className="cursor-pointer"
+                  onPress={() => openUrl(item.link)}
+                >
                   {item.title}
                 </Link>
                 {index < poweredBy.length - 1 && ' / '}

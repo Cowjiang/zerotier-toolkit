@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react'
 import PreprocessorDirectives from 'unplugin-preprocessor-directives/vite'
 import { defineConfig } from 'vite'
+import tailwindcss from "@tailwindcss/vite"
 
 function checkPlatform() {
   const { platform, env } = process
@@ -16,7 +17,7 @@ function checkPlatform() {
 checkPlatform()
 
 export default defineConfig(async () => ({
-  plugins: [react(), PreprocessorDirectives()],
+  plugins: [react(), PreprocessorDirectives(), tailwindcss()],
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   // 1. prevent vite from obscuring rust errors
   clearScreen: false,
