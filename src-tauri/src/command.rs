@@ -1,7 +1,10 @@
+#[cfg(windows)]
 use log::{debug, error};
+#[cfg(windows)]
 use std::io;
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
+#[cfg(windows)]
 use std::process::{Command, Output};
 
 #[cfg(windows)]
@@ -9,6 +12,7 @@ use winapi::um::winbase::CREATE_NO_WINDOW;
 
 use crate::r::{self};
 
+#[cfg(windows)]
 pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
     let cmd_str: Vec<&str> = cmds.iter().map(|s| s.as_str()).collect();
     let final_cmd = std::iter::once("/C").chain(cmd_str.clone());
@@ -26,15 +30,16 @@ pub(crate) fn execute_cmd(cmds: Vec<String>) -> io::Result<Output> {
                     parse_output(output.clone().stderr)
                 );
             }
-            return Ok(output);
+            Ok(output)
         }
         Err(error) => Err(error),
     }
 }
 
+#[cfg(windows)]
 pub(crate) fn parse_output(output: Vec<u8>) -> String {
-    let result = String::from_utf8_lossy(&*output);
-    return result.to_string();
+    let result = String::from_utf8_lossy(&output);
+    result.to_string()
 }
 #[cfg(windows)]
 #[tauri::command]
@@ -62,19 +67,19 @@ pub(crate) fn is_admin() -> String {
 mod tests {
     use log::info;
 
-    use crate::command::{execute_cmd, is_admin, parse_output};
+    use crate::command::is_admin;
+    #[cfg(windows)]
+    use crate::command::{execute_cmd, parse_output};
 
+    #[cfg(windows)]
     #[test]
     fn test_execute_cmd() {
         let output = execute_cmd(vec![String::from("echo"), String::from("hello")]);
-        match output {
-            Ok(value) => {
-                let output = parse_output(value.stdout);
-                println!("{}", output);
-                // do not use equals, the output \n or \r\n is different on windows and linux
-                assert!(output.starts_with("hello"));
-            }
-            _ => {}
+        if let Ok(value) = output {
+            let output = parse_output(value.stdout);
+            println!("{}", output);
+            // do not use equals, the output \n or \r\n is different on windows and linux
+            assert!(output.starts_with("hello"));
         }
     }
 

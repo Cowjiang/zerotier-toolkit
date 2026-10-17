@@ -73,7 +73,7 @@ pub(crate) mod api {
                 String::from("query"),
                 self.service_name.clone(),
             ]);
-            return Self::deal_with_cmd_result(output);
+            Self::deal_with_cmd_result(output)
         }
         pub(crate) fn get_start_type(&self) -> Result<StartType, Error> {
             let output = execute_cmd(vec![
@@ -84,15 +84,15 @@ pub(crate) mod api {
                 String::from("findstr"),
                 String::from("START_TYPE"),
             ]);
-            return match Self::deal_with_cmd_result(output) {
+            match Self::deal_with_cmd_result(output) {
                 Ok(start_type) => {
-                    return Ok(Self::transform_start_type(self, start_type));
+                    Ok(Self::transform_start_type(self, start_type))
                 }
                 Err(error) => Err(Error::new(
                     Other,
                     "command execute error:".to_string() + &*error.to_string(),
                 )),
-            };
+            }
         }
         pub(crate) fn set_start_type(&self, start_type: StartType) -> Result<(), Error> {
             let service_result =
@@ -199,15 +199,15 @@ pub(crate) mod api {
                 String::from("STATE"),
             ];
             let output = execute_cmd(commands);
-            return match Self::deal_with_cmd_result(output) {
+            match Self::deal_with_cmd_result(output) {
                 Ok(start_type) => {
-                    return Ok(Self::transform_state(start_type));
+                    Ok(Self::transform_state(start_type))
                 }
                 Err(error) => Err(Error::new(
                     Other,
                     "exec fail".to_string() + &*error.to_string(),
                 )),
-            };
+            }
         }
         fn transform_state(string: String) -> State {
             if string.contains("STOP") {
@@ -215,7 +215,7 @@ pub(crate) mod api {
             } else if string.contains("RUN") {
                 return State::Running;
             }
-            return State::Unknown;
+            State::Unknown
         }
         pub fn transform_start_type(&self, string: String) -> StartType {
             if string.contains("AUTO") {
@@ -225,11 +225,11 @@ pub(crate) mod api {
             } else if string.contains("DISABLED") {
                 return StartType::Disabled;
             }
-            return StartType::Unknown;
+            StartType::Unknown
         }
 
         fn deal_with_cmd_result(output: Result<Output, Error>) -> Result<String, Error> {
-            return match output {
+            match output {
                 Ok(value) => {
                     let status = value.status;
                     if !status.success() {
@@ -241,7 +241,7 @@ pub(crate) mod api {
                     Other,
                     "exec command error".to_string() + &*error.to_string(),
                 )),
-            };
+            }
         }
 
         fn get_service_winapi(
@@ -264,7 +264,7 @@ pub(crate) mod api {
                     format!("can not open SCManager{:?}", Self::get_last_error()),
                 ));
             }
-            return Ok((sc_manager, service));
+            Ok((sc_manager, service))
         }
         fn get_last_error() -> String {
             // 获取错误码
