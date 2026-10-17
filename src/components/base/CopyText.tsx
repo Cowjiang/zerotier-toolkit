@@ -1,9 +1,9 @@
 import { Tooltip } from '@heroui/react'
 import classNames from 'classnames'
 import { ReactNode, useState } from 'react'
+import { Trans } from 'react-i18next'
 
 import { copyToClipboard } from '../../utils/helpers/tauriHelpers.ts'
-import { Trans } from 'react-i18next'
 
 function CopyText({
   copyValue,

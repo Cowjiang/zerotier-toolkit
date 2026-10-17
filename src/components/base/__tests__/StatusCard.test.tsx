@@ -14,7 +14,9 @@ describe('StatusCard', () => {
     }
     const { container } = render(<StatusCard {...cardProps} />)
     const btn = container.querySelector('button')
-    btn && fireEvent.click(btn)
+    if (btn) {
+      fireEvent.click(btn)
+    }
     expect(onPress).toBeCalled()
   })
 })

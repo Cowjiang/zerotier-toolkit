@@ -1,5 +1,4 @@
 import { waitFor } from '@testing-library/react'
-import { beforeEach } from 'vitest'
 
 import { SPLASH_SCREEN_DELAY } from '../../constant.ts'
 import { useAppStore } from '../../store/app.ts'
@@ -8,15 +7,13 @@ import { ServiceStatus } from '../../typings/enum.ts'
 import { render } from '../../utils/testUtils/setupTest.tsx'
 import Splash from '../Splash.tsx'
 
-beforeEach(() => {
-  vi.mock('../../constant.ts', async (importOriginal) => {
-    const mod = await importOriginal<typeof import('../../constant.ts')>()
-    return {
-      ...mod,
-      SPLASH_SCREEN_DELAY: 0,
-      namedExport: vi.fn(),
-    }
-  })
+vi.mock('../../constant.ts', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../../constant.ts')>()
+  return {
+    ...mod,
+    SPLASH_SCREEN_DELAY: 0,
+    namedExport: vi.fn(),
+  }
 })
 
 describe('SplashPage', () => {

@@ -12,7 +12,9 @@ function Content({ children }: ContentProps) {
   const { config, setConfig, hasHydrated } = useAppStore()
 
   useEffect(() => {
-    hasHydrated && setConfig({ [ThemeConfig.CURRENT]: theme })
+    if (hasHydrated) {
+      setConfig({ [ThemeConfig.CURRENT]: theme })
+    }
   }, [theme])
 
   useEffect(() => {
@@ -25,7 +27,9 @@ function Content({ children }: ContentProps) {
   const handleSystemThemeChange = useMemo(
     () =>
       ({ matches }: MediaQueryListEvent) => {
-        config[ThemeConfig.IS_SYNC_WITH_SYSTEM] && setTheme(matches ? Theme.DARK : Theme.LIGHT)
+        if (config[ThemeConfig.IS_SYNC_WITH_SYSTEM]) {
+          setTheme(matches ? Theme.DARK : Theme.LIGHT)
+        }
       },
     [config[ThemeConfig.IS_SYNC_WITH_SYSTEM]],
   )

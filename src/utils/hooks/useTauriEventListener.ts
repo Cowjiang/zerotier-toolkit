@@ -2,7 +2,7 @@ import { listen, UnlistenFn } from '@tauri-apps/api/event'
 import { useEffect, useRef } from 'react'
 
 const useTauriEventListener = (eventName: string, handler?: (payload: any) => void) => {
-  const savedHandler = useRef<{ handler?: (payload: any) => void; unListenFn?: UnlistenFn }>()
+  const savedHandler = useRef<{ handler?: (payload: any) => void; unListenFn?: UnlistenFn }>(undefined)
   useEffect(() => {
     if (!savedHandler.current) {
       savedHandler.current = { handler: handler }

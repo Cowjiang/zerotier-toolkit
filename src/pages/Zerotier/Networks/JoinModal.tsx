@@ -1,10 +1,10 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalProps } from '@heroui/react'
 import { useState } from 'react'
+import { Trans } from 'react-i18next'
 
 import { joinNetwork } from '../../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
-import { Trans } from 'react-i18next'
 
 function JoinModal(props: Omit<ModalProps, 'children'>) {
   const { request } = useRequest()
@@ -30,7 +30,7 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
       await request(joinNetwork(inputValue))
       await request(getNetworks())
       onModalClose()
-    } catch (e) {
+    } catch {
       setIsError(true)
     } finally {
       setTimeout(() => setJoining(false), 300)
@@ -40,7 +40,9 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
   return (
     <Modal {...props} onClose={onModalClose}>
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1"><Trans>Join New Network</Trans></ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">
+          <Trans>Join New Network</Trans>
+        </ModalHeader>
         <ModalBody>
           <Input
             isClearable

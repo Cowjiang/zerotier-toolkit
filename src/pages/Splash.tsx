@@ -2,6 +2,7 @@ import { Button, Image, Spinner } from '@heroui/react'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import { Trans } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import zerotierLogo from '../assets/zerotier_orange.svg'
@@ -10,7 +11,6 @@ import { useAppStore } from '../store/app'
 import { useZeroTierStore } from '../store/zerotier.ts'
 import { ZerotierConfig } from '../typings/config.ts'
 import { ServiceStatus } from '../typings/enum.ts'
-import { Trans } from 'react-i18next'
 
 function Splash() {
   const navigate = useNavigate()

@@ -73,7 +73,9 @@ export const useAppStore = create<AppState & AppAction>()(
           event?.(e)
           if (e.event === 'Started') {
             const total = e.data.contentLength
-            total && set((state) => ({ ...state, updateState: { ...state.updateState, total } }))
+            if (total) {
+              set((state) => ({ ...state, updateState: { ...state.updateState, total } }))
+            }
             console.log('[Download Update]', 'Started downloading', total, 'bytes')
           } else if (e.event === 'Progress') {
             downloaded += e.data.chunkLength

@@ -1,12 +1,12 @@
 import { Button, Divider, Switch } from '@heroui/react'
 import { useEffect } from 'react'
+import { Trans } from 'react-i18next'
 
 import { useNotification } from '../../components/providers/NotificationProvider.tsx'
 import { useAppStore } from '../../store/app.ts'
 import { GeneralConfig } from '../../typings/config.ts'
 import { InvokeEvent } from '../../typings/enum.ts'
 import { invokeCommand } from '../../utils/helpers/tauriHelpers.ts'
-import { Trans } from 'react-i18next'
 
 function GeneralSetting() {
   const { config, setConfig } = useAppStore()
@@ -38,10 +38,14 @@ function GeneralSetting() {
     <div className="flex flex-col">
       <section>
         <div>
-          <p className="font-bold text-large"><Trans>Window</Trans></p>
+          <p className="font-bold text-large">
+            <Trans>Window</Trans>
+          </p>
         </div>
         <div className="mt-4 flex items-center">
-          <p className="text-default-700"><Trans>Launch ZeroTier Toolkit when start-up</Trans></p>
+          <p className="text-default-700">
+            <Trans>Launch ZeroTier Toolkit when start-up</Trans>
+          </p>
           <div className="ml-auto flex gap-4">
             <Switch
               aria-label="Launch ZeroTier Toolkit when start-up"
@@ -54,7 +58,9 @@ function GeneralSetting() {
         </div>
         <div className="mt-6 flex items-center">
           <div className="flex-col">
-            <p className="text-default-700"><Trans>Enable the tray icon</Trans></p>
+            <p className="text-default-700">
+              <Trans>Enable the tray icon</Trans>
+            </p>
             <small className="text-tiny text-default-600">
               <Trans>If disabled, the application will exit when closing the window</Trans>
             </small>
@@ -70,7 +76,9 @@ function GeneralSetting() {
           </div>
         </div>
         <div className="mt-6 flex items-center">
-          <p className="text-default-700"><Trans>Minimize to system tray on launching</Trans></p>
+          <p className="text-default-700">
+            <Trans>Minimize to system tray on launching</Trans>
+          </p>
           <div className="ml-auto flex gap-4">
             <Switch
               aria-label="Minimize to system tray on launching"
@@ -85,10 +93,14 @@ function GeneralSetting() {
       <Divider className="mt-8 mb-6" />
       <section>
         <div>
-          <p className="font-bold text-large"><Trans>Configuration</Trans></p>
+          <p className="font-bold text-large">
+            <Trans>Configuration</Trans>
+          </p>
         </div>
         <div className="mt-4 flex items-center">
-          <p className="text-default-700"><Trans>Restore to default settings</Trans></p>
+          <p className="text-default-700">
+            <Trans>Restore to default settings</Trans>
+          </p>
           <div className="ml-auto flex gap-4">
             <Button variant="flat" color="danger" onPress={restoreSettings}>
               <Trans>Restore Settings</Trans>

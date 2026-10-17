@@ -75,7 +75,9 @@ function About() {
       if (!update) {
         await checkUpdate()
       } else {
-        total === 0 && (await downloadUpdate(update))
+        if (total === 0) {
+          await downloadUpdate(update)
+        }
         await installUpdate(update)
       }
     } catch (e) {

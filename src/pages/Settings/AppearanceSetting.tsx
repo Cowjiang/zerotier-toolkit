@@ -126,9 +126,16 @@ function AppearanceSetting() {
               selectedKeys={currentLanguage}
               disallowEmptySelection
               items={languages}
-              onSelectionChange={(keys) =>
-                changeLanguage(keys === 'all' ? languages[0].value : keys.values().next().value)
-              }
+              onSelectionChange={(keys) => {
+                if (keys === 'all') {
+                  changeLanguage(languages[0].value)
+                  return
+                }
+                const selected = languages.find(({ value }) => keys.has(value))
+                if (selected) {
+                  changeLanguage(selected.value)
+                }
+              }}
             >
               {(language) => <SelectItem key={language.value}>{language.label}</SelectItem>}
             </Select>

@@ -32,7 +32,7 @@ export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<Inv
   try {
     const res = JSON.parse(result)
     return { ...res, success: res.code === 0 }
-  } catch (e) {
+  } catch {
     return { code: -1, data: result, message: result, success: false }
   }
 }
@@ -65,7 +65,9 @@ export const closeWindow = async () => {
 
 export const showWindow = async () => {
   const appWindow = getCurrentWindow()
-  ;(await appWindow.isMinimized()) && (await appWindow.unminimize())
+  if (await appWindow.isMinimized()) {
+    await appWindow.unminimize()
+  }
   await appWindow.show()
 }
 
@@ -74,7 +76,9 @@ export const getAppVersion = async () => {
 }
 
 export const openUrl = async (url: string) => {
-  url && (await openUrlInTauri(url))
+  if (url) {
+    await openUrlInTauri(url)
+  }
 }
 
 export const forwardConsole = async (fn: 'log' | 'debug' | 'info' | 'warn' | 'error') => {

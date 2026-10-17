@@ -1,11 +1,11 @@
 import { Button, Input, useDisclosure } from '@heroui/react'
+import { t } from 'i18next'
+import { Trans } from 'react-i18next'
 
 import { PlusIcon, SearchIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import JoinModal from './JoinModal.tsx'
-import { Trans } from 'react-i18next'
-import { t } from 'i18next'
 
 function ToolBar({
   filterValue,

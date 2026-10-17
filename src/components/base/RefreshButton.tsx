@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from '@heroui/react'
+import { Trans } from 'react-i18next'
 
 import { RefreshIcon } from './Icon.tsx'
-import { Trans } from 'react-i18next'
 
 type Props = {
   labelText?: string

@@ -1,4 +1,6 @@
 import { Button, Code, Input, Tooltip } from '@heroui/react'
+import { t } from 'i18next'
+import { Trans } from 'react-i18next'
 
 import { InterrogationIcon } from '../../../components/base/Icon.tsx'
 import { useNotification } from '../../../components/providers/NotificationProvider.tsx'
@@ -6,8 +8,6 @@ import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { ZerotierConfig } from '../../../typings/config.ts'
 import { InvokeEvent } from '../../../typings/enum.ts'
 import { invokeCommand } from '../../../utils/helpers/tauriHelpers.ts'
-import { t } from 'i18next'
-import { Trans } from 'react-i18next'
 
 function SecretTooltip() {
   return (
@@ -50,7 +50,9 @@ function ZerotierExperiments() {
 
   const openZeroTierOneDir = async () => {
     const { success } = await invokeCommand(InvokeEvent.OPEN_ZEROTIER_ONE_DIR)
-    !success && setNotification({ type: 'danger', children: 'Failed to open ZeroTier One directory', duration: 2000 })
+    if (!success) {
+      setNotification({ type: 'danger', children: 'Failed to open ZeroTier One directory', duration: 2000 })
+    }
   }
 
   const onTokenChanged = (value: string) => {
@@ -69,7 +71,9 @@ function ZerotierExperiments() {
         </div>
         <div className="mt-4 flex items-center">
           <div className="mr-4 flex gap-1.5 text-default-700">
-            <p><Trans>Secret Token</Trans></p>
+            <p>
+              <Trans>Secret Token</Trans>
+            </p>
             <SecretTooltip />
           </div>
           <div className="w-1/2 ml-auto flex gap-4">
@@ -85,7 +89,9 @@ function ZerotierExperiments() {
         </div>
         <div className="mt-4 flex items-center">
           <div className="mr-4 flex gap-1.5 text-default-700">
-            <p><Trans>Service Port</Trans></p>
+            <p>
+              <Trans>Service Port</Trans>
+            </p>
           </div>
           <div className="ml-auto flex gap-4">
             <Input
@@ -101,7 +107,9 @@ function ZerotierExperiments() {
         </div>
         <div className="mt-4 flex items-center">
           <div className="mr-4 flex gap-1.5 text-default-700">
-            <p><Trans>ZeroTier One Directory</Trans></p>
+            <p>
+              <Trans>ZeroTier One Directory</Trans>
+            </p>
           </div>
           <div className="ml-auto flex gap-4">
             <Button className="bg-default-100" onPress={openZeroTierOneDir}>

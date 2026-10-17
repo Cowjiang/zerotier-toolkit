@@ -6,20 +6,20 @@ import useTauriEventListener from '../useTauriEventListener.ts'
 
 let listenCallback: (payload: any) => void
 
+vi.mock('@tauri-apps/api/event', () => ({
+  listen: vi.fn(),
+}))
+
+vi.mock('@tauri-apps/api/event', () => ({
+  listen: (event: string, callback: (payload: any) => void) => {
+    if (event === 'myEvent') {
+      listenCallback = callback
+    }
+  },
+}))
+
 beforeEach(() => {
   const payload = { test: 'test' }
-
-  vi.mock('@tauri-apps/api/event', () => ({
-    listen: vi.fn(),
-  }))
-
-  vi.mock('@tauri-apps/api/event', () => ({
-    listen: (event: string, callback: (payload: any) => void) => {
-      if (event === 'myEvent') {
-        listenCallback = callback
-      }
-    },
-  }))
 
   mockIPC((cmd) => {
     if (cmd === 'myEvent') {

@@ -1,25 +1,25 @@
 import { Button, ButtonProps, Select, SelectItem } from '@heroui/react'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
+import { Trans } from 'react-i18next'
 
 import { useAppStore } from '../../../store/app.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { ServiceStartType, ServiceStatus } from '../../../typings/enum.ts'
 import useRestartAsAdmin from '../../../utils/hooks/useRestartAsAdmin.ts'
-import { Trans } from 'react-i18next'
 
 const startTypes = [
   {
     label: 'Automatic',
-    value: ServiceStartType.AUTO_START
+    value: ServiceStartType.AUTO_START,
   },
   {
     label: 'Manual',
-    value: ServiceStartType.DEMAND_START
+    value: ServiceStartType.DEMAND_START,
   },
   {
     label: 'Disabled',
-    value: ServiceStartType.DISABLED
-  }
+    value: ServiceStartType.DISABLED,
+  },
 ]
 
 function ZerotierService() {
@@ -38,7 +38,7 @@ function ZerotierService() {
     return {
       label: statusBtnLoading ? '' : isRunning ? ServiceStatus.RUNNING : ServiceStatus.STOPPED,
       color: isRunning ? 'success' : 'danger',
-      startContent: statusBtnLoading ? <></> : <span className="w-2 h-2 ml-1 rounded-full bg-current"></span>
+      startContent: statusBtnLoading ? <></> : <span className="w-2 h-2 ml-1 rounded-full bg-current"></span>,
     } as {
       label: string
       color: ButtonProps['color']
@@ -58,8 +58,10 @@ function ZerotierService() {
     if (keys === 'all') {
       return
     }
-    const startType = keys.values().next().value
-    isAdmin && startType && setServiceStartType(startType)
+    const startType = startTypes.find(({ value }) => keys.has(value))?.value
+    if (isAdmin && startType) {
+      setServiceStartType(startType)
+    }
   }
 
   return (
@@ -77,7 +79,9 @@ function ZerotierService() {
           </Button>
         )}
         <div className="flex items-center">
-          <p className="text-default-700"><Trans>Service status</Trans></p>
+          <p className="text-default-700">
+            <Trans>Service status</Trans>
+          </p>
           <div className="ml-auto flex gap-4">
             <Button
               aria-label="switch the state of ZeroTier service"
@@ -94,7 +98,9 @@ function ZerotierService() {
           </div>
         </div>
         <div className="mt-6 flex items-center">
-          <p className="text-default-700"><Trans>Start type</Trans></p>
+          <p className="text-default-700">
+            <Trans>Start type</Trans>
+          </p>
           <div className="ml-auto flex gap-4">
             <Select
               className="w-32"

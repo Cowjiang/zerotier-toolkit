@@ -11,8 +11,8 @@ beforeEach(() => {
     hasHydrated: true,
     config: {
       [ThemeConfig.CURRENT]: Theme.LIGHT,
-      [ThemeConfig.IS_SYNC_WITH_SYSTEM]: true
-    }
+      [ThemeConfig.IS_SYNC_WITH_SYSTEM]: true,
+    },
   })
 })
 

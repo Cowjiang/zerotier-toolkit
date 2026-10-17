@@ -12,7 +12,9 @@ function ZerotierNetworks() {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   const init = () => {
-    !isLoading && !networks.length && setIsLoading(true)
+    if (!isLoading && !networks.length) {
+      setIsLoading(true)
+    }
     request(getNetworks())
       .then(() => setIsError(false))
       .catch(() => setIsError(true))

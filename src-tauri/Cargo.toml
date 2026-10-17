@@ -54,7 +54,7 @@ tauri-plugin-updater = "2"
 
 # windwos only denpendencies
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3.9", features = ["winsvc", "winbase", "errhandlingapi", "ntdef", "processthreadsapi", "synchapi"] }
+winapi = { version = "0.3.9", features = ["winsvc", "winbase", "errhandlingapi", "ntdef", "processthreadsapi", "synchapi", "winerror"] }
 
 [profile.release]
 codegen-units = 1 # Allows LLVM to perform better optimization.

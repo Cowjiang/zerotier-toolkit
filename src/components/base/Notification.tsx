@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 import { ReactNode, useMemo } from 'react'
+import { Trans } from 'react-i18next'
 
 import { CloseIcon } from './Icon.tsx'
-import { Trans } from 'react-i18next'
 
 export type NotificationBarOptions = {
   type?: 'success' | 'warning' | 'danger' | 'primary' | 'secondary'
@@ -22,7 +22,7 @@ function Notification(props: NotificationBarProps) {
   const styles = useMemo(() => {
     const defaultClassNames = [
       'px-4 py-2.5 fixed bottom-6 left-0 z-[10000] translate-x-[calc(50vw-50%)] flex items-center text-sm transition-colors-opacity rounded-lg',
-      props.animate ? 'duration-250' : 'duration-0'
+      props.animate ? 'duration-250' : 'duration-0',
     ]
     if (!props.children) {
       return [...defaultClassNames]
@@ -35,7 +35,7 @@ function Notification(props: NotificationBarProps) {
       warning: 'bg-warning/20 text-warning',
       danger: 'bg-danger/20 text-danger',
       primary: 'bg-primary/20 text-primary',
-      secondary: 'bg-secondary/20 text-secondary'
+      secondary: 'bg-secondary/20 text-secondary',
     }
     return [...defaultClassNames, preset?.[props?.type ?? 'primary'] ?? preset['primary']]
   }, [props])
@@ -46,7 +46,7 @@ function Notification(props: NotificationBarProps) {
     <div
       className={classNames([
         ...styles,
-        props.hidden ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
+        props.hidden ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto',
       ])}
     >
       <Trans>{props.children}</Trans>

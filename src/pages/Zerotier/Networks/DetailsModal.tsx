@@ -34,7 +34,7 @@ function DetailsModal({
 
   const [selected, setSelected] = useState<string[]>([])
   const onSelectedChange = (selected: string[]) => {
-    networkDetails?.id &&
+    if (networkDetails?.id) {
       request(
         updateNetwork(networkDetails.id, {
           ...networkDetails,
@@ -44,6 +44,7 @@ function DetailsModal({
           allowDefault: selected.includes('allowDefault'),
         }),
       )
+    }
     setSelected(selected)
   }
 

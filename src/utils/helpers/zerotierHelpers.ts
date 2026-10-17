@@ -32,7 +32,9 @@ const request = async <T>({ path, method, ...options }: RequestOptions): Promise
   const url = `${ZEROTIER_SERVICE_HOST}:${overridePort || port}${path}`
   const res = await fetch(url, httpOptions)
   console.log('[Request]', path, httpOptions, res)
-  !res.ok && (await Promise.reject(res))
+  if (!res.ok) {
+    throw res
+  }
   return {
     ok: res.ok,
     status: res.status,

@@ -23,7 +23,9 @@ function NotificationProvider({ children }: { children: ReactNode }) {
     clearTimer()
     setOptions({ ...initialOptions, ...options })
     setTimeout(() => setHidden(false), 0)
-    options.duration && setAutoCloseTimer(setTimeout(closeNotification, options.duration))
+    if (options.duration) {
+      setAutoCloseTimer(setTimeout(closeNotification, options.duration))
+    }
   }
   const closeNotification = () => {
     clearTimer()

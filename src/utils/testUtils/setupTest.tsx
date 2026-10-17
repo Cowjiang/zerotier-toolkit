@@ -1,13 +1,14 @@
+import '../../i18n'
+
 import { clearMocks, mockWindows } from '@tauri-apps/api/mocks'
 import { Queries, queries, render, renderHook, RenderHookOptions, RenderOptions } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { mockServer } from '../../__mocks__/zerotier.ts'
+import LanguageProvider from '../../components/providers/LanguageProvider.tsx'
 import NotificationProvider from '../../components/providers/NotificationProvider.tsx'
 import { useZeroTierStore } from '../../store/zerotier.ts'
-import LanguageProvider from '../../components/providers/LanguageProvider.tsx'
-import '../../i18n'
 
 vi.mock('zustand')
 
@@ -16,7 +17,7 @@ beforeEach(() => {
   mockWindows('main')
 })
 beforeAll(() => {
-  mockServer.listen({ onUnhandledRequest: 'error' })
+  mockServer.listen({ onUnhandledFrame: 'error' })
 })
 afterEach(() => {
   clearMocks()
@@ -37,17 +38,15 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn()
-  }))
+    dispatchEvent: vi.fn(),
+  })),
 })
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <BrowserRouter>
       <LanguageProvider>
-        <NotificationProvider>
-          {children}
-        </NotificationProvider>
+        <NotificationProvider>{children}</NotificationProvider>
       </LanguageProvider>
     </BrowserRouter>
   )
@@ -64,7 +63,7 @@ const renderHookWithProviders = <
   BaseElement extends Element | DocumentFragment = Container,
 >(
   render: (initialProps: Props) => Result,
-  options?: Omit<RenderHookOptions<Props, Q, Container, BaseElement>, 'wrapper'>
+  options?: Omit<RenderHookOptions<Props, Q, Container, BaseElement>, 'wrapper'>,
 ) => renderHook(render, { wrapper: Providers, ...options })
 
 export { renderWithProviders as render, renderHookWithProviders as renderHook }

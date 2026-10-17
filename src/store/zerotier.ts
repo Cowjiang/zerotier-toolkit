@@ -64,12 +64,16 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
       },
       setServiceStartType: async (startType: ServiceStartType) => {
         const { success } = await invokeCommand(InvokeEvent.SET_SERVICE_START_TYPE, { startType })
-        success && set((state) => ({ ...state, serviceStartType: startType }))
+        if (success) {
+          set((state) => ({ ...state, serviceStartType: startType }))
+        }
         return success
       },
       getServerInfo: async () => {
         const { data: serverInfo, success } = await invokeCommand(InvokeEvent.GET_ZEROTIER_SERVER_INFO)
-        success && set((state) => ({ ...state, serverInfo }))
+        if (success) {
+          set((state) => ({ ...state, serverInfo }))
+        }
         return serverInfo
       },
       getNetworks: async () => {

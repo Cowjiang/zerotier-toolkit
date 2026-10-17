@@ -1,9 +1,9 @@
 import { Link } from '@heroui/react'
+import { t } from 'i18next'
 import { createElement } from 'react'
 
 import { useNotification } from '../../components/providers/NotificationProvider.tsx'
 import { HttpResponse } from '../../typings/global.ts'
-import { t } from 'i18next'
 
 const useRequest = () => {
   const { setNotification } = useNotification()
