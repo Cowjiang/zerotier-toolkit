@@ -1,4 +1,4 @@
-use log::debug;
+use log::{debug, error};
 use tauri::tray::{TrayIcon, TrayIconBuilder, TrayIconEvent};
 use tauri::AppHandle;
 
@@ -12,6 +12,11 @@ pub fn init_system_tray(app_handle: &AppHandle) {
         return;
     }
 
+    let Some(icon) = app_handle.default_window_icon().cloned() else {
+        error!("window icon is missing, skip tray init");
+        return;
+    };
+
     debug!("init tray");
 
     let _ = TrayIconBuilder::with_id(TRAY_ID)
@@ -19,9 +24,9 @@ pub fn init_system_tray(app_handle: &AppHandle) {
         .on_tray_icon_event(|icon, event| {
             handle_tray_event(icon, event);
         })
-        .icon(app_handle.default_window_icon().unwrap().clone())
+        .icon(icon)
         .build(app_handle)
-        .unwrap();
+        .map_err(|err| error!("build tray fail:{err}"));
 }
 
 pub fn hide_system_tray(app_handle: &AppHandle) {
