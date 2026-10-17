@@ -28,3 +28,6 @@ src/coverage
 # Tauri sidecar binaries
 src-tauri/binaries
 
+# release signing keys
+zerotier-toolkit-distribute-key
+
