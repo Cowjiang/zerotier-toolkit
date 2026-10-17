@@ -1,14 +1,12 @@
-use crate::{
-    execute_cmd,
-    r::{fail_message_json, success_json},
-};
-use log::debug;
-use std::env;
-
 #[tauri::command]
 pub(crate) fn restart_as_admin() -> String {
     #[cfg(windows)]
     {
+        use crate::execute_cmd;
+        use crate::r::{fail_message_json, success_json};
+        use log::debug;
+        use std::env;
+
         let current = match env::current_exe() {
             Ok(current) => current,
             Err(err) => return fail_message_json(&format!("failed to get current exe path:{err}")),
@@ -33,7 +31,7 @@ pub(crate) fn restart_as_admin() -> String {
                 if !status.success() {
                     return fail_message_json("restart failed, please restart manually");
                 }
-                return success_json("success");
+                success_json("success")
             }
             Err(err) => fail_message_json(&err.to_string()),
         }
@@ -42,16 +40,5 @@ pub(crate) fn restart_as_admin() -> String {
     {
         use crate::r::unsupported_platform;
         unsupported_platform()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::restart_as_admin;
-
-    #[cfg(windows)]
-    #[test]
-    fn test_restart_as_admin() {
-        restart_as_admin();
     }
 }

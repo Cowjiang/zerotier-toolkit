@@ -35,7 +35,7 @@ impl Clone for LatestVersionResult {
         LatestVersionResult {
             current_version: self.current_version.clone(),
             latest_version: self.latest_version.clone(),
-            latest_time: self.latest_time.clone(),
+            latest_time: self.latest_time,
         }
     }
 }
@@ -103,7 +103,7 @@ pub async fn get_latest_version_command(app_handle: AppHandle) -> String {
     if latest_version_holder.current_version.is_none() {
         latest_version_holder.current_version = Some(format!(
             "v{}",
-            app_handle.package_info().version.to_string()
+            app_handle.package_info().version
         ));
     }
     let latest_time = latest_version_holder.latest_time;
@@ -121,7 +121,7 @@ pub async fn get_latest_version_command(app_handle: AppHandle) -> String {
             }
             Err(err) => {
                 return fail_message_json(
-                    format!("update check fail with:{}", err.to_string()).as_str(),
+                    format!("update check fail with:{}", err).as_str(),
                 )
             }
         }

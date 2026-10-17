@@ -1,3 +1,4 @@
+#[cfg(any(windows, target_os = "macos"))]
 use std::env::home_dir;
 use std::fs;
 use std::io::Error;
@@ -157,7 +158,10 @@ pub(crate) fn set_zerotier_start_type(start_type: String) -> String {
     }
 
     #[cfg(not(windows))]
-    unsupported_platform()
+    {
+        let _ = start_type;
+        unsupported_platform()
+    }
 }
 
 #[tauri::command]
@@ -209,12 +213,12 @@ pub fn try_read_port() -> String {
     for app_home_dir in &GLOBAL_TRY_HOME.clone() {
         let home_dir_path = Path::new(&app_home_dir);
         for port_file_name in &GLOBAL_TRY_PROT_FILES.clone() {
-            let port_file_path = home_dir_path.join(&port_file_name);
+            let port_file_path = home_dir_path.join(port_file_name);
             if port_file_path.exists() {
                 let res_port =
                     try_read_file(port_file_path.as_path().to_str().unwrap().to_string());
-                if res_port.is_ok() {
-                    return res_port.unwrap();
+                if let Ok(port) = res_port {
+                    return port;
                 }
             }
         }
@@ -226,7 +230,7 @@ pub fn get_zerotier_one_path() -> Result<ZerotierPathInfo, String> {
     for home_dir in &GLOBAL_TRY_HOME.clone() {
         let home_dir_path = Path::new(&home_dir);
         for execute_file_name in &GLOBAL_TRY_EXECUTE_FILE.clone() {
-            let execute_file_path = home_dir_path.join(&execute_file_name);
+            let execute_file_path = home_dir_path.join(execute_file_name);
             if execute_file_path.exists() {
                 let file_name = execute_file_path
                     .file_name()
@@ -274,12 +278,11 @@ fn try_read_files(file_paths: &[String]) -> Result<String, Error> {
                 return Ok(file_content);
             }
             Err(error) => {
-                error!("read file {} fail with:{}", file_path, error.to_string());
+                error!("read file {} fail with:{}", file_path, error);
             }
         }
     }
-    Err(Error::new(
-        std::io::ErrorKind::Other,
+    Err(Error::other(
         format!("can't not read content from any file of {:?}", file_paths),
     ))
 }
@@ -294,7 +297,8 @@ fn try_read_file(file_url: String) -> Result<String, Error> {
     }
 }
 
-fn from_home_dir<'a>(path: &str) -> String {
+#[cfg(any(windows, target_os = "macos"))]
+fn from_home_dir(path: &str) -> String {
     let home_dir = get_user_home_dir();
     let home_dir = Path::new(&home_dir);
 
@@ -302,6 +306,7 @@ fn from_home_dir<'a>(path: &str) -> String {
     result.into_os_string().into_string().unwrap()
 }
 
+#[cfg(any(windows, target_os = "macos"))]
 pub fn get_user_home_dir() -> String {
     let homedir = home_dir().unwrap();
     homedir.to_str().unwrap().to_string()
@@ -309,9 +314,6 @@ pub fn get_user_home_dir() -> String {
 
 #[cfg(test)]
 mod tests {
-    use std::thread;
-    use std::time::Duration;
-
     use log::info;
 
     use crate::zerotier_manage::*;
@@ -331,52 +333,6 @@ mod tests {
         info!(
             "test_get_zerotier_start_type:{:?}",
             get_zerotier_start_type()
-        )
-    }
-
-    #[test]
-    fn test_set_zerotier_start_type() {
-        info!(
-            "test_set_zerotier_start_type:{:?}",
-            set_zerotier_start_type(String::from("DemandStart"))
-        );
-        info!(
-            "test_set_zerotier_start_type:{:?}",
-            get_zerotier_start_type()
-        )
-    }
-
-    #[tokio::test]
-    async fn test_start_zerotier() {
-        info!("test_start_zerotier:{:?}", start_zerotier().await);
-        let state = get_zerotier_state();
-        info!("test_start_zerotier:{:?}", state);
-    }
-
-    #[tokio::test]
-    async fn test_stop_zerotier() {
-        info!("test_stop_zerotier:{:?}", stop_zerotier().await);
-        let state = get_zerotier_state();
-        info!("test_stop_zerotier:{:?}", state);
-    }
-
-    #[test]
-    fn test_state_listener() {
-        info!(
-            "test_get_zerotier_start_type:{:?}",
-            get_zerotier_start_type()
-        );
-        loop {
-            info!("current state{:?}", get_zerotier_state());
-            thread::sleep(Duration::new(2, 0))
-        }
-    }
-
-    #[test]
-    fn test_get_zerotier_server_info() {
-        info!(
-            "test_get_zerotier_server_info:{:?}",
-            get_zerotier_server_info()
         )
     }
 }

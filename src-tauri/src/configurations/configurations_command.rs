@@ -20,7 +20,7 @@ pub fn get_configurations(name: String) -> String {
 
 #[tauri::command]
 pub fn put_configurations(name: String, payload: String) -> String {
-    let configs: HashMap<String, Value> = match serde_json::from_str(&*payload) {
+    let configs: HashMap<String, Value> = match serde_json::from_str(&payload) {
         Ok(configs) => configs,
         Err(err) => return fail_message_json(&format!("parse payload fail: {err}")),
     };
