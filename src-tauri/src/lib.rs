@@ -6,7 +6,7 @@ use std::ops::Deref;
 use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
 use configurations::configurations_command::reset_configurations;
-use log::error;
+use log::{error, LevelFilter};
 use system::*;
 use tauri::{AppHandle, Builder, Manager, WebviewWindowBuilder, WindowEvent, Wry};
 use tauri_plugin_autostart::MacosLauncher;
@@ -53,7 +53,12 @@ fn start_tauri() {
         }))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_log::Builder::new().build())
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .level(LevelFilter::Info)
+                .level_for("zerotier_toolkit_lib", LevelFilter::Debug)
+                .build(),
+        )
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             // what's args?

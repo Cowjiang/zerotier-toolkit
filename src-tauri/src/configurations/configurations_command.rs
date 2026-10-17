@@ -20,11 +20,14 @@ pub fn get_configurations(name: String) -> String {
 
 #[tauri::command]
 pub fn put_configurations(name: String, payload: String) -> String {
-    debug!("accept command:payload[{payload}]");
     let configs: HashMap<String, Value> = match serde_json::from_str(&*payload) {
         Ok(configs) => configs,
         Err(err) => return fail_message_json(&format!("parse payload fail: {err}")),
     };
+    debug!(
+        "accept command:{name} with keys:{:?}",
+        configs.keys().collect::<Vec<_>>()
+    );
     match put_configuration_context(&name, configs) {
         Ok(..) => success_json(""),
         Err(e) => fail_message_json(&e),

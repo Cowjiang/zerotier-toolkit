@@ -28,11 +28,12 @@ export const fetch: typeof tauriFetch = async (url, options) => {
 
 export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<InvokeResponse & { success: boolean }> => {
   const result: string = await invoke(cmd, args)
-  console.log('[Invoke]', cmd, result)
   try {
     const res = JSON.parse(result)
+    console.log('[Invoke]', cmd, res.code, res.message)
     return { ...res, success: res.code === 0 }
   } catch {
+    console.log('[Invoke]', cmd, 'unparsable result')
     return { code: -1, data: result, message: result, success: false }
   }
 }
@@ -40,14 +41,14 @@ export const invokeCommand = async (cmd: string, args?: InvokeArgs): Promise<Inv
 export const readTextFile = async (path = CONFIGURATION_FILE_PATH, options?: ReadFileOptions) => {
   const filePath = await resolveResource(path)
   const content = await tauriReadTextFile(filePath, options)
-  console.log('[ReadTextFile]', filePath, content, options)
+  console.log('[ReadTextFile]', filePath)
   return content
 }
 
 export const writeTextFile = async (contents: string, path = CONFIGURATION_FILE_PATH, options?: WriteFileOptions) => {
   const filePath = await resolveResource(path)
   const response = await tauriWriteTextFile(filePath, contents, options)
-  console.log('[WriteTextFile]', filePath, contents, options)
+  console.log('[WriteTextFile]', filePath)
   return response
 }
 
