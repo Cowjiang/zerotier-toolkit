@@ -25,18 +25,6 @@ where
     }
 }
 
-#[allow(unused)]
-pub(crate) fn fail<T>(data: T) -> R<T>
-where
-    T: Serialize,
-{
-    R {
-        code: FAIL,
-        message: String::from("fail"),
-        data,
-    }
-}
-
 pub(crate) fn success_json<T>(data: T) -> String
 where
     T: Serialize,
@@ -53,12 +41,6 @@ pub(crate) fn fail_message_json(message: &str) -> String {
 #[allow(unused)]
 pub(crate) fn fail_code_message_json(code: i8, message: &str) -> String {
     let result = fail_code_message(code, message);
-    serde_json::to_string(&result).unwrap()
-}
-
-#[allow(unused)]
-pub(crate) fn fail_json() -> String {
-    let result = fail_message("fail");
     serde_json::to_string(&result).unwrap()
 }
 

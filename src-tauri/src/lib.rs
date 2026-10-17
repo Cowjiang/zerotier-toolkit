@@ -18,7 +18,6 @@ use crate::configurations::configurations_service::{
 use crate::configurations::system_configurations::{
     GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME,
 };
-// use crate::logger::init_logger_main;
 use crate::update_check::get_latest_version_command;
 use crate::window::{close_main_window, do_hide_main_window, hide_main_window, show_main_window};
 use crate::zerotier_manage::*;
@@ -64,7 +63,6 @@ fn start_tauri() {
             // what's args?
             Some(vec!["--flag1", "--flag2"]),
         ))
-        .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_clipboard_manager::init())
@@ -85,7 +83,7 @@ fn register_window_event_handler(builder: Builder<Wry>) -> Builder<Wry> {
                 api.prevent_close();
                 close_main_window(app_handle.app_handle().clone());
             }
-            WindowEvent::Destroyed { .. } => backup_all(),
+            WindowEvent::Destroyed => backup_all(),
             _ => {}
         }
     });
@@ -95,15 +93,11 @@ fn register_window_event_handler(builder: Builder<Wry>) -> Builder<Wry> {
 fn setup(builder: Builder<Wry>) -> Builder<Wry> {
     let builder = builder.setup(|app| {
         let app_handle = app.handle();
-        // init_logger_main(&app_handle);
-        init_configuration_context(&app_handle);
-        init_window(&app_handle);
+        init_configuration_context(app_handle);
+        init_window(app_handle);
 
         #[cfg(debug_assertions)]
-        open_dev_tools(&app_handle);
-
-        #[cfg(desktop)]
-        app.handle().plugin(tauri_plugin_updater::Builder::new().build())?;
+        open_dev_tools(app_handle);
 
         Ok(())
     });
@@ -174,7 +168,7 @@ fn init_window(app_handle: &AppHandle) {
             .as_bool()
             .unwrap()
         {
-            if let Err(err) = do_hide_main_window(&app_handle) {
+            if let Err(err) = do_hide_main_window(app_handle) {
                 error!("hide main window fail:{err}");
             }
         }
