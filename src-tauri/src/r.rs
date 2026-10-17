@@ -19,7 +19,7 @@ where
     T: Serialize,
 {
     R {
-        code: 0,
+        code: SUCCESS,
         message: String::from("success"),
         data,
     }
@@ -31,7 +31,7 @@ where
     T: Serialize,
 {
     R {
-        code: SUCCESS,
+        code: FAIL,
         message: String::from("fail"),
         data,
     }

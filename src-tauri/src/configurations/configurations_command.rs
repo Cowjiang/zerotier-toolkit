@@ -12,15 +12,19 @@ use super::configurations_service::reset_configurations_context_to_default;
 
 #[tauri::command]
 pub fn get_configurations(name: String) -> String {
-    let context = get_configuration_context(&name);
-    return success_json(context.unwrap().get_configs());
+    match get_configuration_context(&name) {
+        Some(context) => success_json(context.get_configs()),
+        None => fail_message_json(&format!("configuration [{name}] not found")),
+    }
 }
 
 #[tauri::command]
 pub fn put_configurations(name: String, payload: String) -> String {
     debug!("accept command:payload[{payload}]");
-    let configs: HashMap<String, Value> =
-        serde_json::from_str(&*payload).expect("value type of configuration is String only");
+    let configs: HashMap<String, Value> = match serde_json::from_str(&*payload) {
+        Ok(configs) => configs,
+        Err(err) => return fail_message_json(&format!("parse payload fail: {err}")),
+    };
     match put_configuration_context(&name, configs) {
         Ok(..) => success_json(""),
         Err(e) => fail_message_json(&e),

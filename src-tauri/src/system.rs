@@ -9,7 +9,10 @@ use std::env;
 pub(crate) fn restart_as_admin() -> String {
     #[cfg(windows)]
     {
-        let current = env::current_exe().unwrap();
+        let current = match env::current_exe() {
+            Ok(current) => current,
+            Err(err) => return fail_message_json(&format!("failed to get current exe path:{err}")),
+        };
         let exec_path = current.to_str();
         if exec_path.is_none() {
             return fail_message_json("failed to get current exe path");

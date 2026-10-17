@@ -196,14 +196,13 @@ pub(crate) fn get_zerotier_state() -> String {
 #[tauri::command]
 pub(crate) fn get_zerotier_server_info() -> String {
     let res_port = try_read_port();
-    let res_secret = try_read_files(&GLOBAL_TRY_SECRET_FILES.clone());
-    if res_secret.is_err() {
-        return fail_message_json("resolve secret fail");
+    match try_read_files(&GLOBAL_TRY_SECRET_FILES.clone()) {
+        Ok(secret) => success_json(ZerotierServerInfo {
+            port: res_port,
+            secret,
+        }),
+        Err(..) => fail_message_json("resolve secret fail"),
     }
-    success_json(ZerotierServerInfo {
-        port: res_port,
-        secret: res_secret.unwrap(),
-    })
 }
 
 pub fn try_read_port() -> String {
@@ -256,12 +255,13 @@ pub(crate) fn get_zerotier_one_dir() -> String {
 #[tauri::command]
 pub(crate) fn open_zerotier_one_dir(app: AppHandle) -> String {
     match get_zerotier_one_path() {
-        Ok(zerotier_one_path) => {
-            app.opener()
-                .open_path(zerotier_one_path.file_dir, None::<&str>)
-                .unwrap();
-            success_json("")
-        }
+        Ok(zerotier_one_path) => match app
+            .opener()
+            .open_path(zerotier_one_path.file_dir, None::<&str>)
+        {
+            Ok(..) => success_json(""),
+            Err(err) => fail_message_json(&format!("open dir fail:{err}")),
+        },
         Err(..) => fail_message_json("Failed to get ZeroTier One program path"),
     }
 }
