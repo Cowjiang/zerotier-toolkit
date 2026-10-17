@@ -6,6 +6,7 @@ use std::ops::Deref;
 use auto_launch::{set_auto_launch, unset_auto_launch};
 use command::*;
 use configurations::configurations_command::reset_configurations;
+use log::error;
 use system::*;
 use tauri::{AppHandle, Builder, Manager, WebviewWindowBuilder, WindowEvent, Wry};
 use tauri_plugin_autostart::MacosLauncher;
@@ -168,7 +169,9 @@ fn init_window(app_handle: &AppHandle) {
             .as_bool()
             .unwrap()
         {
-            do_hide_main_window(&app_handle).expect("hide main window fail");
+            if let Err(err) = do_hide_main_window(&app_handle) {
+                error!("hide main window fail:{err}");
+            }
         }
         true
     });

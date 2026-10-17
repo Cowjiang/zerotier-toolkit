@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::io::Write;
 use std::path::MAIN_SEPARATOR;
 
 use log::{debug, error};
@@ -9,7 +8,7 @@ use tauri::{AppHandle, Emitter};
 
 use crate::r::success_json;
 use crate::util::resources_file_util::{
-    get_path_buf_from_home_dir, open_file_from_home_dir_default, open_file_from_home_dir_truncate,
+    get_path_buf_from_home_dir, open_file_from_home_dir_default, write_file_from_home_dir,
 };
 
 pub const EVENT_CONFIG_CHANGE: &str = "event_config_change";
@@ -62,7 +61,8 @@ impl ConfigurationContext {
         self.configuration_def_map.insert(key, def);
     }
     fn read_config_from_file(&mut self, file_name: &str) -> Result<HashMap<String, Value>, String> {
-        let file_path_buf = get_path_buf_from_home_dir(file_name).unwrap();
+        let file_path_buf = get_path_buf_from_home_dir(file_name)
+            .ok_or_else(|| format!("resolve home dir for {file_name} fail"))?;
         if !file_path_buf.exists() {
             debug!("{file_name} is not exist. skip!");
             return Err(format!("{file_name} is not exist."));
@@ -70,18 +70,19 @@ impl ConfigurationContext {
         let opt_file = open_file_from_home_dir_default(file_name);
         if opt_file.is_err() {
             let opt_err = opt_file.err().unwrap();
-            debug!("{} open fail {opt_err}. ", file_path_buf.to_str().unwrap());
+            debug!("{} open fail {opt_err}. ", file_path_buf.display());
             return Err(opt_err.to_string());
         }
         debug!("{file_name} is exist. start to resolve");
-        let config: HashMap<String, Value> =
-            serde_json::from_reader(opt_file.unwrap()).expect("json serialize fail");
+        let config: HashMap<String, Value> = serde_json::from_reader(opt_file.unwrap())
+            .map_err(|err| format!("{file_name} parse fail: {err}"))?;
         Ok(config)
     }
     pub fn try_read_config_from_file(&mut self) -> HashMap<String, Value> {
         let file_name = self.file_name.clone();
         let mut config_file = self.read_config_from_file(&file_name);
-        if config_file.is_err() {
+        if let Err(err) = config_file {
+            debug!("{err}, try bak file");
             let file_bak_name = self.file_bak_name.clone();
             config_file = self.read_config_from_file(&file_bak_name);
         }
@@ -92,16 +93,16 @@ impl ConfigurationContext {
         HashMap::new()
     }
     pub fn store_config_to_file(&mut self, file: &str) {
-        let opt_file = open_file_from_home_dir_truncate(file);
-        if opt_file.is_err() {
-            let opt_err = opt_file.err().unwrap();
-            debug!("{file} open fail {opt_err}. fail to store config");
-            return;
+        let config_json = match serde_json::to_string_pretty(self.get_configs()) {
+            Ok(json) => json,
+            Err(err) => {
+                error!("encode config fail:{err}");
+                return;
+            }
+        };
+        if let Err(err) = write_file_from_home_dir(file, config_json.as_bytes()) {
+            error!("store config to {file} fail:{err}");
         }
-        let mut file = opt_file.unwrap();
-        let config_json = serde_json::to_string_pretty(self.get_configs()).unwrap();
-        file.write_all(config_json.as_bytes())
-            .expect("fail to write config to config file");
     }
     pub fn store_config(&mut self) {
         self.store_config_to_file(&self.file_name.clone())
@@ -155,16 +156,16 @@ impl ConfigurationContext {
             return;
         }
         let app_handle = self.app_handle.clone();
-        app_handle
-            .emit(
-                EVENT_CONFIG_CHANGE,
-                success_json(ConfigurationChangeEvent {
-                    key: config_def.key.clone(),
-                    before: before.clone(),
-                    after: value.clone(),
-                }),
-            )
-            .expect("event publish fail");
+        if let Err(err) = app_handle.emit(
+            EVENT_CONFIG_CHANGE,
+            success_json(ConfigurationChangeEvent {
+                key: config_def.key.clone(),
+                before: before.clone(),
+                after: value.clone(),
+            }),
+        ) {
+            error!("publish config change event fail:{err}");
+        }
         debug!(
             "on_change:{}->has callback:{:?} change to {:?}",
             config_def.key,
