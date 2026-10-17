@@ -17,7 +17,6 @@ use crate::configurations::configurations_service::{
 use crate::configurations::system_configurations::{
     GENERAL_MINIMIZE_TO_TRAY, SYSTEM_CONFIGURATION_NAME,
 };
-use crate::embedding_zerotier::get_embedding_zerotier_version;
 // use crate::logger::init_logger_main;
 use crate::update_check::get_latest_version_command;
 use crate::window::{close_main_window, do_hide_main_window, hide_main_window, show_main_window};
@@ -27,7 +26,6 @@ mod command;
 
 mod auto_launch;
 mod configurations;
-mod embedding_zerotier;
 mod r;
 mod system;
 mod system_tray;
@@ -129,8 +127,6 @@ fn register_invoke_handlers(builder: Builder<Wry>) -> Builder<Wry> {
         get_configurations,
         put_configurations,
         reset_configurations,
-        // embedding zerotier
-        get_embedding_zerotier_version,
         // other handlers
         is_admin,
         restart_as_admin,

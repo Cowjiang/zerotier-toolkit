@@ -25,3 +25,6 @@ dist-ssr
 
 src/coverage
 
+# Tauri sidecar binaries
+src-tauri/binaries
+

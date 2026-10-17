@@ -34,7 +34,6 @@ export enum InvokeEvent {
   PUT_CONFIGURATIONS = 'put_configurations',
   RESET_CONFIGURATIONS = 'reset_configurations',
   GET_LATEST_VERSION = 'get_latest_version_command',
-  GET_EMBEDDING_ZEROTIER_VERSION = 'get_embedding_zerotier_version',
 }
 
 export enum Theme {

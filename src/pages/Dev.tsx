@@ -57,7 +57,6 @@ function Dev() {
     invokeCommandButton(InvokeEvent.GET_CONFIGURATIONS, { name: 'system' }),
     invokeCommandButton(InvokeEvent.RESET_CONFIGURATIONS, { name: 'all' }),
     invokeCommandButton(InvokeEvent.GET_LATEST_VERSION),
-    invokeCommandButton(InvokeEvent.GET_EMBEDDING_ZEROTIER_VERSION),
     {
       text: 'open url[website]',
       onPress: async () => await openUrl('https://github.com/'),
