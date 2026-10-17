@@ -1,6 +1,6 @@
 import { Button, ButtonProps, Select, SelectItem } from '@heroui/react'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 
 import { useAppStore } from '../../../store/app.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
@@ -23,6 +23,7 @@ const startTypes = [
 ]
 
 function ZerotierService() {
+  const { t } = useTranslation()
   const { isAdmin } = useAppStore()
   const { serviceState, serviceStartType, getServiceState, startService, stopService, setServiceStartType } =
     useZeroTierStore()
@@ -116,7 +117,7 @@ function ZerotierService() {
             >
               {(type) => (
                 <SelectItem key={type.value} test-id="option">
-                  <Trans>{type.label}</Trans>
+                  {t(type.label)}
                 </SelectItem>
               )}
             </Select>

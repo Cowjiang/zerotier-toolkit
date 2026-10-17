@@ -34,9 +34,10 @@ describe('ZerotierService', () => {
       serviceStartType: ServiceStartType.DEMAND_START,
       setServiceStartType,
     })
-    const { getByTestId } = render(<ZerotierService />)
+    const { container, getByTestId } = render(<ZerotierService />)
     const selector = getByTestId('hidden-select-container').querySelector('select') as HTMLSelectElement
     expect(selector.value).toBe(ServiceStartType.DEMAND_START)
+    expect(container.querySelector('[data-slot="value"]')?.textContent).toBe('Manual')
   })
 
   it('should disable the buttons if user is not admin', () => {
