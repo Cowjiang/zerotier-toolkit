@@ -49,6 +49,7 @@
   "Enter 16-digit Network ID": "请输入 16 位网络 ID",
   "Failed to join network, please check your Network ID": "加入网络失败，请检查您的网络 ID",
   "Failed to get status.": "获取 ZeroTier 状态失败",
+  "My Address: {{address}}": "我的地址：{{address}}",
   "Input your local auth token": "输入 ZeroTier 本地 Token",
   "Service Port": "服务端口",
   "ZeroTier One Directory": "ZeroTier One 目录",

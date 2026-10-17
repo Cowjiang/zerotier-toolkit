@@ -1,11 +1,11 @@
 import { Code, Snippet, Spinner } from '@heroui/react'
 import { useCallback, useEffect, useState } from 'react'
+import { Trans } from 'react-i18next'
 
 import { RefreshIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
-import { Trans } from 'react-i18next'
 
 function ZerotierStatus() {
   const { request } = useRequest()
@@ -48,11 +48,13 @@ function ZerotierStatus() {
             hideSymbol
             disableCopy={isError}
           >
-            {`My Address: ${status?.address ?? '-'}`}
+            <Trans i18nKey="My Address: {{address}}" values={{ address: status?.address ?? '-' }} />
           </Snippet>
           {isError ? (
             <div className="flex flex-col justify-center items-center gap-4 h-[50vh]">
-              <span><Trans>Failed to get status.</Trans></span>
+              <span>
+                <Trans>Failed to get status.</Trans>
+              </span>
               <div>
                 <RefreshButton
                   buttonProps={{

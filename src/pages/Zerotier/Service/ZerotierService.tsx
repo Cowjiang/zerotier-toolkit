@@ -116,7 +116,7 @@ function ZerotierService() {
             >
               {(type) => (
                 <SelectItem key={type.value} test-id="option">
-                  {type.label}
+                  <Trans>{type.label}</Trans>
                 </SelectItem>
               )}
             </Select>
