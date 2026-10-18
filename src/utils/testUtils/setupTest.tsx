@@ -11,6 +11,9 @@ import NotificationProvider from '../../components/providers/NotificationProvide
 import { useZeroTierStore } from '../../store/zerotier.ts'
 
 vi.mock('zustand')
+vi.mock('@tauri-apps/plugin-http', () => ({
+  fetch: (url: string, options?: RequestInit) => globalThis.fetch(url, options),
+}))
 
 beforeEach(() => {
   useZeroTierStore.setState({ serverInfo: { port: 9999, secret: 'test' } })
