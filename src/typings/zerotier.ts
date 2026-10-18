@@ -72,7 +72,10 @@ export interface Route {
   flags?: number
   metric?: number
   target?: string
-  via?: string
+  /**
+   * Null when the route is reachable directly, a gateway address when it is not.
+   */
+  via?: string | null
 }
 
 export interface Status {
@@ -97,8 +100,15 @@ export interface Config {
 
 export interface Settings {
   allowTcpFallbackRelay?: boolean
+  forceTcpRelay?: boolean
+  listeningOn?: string[]
   portMappingEnabled?: boolean
   primaryPort?: number
+  secondaryPort?: number
+  softwareUpdate?: string
+  softwareUpdateChannel?: string
+  surfaceAddresses?: string[]
+  tertiaryPort?: number
 }
 
 export interface Peer {
@@ -107,6 +117,10 @@ export interface Peer {
   latency?: number
   paths?: Path[]
   role?: string
+  /**
+   * True when the traffic to this peer goes through a relay instead of a direct path.
+   */
+  tunneled?: boolean
   version?: string
   versionMajor?: number
   versionMinor?: number
@@ -119,6 +133,7 @@ export interface Path {
   expired?: boolean
   lastReceive?: number
   lastSend?: number
+  localSocket?: number
   preferred?: boolean
   trustedPathId?: number
 }
