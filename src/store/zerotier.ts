@@ -1,10 +1,10 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { getNetworks, getStatus, leaveNetwork } from '../services/zerotierService.ts'
+import { getNetworks, getPeers, getStatus, leaveNetwork } from '../services/zerotierService.ts'
 import { ConfigType, ZeroTierConfig, ZerotierConfig } from '../typings/config.ts'
 import { InvokeEvent, ServiceStartType, ServiceStatus } from '../typings/enum.ts'
-import { Network, ServerInfo, Status } from '../typings/zerotier.ts'
+import { Network, Peer, ServerInfo, Status } from '../typings/zerotier.ts'
 import { createConfigStorage } from '../utils/helpers/configHelpers.ts'
 import { invokeCommand } from '../utils/helpers/tauriHelpers.ts'
 
@@ -13,6 +13,7 @@ export type ZeroTierState = {
   serviceStartType: ServiceStartType
   serverInfo: ServerInfo
   networks: Network[]
+  peers: Peer[]
   status: Status
   config: ZeroTierConfig
 }
@@ -25,6 +26,7 @@ export type ZeroTierAction = {
   setServiceStartType: (serviceStartType: ServiceStartType) => Promise<boolean>
   getServerInfo: () => Promise<ServerInfo>
   getNetworks: () => Promise<Network[]>
+  getPeers: () => Promise<Peer[]>
   disconnectNetwork: (networkId: string) => Promise<void>
   deleteNetwork: (networkId: string) => Promise<void>
   getStatus: () => Promise<Status>
@@ -38,6 +40,7 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
       serviceStartType: ServiceStartType.DEMAND_START,
       serverInfo: {},
       networks: [],
+      peers: [],
       status: {},
       config: {},
       getServiceState: async () => {
@@ -88,6 +91,11 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
         set((state) => ({ ...state, networks: mergedNetworks }))
         set((state) => ({ ...state, config: { ...state.config, [ZerotierConfig.NETWORKS]: mergedNetworks } }))
         return networks
+      },
+      getPeers: async () => {
+        const { data: peers } = await getPeers()
+        set((state) => ({ ...state, peers }))
+        return peers
       },
       disconnectNetwork: async (networkId: string) => {
         await leaveNetwork(networkId)

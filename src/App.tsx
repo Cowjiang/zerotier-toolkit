@@ -18,6 +18,7 @@ import GeneralSetting from './pages/Settings/GeneralSetting.tsx'
 import Troubleshooting from './pages/Troubleshooting.tsx'
 import ZerotierExperiments from './pages/Zerotier/Experiments/ZerotierExperiments.tsx'
 import ZerotierNetworks from './pages/Zerotier/Networks/ZerotierNetworks.tsx'
+import ZerotierPeers from './pages/Zerotier/Peers/ZerotierPeers.tsx'
 import ZerotierService from './pages/Zerotier/Service/ZerotierService.tsx'
 import ZerotierStatus from './pages/Zerotier/Status/ZerotierStatus.tsx'
 import { useAppStore } from './store/app'
@@ -78,6 +79,7 @@ function App() {
                     <Route path="/home" element={<ZerotierNetworks />} />
                     <Route path="/zerotier/networks" element={<ZerotierNetworks />} />
                     <Route path="/zerotier/status" element={<ZerotierStatus />} />
+                    <Route path="/zerotier/peers" element={<ZerotierPeers />} />
                     <Route path="/zerotier/service" element={<ZerotierService />} />
                     <Route path="/zerotier/experiments" element={<ZerotierExperiments />} />
                     <Route path="/settings" element={<AppearanceSetting />} />

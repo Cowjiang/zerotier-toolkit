@@ -9,6 +9,7 @@ import {
   InterrogationIcon,
   NetworkIcon,
   PaintIcon,
+  PeersIcon,
   ServiceIcon,
   StatusIcon,
   WindowIcon,
@@ -65,6 +66,12 @@ function RootLayout() {
           title: 'Status',
           startContent: <StatusIcon {...iconProps} />,
           description: 'My status of ZeroTier',
+        },
+        {
+          path: '/zerotier/peers',
+          title: 'Peers',
+          startContent: <PeersIcon {...iconProps} />,
+          description: 'Nodes linked with this device',
         },
         // #if WINDOWS
         {
