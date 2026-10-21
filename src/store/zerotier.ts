@@ -15,6 +15,7 @@ export type ZeroTierState = {
   networks: Network[]
   peers: Peer[]
   status: Status
+  statusUpdatedAt?: number
   config: ZeroTierConfig
 }
 
@@ -42,6 +43,7 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
       networks: [],
       peers: [],
       status: {},
+      statusUpdatedAt: undefined,
       config: {},
       getServiceState: async () => {
         const { data: serviceState } = await invokeCommand(InvokeEvent.GET_SERVICE_STATE)
@@ -117,7 +119,7 @@ export const useZeroTierStore = create<ZeroTierState & ZeroTierAction>()(
       },
       getStatus: async () => {
         const { data: status } = await getStatus()
-        set((state) => ({ ...state, status }))
+        set((state) => ({ ...state, status, statusUpdatedAt: Date.now() }))
         return status
       },
       setConfig: (config) => {
