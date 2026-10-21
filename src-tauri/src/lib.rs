@@ -155,7 +155,7 @@ fn init_window(app_handle: &AppHandle) {
         .fullscreen(false)
         .transparent(true)
         .decorations(false)
-        .shadow(false)
+        .shadow(true)
         .center()
         .min_inner_size(800.0, 500.0)
         .inner_size(800.0, 500.0)
