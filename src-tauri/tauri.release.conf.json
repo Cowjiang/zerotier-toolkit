@@ -4,7 +4,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDlGNkYxNUQxNzFCNURFNTQKUldSVTNyVngwUlZ2bndHd2xYanVnSUdUNVN6VHA0ODJHSnJERTR4TlFVaE9iOU5Sby9qVFBxSmMK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDVEMTJBOTFBNEVDMzdBRApSV1N0Tit5a2tTclJCVjdPUFJ4SFhGSi9MSzB3N3dGbzcwU0ZRekRSZWd0U0Z0L21ETU1kT2llZAo=",
       "endpoints": [
         "https://github.com/Cowjiang/zerotier-toolkit/releases/latest/download/latest.json"
       ],

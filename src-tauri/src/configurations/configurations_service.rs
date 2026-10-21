@@ -13,10 +13,10 @@ lazy_static! {
 pub fn init_configuration_context(app_handle: &AppHandle) {
     let mut configuration_groups = CONFIGURATION_GROUPS.write().unwrap();
     let system_config_context =
-        crate::configurations::system_configurations::init_context(&app_handle);
+        crate::configurations::system_configurations::init_context(app_handle);
     configuration_groups.push(system_config_context);
     let auth_config_context =
-        crate::configurations::zerotier_configurations::init_context(&app_handle);
+        crate::configurations::zerotier_configurations::init_context(app_handle);
     configuration_groups.push(auth_config_context);
 }
 
@@ -55,10 +55,9 @@ pub fn reset_configurations_context_to_default(name: &String) {
             .for_each(|v| v.reset_to_default());
         return;
     }
-    configuration_groups
+    if let Some(context) = configuration_groups
         .iter_mut()
-        .find(|context| context.name() == name)
-        .map(|context| context.reset_to_default());
+        .find(|context| context.name() == name) { context.reset_to_default() }
 }
 
 pub fn backup_all() {

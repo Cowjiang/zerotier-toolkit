@@ -86,8 +86,8 @@ impl ConfigurationContext {
             let file_bak_name = self.file_bak_name.clone();
             config_file = self.read_config_from_file(&file_bak_name);
         }
-        if config_file.is_ok() {
-            return config_file.unwrap();
+        if let Ok(config) = config_file {
+            return config;
         }
         debug!("can not read config from file.init by default!");
         HashMap::new()

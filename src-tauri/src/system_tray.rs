@@ -54,11 +54,8 @@ pub fn show_system_tray(app_handle: &AppHandle) {
 }
 
 fn handle_tray_event(tray: &TrayIcon, event: TrayIconEvent) {
-    match event {
-        TrayIconEvent::DoubleClick { .. } => {
-            debug!("double click tray");
-            show_main_window(tray.app_handle().clone());
-        }
-        _ => {}
+    if let TrayIconEvent::DoubleClick { .. } = event {
+        debug!("double click tray");
+        show_main_window(tray.app_handle().clone());
     }
 }

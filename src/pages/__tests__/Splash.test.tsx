@@ -17,6 +17,7 @@ vi.mock('../../constant.ts', async (importOriginal) => {
 })
 
 describe('SplashPage', () => {
+  // #if WINDOWS
   it('should render setup button as properly', async () => {
     useAppStore.setState({
       isLoading: false,
@@ -36,6 +37,7 @@ describe('SplashPage', () => {
       { timeout: SPLASH_SCREEN_DELAY + 500 },
     )
   })
+  // #endif
 
   it('should render loading indicator as properly', async () => {
     useAppStore.setState({
