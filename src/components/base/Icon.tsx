@@ -247,6 +247,17 @@ export const StatusIcon = (props: Props) => {
   )
 }
 
+export const PeersIcon = (props: Props) => {
+  return (
+    <IconWrapper fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" {...props}>
+      <circle cx="12" cy="5" r="2.6" />
+      <circle cx="5.5" cy="18.5" r="2.6" />
+      <circle cx="18.5" cy="18.5" r="2.6" />
+      <path d="M10.6 7.4 6.9 16.1M13.4 7.4 17.1 16.1M8.1 18.5h7.8" />
+    </IconWrapper>
+  )
+}
+
 export const ServiceIcon = (props: Props) => {
   return (
     <IconWrapper {...props}>
