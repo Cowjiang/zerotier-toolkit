@@ -51,7 +51,6 @@
   "Failed to join network, please check your Network ID": "加入网络失败，请检查您的网络 ID",
   "Failed to get status.": "获取 ZeroTier 状态失败",
   "Authentication is invalid or missing": "认证信息无效或缺失",
-  "Configure": "配置",
   "Node ID": "节点 ID",
   "Online": "在线",
   "Offline": "离线",

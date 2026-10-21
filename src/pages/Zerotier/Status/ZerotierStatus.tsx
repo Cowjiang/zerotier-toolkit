@@ -1,4 +1,4 @@
-import { Alert, Button, Chip, Spinner, Tooltip } from '@heroui/react'
+import { Button, Chip, Spinner, Tooltip } from '@heroui/react'
 import { useCallback, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -47,19 +47,18 @@ function ZerotierStatus() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { request } = useRequest()
-  const { status, getStatus } = useZeroTierStore()
+  const { status, statusUpdatedAt, getStatus } = useZeroTierStore()
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(!status?.address)
   const [errorStatus, setErrorStatus] = useState<number>()
-  const [updatedAt, setUpdatedAt] = useState<number>()
   const isError = errorStatus !== undefined
 
   const init = () => {
+    if (!isLoading && !status?.address) {
+      setIsLoading(true)
+    }
     request(getStatus())
-      .then(() => {
-        setErrorStatus(undefined)
-        setUpdatedAt(Date.now())
-      })
+      .then(() => setErrorStatus(undefined))
       .catch((e: HttpResponse<Status>) => setErrorStatus(e?.status ?? 0))
       .finally(() => setIsLoading(false))
   }
@@ -71,7 +70,6 @@ function ZerotierStatus() {
     try {
       await request(getStatus())
       setErrorStatus(undefined)
-      setUpdatedAt(Date.now())
     } catch (e) {
       setErrorStatus((e as HttpResponse<Status>)?.status ?? 0)
     } finally {
@@ -80,25 +78,43 @@ function ZerotierStatus() {
   }, [])
 
   const isAuthError = errorStatus === 401
-  const statusColor: 'success' | 'warning' | 'danger' = isError
-    ? 'danger'
-    : status?.online
-      ? status.tcpFallbackActive
-        ? 'warning'
-        : 'success'
-      : 'danger'
-  const heroColor =
-    statusColor === 'danger' ? 'bg-danger/20' : statusColor === 'warning' ? 'bg-warning/20' : 'bg-success/20'
-  const updatedTime = updatedAt
-    ? new Date(updatedAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+  const hasStatus = !!status?.address
+  const statusColor: 'success' | 'warning' | 'danger' = status?.online
+    ? status.tcpFallbackActive
+      ? 'warning'
+      : 'success'
+    : 'danger'
+  const heroColor = !hasStatus
+    ? 'bg-default-100'
+    : statusColor === 'danger'
+      ? 'bg-danger/20'
+      : statusColor === 'warning'
+        ? 'bg-warning/20'
+        : 'bg-success/20'
+  const updatedTime = statusUpdatedAt
+    ? new Date(statusUpdatedAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
     : undefined
 
   return (
     <>
-      <div className="overflow-x-hidden overflow-y-auto pb-4">
+      <div className="h-full overflow-x-hidden overflow-y-auto pb-4">
         {isLoading ? (
           <div className="w-full h-[60vh] flex justify-center items-center">
             <Spinner size="lg" />
+          </div>
+        ) : isError && !hasStatus ? (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-3 pb-16 text-center">
+            <span>
+              <Trans>Failed to get status.</Trans>
+            </span>
+            {isAuthError && (
+              <span className="text-tiny text-default-500">
+                <Trans>Authentication is invalid or missing</Trans>
+              </span>
+            )}
+            <Button color="primary" variant="flat" onPress={() => navigate('/troubleshooting')}>
+              <Trans>Troubleshooting</Trans>
+            </Button>
           </div>
         ) : (
           <div className="w-full flex flex-col gap-2">
@@ -113,7 +129,7 @@ function ZerotierStatus() {
                   </CopyText>
                   <CopyAddressButton address={status?.address} />
                 </div>
-                {!isError && (updatedTime || !status?.online) && (
+                {hasStatus && (updatedTime || !status?.online) && (
                   <div className="flex flex-wrap items-center gap-x-1.5">
                     {updatedTime && (
                       <span className="text-tiny text-default-600">
@@ -135,36 +151,14 @@ function ZerotierStatus() {
                 )}
               </div>
               <div className="ml-auto flex flex-shrink-0 items-center gap-2">
-                {!isError && (
+                {hasStatus && (
                   <Chip size="sm" variant="flat" color={statusColor}>
                     <Trans>{status?.online ? 'Online' : 'Offline'}</Trans>
                   </Chip>
                 )}
               </div>
             </div>
-            {isError ? (
-              <Alert
-                color="danger"
-                title={t('Failed to get status.')}
-                description={
-                  <Trans>
-                    {isAuthError ? 'Authentication is invalid or missing' : 'Failed to connect to ZeroTier service'}
-                  </Trans>
-                }
-                endContent={
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    color="danger"
-                    onPress={() => navigate(isAuthError ? '/zerotier/experiments' : '/troubleshooting')}
-                  >
-                    <Trans>{isAuthError ? 'Configure' : 'Troubleshooting'}</Trans>
-                  </Button>
-                }
-              />
-            ) : (
-              <StatusDetails status={status} />
-            )}
+            <StatusDetails status={status} />
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@ import { fireEvent, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 
 import { mockServer } from '../../../../__mocks__/zerotier.ts'
+import { useZeroTierStore } from '../../../../store/zerotier.ts'
 import { Status } from '../../../../typings/zerotier.ts'
 import { render } from '../../../../utils/testUtils/setupTest.tsx'
 import ZerotierStatus from '../ZerotierStatus.tsx'
@@ -28,6 +29,15 @@ beforeEach(() => {
 })
 
 describe('ZerotierStatus', () => {
+  it('should show the cached status without loading again', () => {
+    useZeroTierStore.setState({ status: mockStatus, statusUpdatedAt: Date.now() })
+
+    const { getByText } = render(<ZerotierStatus />)
+
+    expect(getByText('7c086786bb')).toBeTruthy()
+    expect(getByText(/Updated at/)).toBeTruthy()
+  })
+
   it('should show the address and the details of this node', async () => {
     const { getByText } = render(<ZerotierStatus />)
 
@@ -87,13 +97,21 @@ describe('ZerotierStatus', () => {
     expect(getByRole('button', { name: 'Troubleshooting' })).toBeTruthy()
   })
 
-  it('should offer a retry when the service is unreachable', async () => {
+  it('should offer the troubleshooting entry when the service is unreachable', async () => {
     mockServer.use(http.get('*/status', () => HttpResponse.error()))
 
     const { getByText, getByRole } = render(<ZerotierStatus />)
 
     await waitFor(() => expect(getByText('Failed to get status.')).toBeTruthy())
-    expect(getByRole('button', { name: 'Refresh' })).toBeTruthy()
-    expect(getByText('Troubleshooting')).toBeTruthy()
+    expect(getByRole('button', { name: 'Troubleshooting' })).toBeTruthy()
+  })
+
+  it('should offer the troubleshooting entry when the authentication fails', async () => {
+    mockServer.use(http.get('*/status', () => HttpResponse.json({}, { status: 401 })))
+
+    const { getByText, getByRole } = render(<ZerotierStatus />)
+
+    await waitFor(() => expect(getByText('Authentication is invalid or missing')).toBeTruthy())
+    expect(getByRole('button', { name: 'Troubleshooting' })).toBeTruthy()
   })
 })
