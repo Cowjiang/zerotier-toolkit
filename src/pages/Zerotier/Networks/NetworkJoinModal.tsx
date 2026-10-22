@@ -6,7 +6,7 @@ import { joinNetwork } from '../../../services/zerotierService.ts'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
 
-function JoinModal(props: Omit<ModalProps, 'children'>) {
+function NetworkJoinModal(props: Omit<ModalProps, 'children'>) {
   const { request } = useRequest()
   const { getNetworks } = useZeroTierStore()
 
@@ -69,4 +69,4 @@ function JoinModal(props: Omit<ModalProps, 'children'>) {
   )
 }
 
-export default JoinModal
+export default NetworkJoinModal

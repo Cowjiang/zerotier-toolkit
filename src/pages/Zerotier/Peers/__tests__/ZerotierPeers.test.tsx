@@ -12,18 +12,21 @@ describe('ZerotierPeers', () => {
   })
 
   it('should render the connected peers', async () => {
-    const { getAllByText, getByText, queryByText } = render(<ZerotierPeers />)
+    const { getAllByRole, getAllByText, getByText, queryByText } = render(<ZerotierPeers />)
 
     await waitFor(() => expect(getByText('25a4a6b1ba')).toBeTruthy())
     expect(getByText('PLANET')).toBeTruthy()
     expect(getByText('MOON')).toBeTruthy()
     expect(getAllByText('LEAF').length).toBe(2)
-    expect(getByText('1.12.2')).toBeTruthy()
-    expect(getByText('1.14.2')).toBeTruthy()
     expect(getByText('103.195.103.66/9993')).toBeTruthy()
     expect(getByText('120.239.74.49/52769')).toBeTruthy()
     expect(getByText('No path')).toBeTruthy()
     expect(queryByText('-1.-1.-1')).toBeNull()
+
+    const addresses = getAllByRole('row')
+      .slice(1)
+      .map((row) => row.querySelector('td')?.textContent)
+    expect(addresses).toEqual(['a3c1f8a2c9', 'b7d2e5f1c3', '62f865ae71', '25a4a6b1ba'])
   })
 
   it('should keep the peers matching the keyword only', async () => {

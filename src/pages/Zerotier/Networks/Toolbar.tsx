@@ -5,9 +5,9 @@ import { Trans } from 'react-i18next'
 import { PlusIcon, SearchIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
-import JoinModal from './JoinModal.tsx'
+import NetworkJoinModal from './NetworkJoinModal.tsx'
 
-function ToolBar({
+function Toolbar({
   filterValue,
   onFilterValueChange,
   isLoading,
@@ -47,9 +47,9 @@ function ToolBar({
       <Button className="flex-shrink-0 " color="warning" endContent={<PlusIcon />} onPress={onModalOpen}>
         <Trans>Join New</Trans>
       </Button>
-      <JoinModal isOpen={isModalOpen} backdrop="blur" onOpenChange={onModalOpenChange} onClose={onModalClose} />
+      <NetworkJoinModal isOpen={isModalOpen} backdrop="blur" onOpenChange={onModalOpenChange} onClose={onModalClose} />
     </div>
   )
 }
 
-export default ToolBar
+export default Toolbar

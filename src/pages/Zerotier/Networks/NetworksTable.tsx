@@ -19,7 +19,6 @@ import { t } from 'i18next'
 import { Key, useCallback, useRef, useState } from 'react'
 import { Trans } from 'react-i18next'
 
-import CopyText from '../../../components/base/CopyText.tsx'
 import {
   ConnectIcon,
   DisconnectIcon,
@@ -35,7 +34,7 @@ import { useZeroTierStore } from '../../../store/zerotier.ts'
 import { HttpResponse } from '../../../typings/global.ts'
 import { Network, NetworkStatus } from '../../../typings/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
-import DetailsModal from './DetailsModal.tsx'
+import NetworkDetailsModal from './NetworkDetailsModal.tsx'
 
 function NetworksTable({
   networks,
@@ -133,7 +132,7 @@ function NetworksTable({
           const iconProps = { width: 16, height: 16 }
           const onOpen = () => network?.id && setSelectedKeys(new Set([network.id]))
           const onClose = () => {
-            // setSelectedKeys(new Set([]))
+            setSelectedKeys(new Set())
             clearHoverState()
           }
           const openDetailsModal = () => {
@@ -141,7 +140,11 @@ function NetworksTable({
             setIsDetailsModalOpen(true)
           }
           return (
-            <div className="relative flex justify-end items-center gap-2">
+            <div
+              className="relative flex justify-end items-center gap-2"
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
+            >
               <Dropdown
                 backdrop="opaque"
                 placement="bottom-end"
@@ -196,7 +199,7 @@ function NetworksTable({
             </div>
           )
         default:
-          return <CopyText copyValue={cellValue}>{cellValue}</CopyText>
+          return cellValue
       }
     },
     [networks, loadingId],
@@ -208,22 +211,37 @@ function NetworksTable({
     })
   }
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>()
+  const [selectedKeys, setSelectedKeys] = useState<Set<string | number> | 'all'>(new Set())
   const [selectedNetwork, setSelectedNetwork] = useState<Network>()
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
 
+  const openNetwork = (keys: Set<string | number> | 'all') => {
+    if (keys === 'all') {
+      return
+    }
+    const key = Array.from(keys)[0]
+    setSelectedNetwork(networks.find(({ id }) => id === String(key)))
+    setIsDetailsModalOpen(true)
+    setSelectedKeys(new Set())
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur()
+    }
+  }
+
   return (
-    <div className="overflow-x-auto">
+    <div className="flex-1 min-h-0 overflow-x-auto overflow-y-scroll">
       <Table
         ref={tableRef}
         aria-label="Network List"
         removeWrapper
+        isHeaderSticky
         color="primary"
         selectionMode="single"
         disallowEmptySelection
         selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
+        onSelectionChange={openNetwork}
         classNames={{
+          thead: ['after:bg-background'],
           td: ['whitespace-nowrap'],
           table: isLoading ? ['min-h-[65vh]'] : [],
           loadingWrapper: ['h-[65vh]'],
@@ -264,13 +282,13 @@ function NetworksTable({
           }
         >
           {networks.map((network) => (
-            <TableRow key={network.id}>
+            <TableRow key={network.id} className="cursor-pointer" onMouseDown={(event) => event.preventDefault()}>
               {(columnKey) => <TableCell>{renderCell(network, columnKey)}</TableCell>}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <DetailsModal
+      <NetworkDetailsModal
         networkDetails={selectedNetwork}
         modalProps={{
           backdrop: 'blur',

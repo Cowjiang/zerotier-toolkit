@@ -29,6 +29,15 @@ describe('ZerotierNetworks', () => {
     expect(queryByText('Cowjiang Private')).toBeNull()
   })
 
+  it('should open the details modal by clicking a network row', async () => {
+    const { findByText, getByText } = render(<ZerotierNetworks />)
+
+    await waitFor(() => expect(getByText('882d314dd3dbd4dd')).toBeTruthy())
+    fireEvent.click(getByText('882d314dd3dbd4dd'))
+
+    expect(await findByText('Ethernet')).toBeTruthy()
+  })
+
   it('should open the join dialog of the toolbar', async () => {
     const { getByText } = render(<ZerotierNetworks />)
 
