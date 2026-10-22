@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
 import NetworksTable from './NetworksTable.tsx'
-import ToolBar from './ToolBar.tsx'
+import Toolbar from './Toolbar.tsx'
 
 function ZerotierNetworks() {
   const { request } = useRequest()
@@ -43,7 +43,7 @@ function ZerotierNetworks() {
 
   return (
     <div className="h-full flex flex-col gap-4">
-      <ToolBar
+      <Toolbar
         filterValue={filterValue}
         onFilterValueChange={onFilterValueChange}
         isLoading={isRefreshing}

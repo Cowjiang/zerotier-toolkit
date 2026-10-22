@@ -1,11 +1,12 @@
 import { Chip, Input } from '@heroui/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { SearchIcon } from '../../../components/base/Icon.tsx'
 import RefreshButton from '../../../components/base/RefreshButton.tsx'
 import { useZeroTierStore } from '../../../store/zerotier.ts'
 import useRequest from '../../../utils/hooks/useRequest.ts'
+import { connectionChip, peerConnection } from './peerHelpers.ts'
 import PeersTable from './PeersTable.tsx'
 
 function ZerotierPeers() {
@@ -13,29 +14,43 @@ function ZerotierPeers() {
   const { request } = useRequest()
   const { peers, getPeers } = useZeroTierStore()
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(!peers.length)
   const [isError, setIsError] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const loadingRef = useRef(false)
 
-  const init = () => {
-    if (!isLoading && !peers.length) {
+  const loadPeers = useCallback(async (showSpinner = false) => {
+    if (loadingRef.current) {
+      return
+    }
+    loadingRef.current = true
+    if (showSpinner) {
       setIsLoading(true)
     }
-    request(getPeers())
-      .then(() => setIsError(false))
-      .catch(() => setIsError(true))
-      .finally(() => setIsLoading(false))
-  }
-  useEffect(init, [])
-
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const onRefresh = useCallback(async () => {
-    setIsRefreshing(true)
     try {
       await request(getPeers())
+      setIsError(false)
+    } catch {
+      if (!useZeroTierStore.getState().peers.length) {
+        setIsError(true)
+      }
     } finally {
-      setTimeout(() => setIsRefreshing(false), 300)
+      loadingRef.current = false
+      if (showSpinner) {
+        setIsLoading(false)
+      }
     }
   }, [])
+
+  useEffect(() => {
+    loadPeers(!useZeroTierStore.getState().peers.length)
+  }, [loadPeers])
+
+  const onRefresh = useCallback(async () => {
+    setIsRefreshing(true)
+    await loadPeers()
+    setTimeout(() => setIsRefreshing(false), 300)
+  }, [loadPeers])
 
   const [filterValue, setFilterValue] = useState('')
   const filteredPeers = peers.filter((peer) => {
@@ -44,12 +59,13 @@ function ZerotierPeers() {
       peer.address?.includes(keyword) ||
       peer.role?.toLowerCase().includes(keyword) ||
       peer.version?.includes(keyword) ||
-      peer.paths?.some((path) => path.address?.toLowerCase().includes(keyword))
+      peer.paths?.some((path) => path.address?.toLowerCase().includes(keyword)) ||
+      t(connectionChip[peerConnection(peer)].label).toLowerCase().includes(keyword)
     )
   })
 
   return (
-    <div className="h-full flex flex-col gap-4">
+    <div className="h-full flex flex-col gap-3">
       <div className="w-full flex items-center gap-2">
         <span className="flex-shrink-0 text-default-700">
           <Trans>Known peers</Trans>

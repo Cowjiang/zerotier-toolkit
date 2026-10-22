@@ -9,7 +9,7 @@ import useRequest from '../../../utils/hooks/useRequest.ts'
 
 const checkboxClasses = { label: 'text-[0.8rem]' }
 
-function DetailsModal({
+function NetworkDetailsModal({
   networkDetails,
   modalProps,
 }: {
@@ -142,4 +142,4 @@ function DetailsModal({
   )
 }
 
-export default DetailsModal
+export default NetworkDetailsModal
