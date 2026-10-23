@@ -1,6 +1,7 @@
 import { Checkbox, CheckboxGroup, Divider, Modal, ModalBody, ModalContent, ModalProps } from '@heroui/react'
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
+import { Trans } from 'react-i18next'
 
 import CopyText from '../../../components/base/CopyText.tsx'
 import { updateNetwork } from '../../../services/zerotierService.ts'
@@ -55,35 +56,47 @@ function NetworkDetailsModal({
           <div className="w-full flex space-x-2 py-6">
             <div className="w-full flex flex-col gap-3">
               <div className="flex flex-col gap-0.5">
-                <p className="text-tiny font-bold uppercase">Network ID</p>
+                <p className="text-tiny font-bold uppercase">
+                  <Trans>NETWORK ID</Trans>
+                </p>
                 <CopyText copyValue={networkDetails?.id}>
                   <small className="text-default-500">{networkDetails?.id}</small>
                 </CopyText>
               </div>
               <div className={classNames('flex flex-col gap-0.5', !networkDetails?.name && 'hidden')}>
-                <p className="text-tiny font-bold uppercase">Name</p>
+                <p className="text-tiny font-bold uppercase">
+                  <Trans>NAME</Trans>
+                </p>
                 <CopyText copyValue={networkDetails?.name}>
                   <small className="text-default-500">{networkDetails?.name}</small>
                 </CopyText>
               </div>
               <div className="flex flex-col gap-0.5">
-                <p className="text-tiny font-bold uppercase">Status</p>
+                <p className="text-tiny font-bold uppercase">
+                  <Trans>STATUS</Trans>
+                </p>
                 <small className="text-default-500">{networkDetails?.status}</small>
               </div>
               <div className="flex flex-col gap-0.5">
-                <p className="text-tiny font-bold uppercase">Ethernet</p>
+                <p className="text-tiny font-bold uppercase">
+                  <Trans>Ethernet</Trans>
+                </p>
                 <CopyText copyValue={networkDetails?.mac}>
                   <small className="text-default-500">{networkDetails?.mac}</small>
                 </CopyText>
               </div>
               <div className="flex flex-col gap-0.5">
-                <p className="text-tiny font-bold uppercase">Device</p>
+                <p className="text-tiny font-bold uppercase">
+                  <Trans>Device</Trans>
+                </p>
                 <CopyText copyValue={networkDetails?.portDeviceName}>
                   <small className="text-default-500">{networkDetails?.portDeviceName}</small>
                 </CopyText>
               </div>
               <div className="flex flex-col gap-0.5">
-                <p className="text-tiny font-bold uppercase">Type</p>
+                <p className="text-tiny font-bold uppercase">
+                  <Trans>Type</Trans>
+                </p>
                 <small className="text-default-500">{networkDetails?.type}</small>
               </div>
             </div>
@@ -97,21 +110,23 @@ function NetworkDetailsModal({
                 onValueChange={onSelectedChange}
               >
                 <Checkbox classNames={checkboxClasses} value="allowManaged">
-                  Allow Managed Addresses
+                  <Trans>Allow Managed Addresses</Trans>
                 </Checkbox>
                 <Checkbox classNames={checkboxClasses} value="allowGlobal">
-                  Allow Assignment of Global lPs
+                  <Trans>Allow Assignment of Global IPs</Trans>
                 </Checkbox>
                 <Checkbox classNames={checkboxClasses} value="allowDefault">
-                  Allow Default Router Override
+                  <Trans>Allow Default Router Override</Trans>
                 </Checkbox>
                 <Checkbox classNames={checkboxClasses} value="allowDNS">
-                  Allow DNS Configuration
+                  <Trans>Allow DNS Configuration</Trans>
                 </Checkbox>
               </CheckboxGroup>
               <Divider className="my-2" />
               <div className="flex flex-col gap-0.5">
-                <p className="text-tiny font-bold uppercase">Managed Addresses</p>
+                <p className="text-tiny font-bold uppercase">
+                  <Trans>Managed Addresses</Trans>
+                </p>
                 {networkDetails?.assignedAddresses?.length ? (
                   networkDetails.assignedAddresses.map((address) => (
                     <CopyText key={address} copyValue={address}>
@@ -123,11 +138,19 @@ function NetworkDetailsModal({
                 )}
               </div>
               <div className="flex flex-col gap-0.5">
-                <p className="text-tiny font-bold uppercase">Managed Routes</p>
+                <p className="text-tiny font-bold uppercase">
+                  <Trans>Managed Routes</Trans>
+                </p>
                 {networkDetails?.routes?.length ? (
                   networkDetails.routes.map((route) => (
                     <small className="text-default-500" key={route.target}>
-                      {route.target} via {networkDetails.portDeviceName}
+                      {/* i18next escapes interpolated values as HTML entities; React already escapes text */}
+                      <Trans
+                        values={{ target: route.target, device: networkDetails.portDeviceName }}
+                        tOptions={{ interpolation: { escapeValue: false } }}
+                      >
+                        {'{{target}} via {{device}}'}
+                      </Trans>
                     </small>
                   ))
                 ) : (
